@@ -76,19 +76,15 @@ getAddressFromCoords(37.5756364926 ,126.9768570246);
 			
 			
 			const datas = data.response.body.items.item;
-			/* console.log(data);
-			// 0번 item의 mapx, mapy 값
-			console.log(data.response.body.items.item[0].mapx);
-			console.log(data.response.body.items.item[0].mapy); */
 			
 			/* getAddressFromCoords(37.5756364926 ,126.9768570246); */
-	 		/*  for (const [index, item] of datas.entries()) {
+	 		for (const [index, item] of datas.entries()) {
 				console.log(index + "번 째 데이터");
 				console.log(item.mapy, item.mapx);
 				
 				await getAddressFromCoords(item.mapy, item.mapx);
 				await sleep(15000); // 15초 대기
-			}   */
+			}  
 
 		} catch (e) {
 			console.error("API 호출 실패:", e);
