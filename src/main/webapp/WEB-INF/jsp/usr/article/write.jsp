@@ -16,13 +16,40 @@
 	</div>
 </div> --%>
 
+<style>
+.mood-box > div > div > div {
+	width: 55px;
+}
 
+.mood-box > div > div > div:hover {
+	background-color: #61c0e6;
+	transition: all 0.3s ease;
+	
+}
+
+.mood-box > div > div > div.active:hover {
+	background-color: #1e293b;
+	transition: all 0.3s ease;
+	
+}
+
+</style>
 <script>
+
+
+
 $(document).ready(function () {
     $('#imageInput').on('change', handleImagePreview);
-  });
+    
+    $('.mood-box .cursor-pointer').on('click', function () {
+    	$(this).toggleClass('active');
+	    $(this).toggleClass('bg-black');
+	    $(this).find('p').toggleClass('text-white');
+	    
+	});
+});
   
-	function handleImagePreview(e) {
+function handleImagePreview(e) {
     const files = e.target.files;
     const $container = $('#previewContainer');
     
@@ -157,67 +184,64 @@ $(document).ready(function () {
 
 		</div>
 		<div
-			class="flex justify-center items-center flex-wrap w-[800px] gap-[38px]">
+			class="mood-box flex justify-center items-center flex-wrap w-[800px] gap-[38px]">
 			<div
 				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[137px] w-[326px] relative overflow-hidden px-6 py-[7px] !border-2 !border-black">
 				<p
 					class="flex-grow-0 flex-shrink-0 w-[132px] h-[31px] text-xl font-medium text-center text-black">
 					긍정적 기분</p>
 				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
+					class="flex flex-wrap justify-start items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[5px]  py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">행복</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">기쁨</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-black">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-white">만족</p>
+							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">만족</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">사랑</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">흥미</p>
 					</div>
+					
 				</div>
 				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
+					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">설렘</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">희망</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">평온</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[5px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">감사</p>
 					</div>
-					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]">
-						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black"></p>
-					</div>
+					
 				</div>
 			</div>
 
@@ -229,61 +253,52 @@ $(document).ready(function () {
 				<div
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">슬픔</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">분노</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							수치심</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">불안</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">혐오</p>
 					</div>
 				</div>
 				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
+					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							지루함</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">후회</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
+							class="cursor-pointer flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							아쉬움</p>
 					</div>
-					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]">
-						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black"></p>
-					</div>
-					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]">
-						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black"></p>
-					</div>
+					
 				</div>
 			</div>
 			<div
@@ -292,44 +307,29 @@ $(document).ready(function () {
 					class="flex-grow-0 flex-shrink-0 w-[132px] h-[31px] text-xl font-medium text-center text-black">
 					복합적 기분</p>
 				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
+					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							그리움</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
+							class="cursor-pointer flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							민망함</p>
 					</div>
 					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">놀람</p>
 					</div>
-					<div
-						class="flex justify-center items-center flex-grow w-[56.8px] h-7 overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]"></div>
-					<div
-						class="flex justify-center items-center flex-grow w-[56.8px] h-7 overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]"></div>
+					
 				</div>
 				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
-					<div
-						class="flex justify-center items-center flex-grow w-[56.8px] h-7 overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]"></div>
-					<div
-						class="flex justify-center items-center flex-grow w-[56.8px] h-7 overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]"></div>
-					<div
-						class="flex justify-center items-center flex-grow w-[56.8px] h-7 overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]"></div>
-					<div
-						class="flex justify-center items-center flex-grow w-[56.8px] h-7 overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]"></div>
-					<div
-						class="flex justify-center items-center flex-grow h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px]">
-						<p
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black"></p>
-					</div>
+					class="flex justify-center items-center flex-grow-0 flex-shrink-0 h-7 w-[296px] overflow-hidden gap-[3px] py-[9px]">
+					
 				</div>
 			</div>
 
