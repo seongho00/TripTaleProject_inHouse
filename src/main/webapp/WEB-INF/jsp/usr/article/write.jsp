@@ -16,6 +16,56 @@
 	</div>
 </div> --%>
 
+
+<script>
+$(document).ready(function () {
+    $('#imageInput').on('change', handleImagePreview);
+  });
+  
+	function handleImagePreview(e) {
+    const files = e.target.files;
+    const $container = $('#previewContainer');
+    
+    
+
+
+    $.each(files, function (i, file) {
+      if (!file.type.startsWith('image/')) return;
+	
+      const reader = new FileReader();
+      reader.onload = function (e) {
+    	// 기존 글씨 지우기
+    	$('.beforeDropFile').hide();
+    	
+        // wrapper div
+        const $wrapper = $('<div></div>').addClass('relative w-40 h-40 border rounded overflow-hidden');
+
+        // image
+        const $img = $('<img>').attr('src', e.target.result).addClass('w-full h-full object-cover');
+
+        // delete button
+        const $btn = $('<button>×</button>').addClass(
+          'cursor-pointer absolute top-1 right-1 bg-white text-red-500 border border-red-300 rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-100'
+        );
+
+        $btn.on('click', function () {
+          $wrapper.remove();
+       	  // ✅ 모든 이미지가 삭제되었을 때 안내 문구 다시 표시
+          if ($('#previewContainer').children().length === 0) {
+        	  $('.beforeDropFile').show();
+          }
+          
+        });
+
+        $wrapper.append($img).append($btn);
+        $container.append($wrapper);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+</script>
+
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
 	<div
@@ -78,9 +128,9 @@
 				2024.05.24 ~ 2024.05.25</p>
 		</div>
 		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[1008px] relative overflow-hidden gap-2.5 pt-[7px] pb-[39px] border-2 border-black border-dashed">
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[1008px] h-[222px] font-medium text-center text-black">
+			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[1008px] relative overflow-hidden gap-2.5 pt-[50px] pb-[39px] border-2 border-black border-dashed">
+			<div
+				class="beforeDropFile flex-grow-0 flex-shrink-0 w-[1008px] h-[100px] font-medium text-center text-black">
 				<span
 					class="flex-grow-0 flex-shrink-0 w-[1008px] h-[222px] text-3xl font-medium text-center text-black">업로드할
 					파일 놓기</span>
@@ -88,13 +138,17 @@
 				<br />
 				<span
 					class="flex-grow-0 flex-shrink-0 w-[1008px] h-[222px] text-xl font-medium text-center text-black">또는</span>
-			</p>
+			</div>
+
+			<div id="previewContainer" class="flex flex-wrap gap-4 mt-4"></div>
 			<div
 				class="flex justify-center z-10 items-center relative gap-2.5 p-2.5">
 				<label class="btn btn-dash btn-primary btn-xl">
 					파일 선택
-					<input type="file" class="file-input !hidden" />
+					<input type="file" id="imageInput" multiple accept="image/*"
+						class="hidden" />
 				</label>
+
 			</div>
 
 		</div>
