@@ -17,82 +17,101 @@
 </div> --%>
 
 <style>
-.mood-box > div > div > div {
+.mood-box>div>div>div {
 	width: 55px;
 }
 
-.mood-box > div > div > div:hover {
+.mood-box>div>div>div:hover {
 	background-color: #61c0e6;
 	transition: all 0.3s ease;
-	
 }
 
-.mood-box > div > div > div.active:hover {
+.mood-box>div>div>div.active:hover {
 	background-color: #1e293b;
 	transition: all 0.3s ease;
-	
 }
-
 </style>
 <script>
+	$(document).ready(
+			function() {
+				$('#imageInput').on('change', handleImagePreview);
+				const selectedContainer = $('#selectedMoodsContainer');
+				$('.mood-box .cursor-pointer').on('click',function() {
+							const moodText = $(this).text().trim();
+							const isSelected = $(this).hasClass('active');
 
+							if (isSelected) {
+								// 선택 해제
+								$(this).removeClass('active');
+								$(this).removeClass('bg-black');
+								$(this).find('p').removeClass('text-white');
+								selectedContainer.find(`input[value="${moodText}"]`).remove();
+							} else {
+								console.log("실행됨");
+								console.log(moodText);
+								// 선택
+								$(this).addClass('active');
+								$(this).addClass('bg-black');
+								$(this).find('p').addClass('text-white');
 
+								// hidden input 추가
+								$('<input>').attr('type', 'hidden').attr('name', 'selectedMoods[]').val(moodText).appendTo(selectedContainer);
+							}
+						});
 
-$(document).ready(function () {
-    $('#imageInput').on('change', handleImagePreview);
-    
-    $('.mood-box .cursor-pointer').on('click', function () {
-    	$(this).toggleClass('active');
-	    $(this).toggleClass('bg-black');
-	    $(this).find('p').toggleClass('text-white');
-	    
-	});
-});
-  
-function handleImagePreview(e) {
-    const files = e.target.files;
-    const $container = $('#previewContainer');
-    
-    
+			});
 
+	function handleImagePreview(e) {
+		const files = e.target.files;
+		const $container = $('#previewContainer');
 
-    $.each(files, function (i, file) {
-      if (!file.type.startsWith('image/')) return;
-	
-      const reader = new FileReader();
-      reader.onload = function (e) {
-    	// 기존 글씨 지우기
-    	$('.beforeDropFile').hide();
-    	$('.pictureSelectBox').removeClass('pt-[50px]');
-    	
-        // wrapper div
-        const $wrapper = $('<div></div>').addClass('relative w-40 h-40 border rounded');
+		$
+				.each(
+						files,
+						function(i, file) {
+							if (!file.type.startsWith('image/'))
+								return;
 
-        // image
-        const $img = $('<img>').attr('src', e.target.result).addClass('w-full h-full object-cover');
+							const reader = new FileReader();
+							reader.onload = function(e) {
+								// 기존 글씨 지우기
+								$('.beforeDropFile').hide();
+								$('.pictureSelectBox').removeClass('pt-[50px]');
 
-        // delete button
-        const $btn = $('<button><i class="fa-solid fa-square-xmark text-2xl"></i></button>').addClass(
-          'cursor-pointer absolute top-1 right-1 rounded-full w-4 h-4 flex items-center justify-center bg-white'
-        );
+								// wrapper div
+								const $wrapper = $('<div></div>').addClass(
+										'relative w-40 h-40 border rounded');
 
-        $btn.on('click', function () {
-          $wrapper.remove();
-       	  // ✅ 모든 이미지가 삭제되었을 때 안내 문구 다시 표시
-          if ($('#previewContainer').children().length === 0) {
-        	  $('.beforeDropFile').show();
-        	  $('.pictureSelectBox').addClass('pt-[50px]');
-          }
-          
-        });
+								// image
+								const $img = $('<img>').attr('src',
+										e.target.result).addClass(
+										'w-full h-full object-cover');
 
-        $wrapper.append($img).append($btn);
-        $container.append($wrapper);
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+								// delete button
+								const $btn = $(
+										'<button><i class="fa-solid fa-square-xmark text-2xl"></i></button>')
+										.addClass(
+												'cursor-pointer absolute top-1 right-1 rounded-full w-4 h-4 flex items-center justify-center bg-white');
 
+								$btn.on('click',
+										function() {
+											$wrapper.remove();
+											// ✅ 모든 이미지가 삭제되었을 때 안내 문구 다시 표시
+											if ($('#previewContainer')
+													.children().length === 0) {
+												$('.beforeDropFile').show();
+												$('.pictureSelectBox')
+														.addClass('pt-[50px]');
+											}
+
+										});
+
+								$wrapper.append($img).append($btn);
+								$container.append($wrapper);
+							};
+							reader.readAsDataURL(file);
+						});
+	}
 </script>
 
 <div
@@ -138,11 +157,9 @@ function handleImagePreview(e) {
 		<div
 			class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-10">
 			<p
-				class="flex-grow-0 flex-shrink-0 w-[228px] h-[52px] text-3xl text-center text-black">
-				한 번에 기록하기</p>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[228px] h-[52px] text-3xl text-center text-black/40">
-				하나씩 기록하기</p>
+				class="flex-grow-0 flex-shrink-0 w-[300px] h-[52px] text-3xl text-center text-black">
+				AI를 이용해 기록하기</p>
+
 		</div>
 		<div
 			class="flex justify-start items-end self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-10">
@@ -174,12 +191,14 @@ function handleImagePreview(e) {
 			</div>
 			<div
 				class="flex justify-center z-10 items-center relative gap-2.5 p-2.5">
-				<label class="btn btn-dash btn-primary btn-xl">
-					파일 선택
-					<input type="file" id="imageInput" multiple accept="image/*"
-						class="hidden" />
-				</label>
-
+				<form id="moodForm" action="doWrite" method="post">
+				<div id="selectedMoodsContainer"></div>
+					<label class="btn btn-dash btn-primary btn-xl">
+						파일 선택
+						<input type="file" id="imageInput" multiple accept="image/*"
+							class="hidden" />
+					</label>
+				</form>
 			</div>
 
 		</div>
@@ -217,7 +236,7 @@ function handleImagePreview(e) {
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">흥미</p>
 					</div>
-					
+
 				</div>
 				<div
 					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[296px] overflow-hidden gap-[3px] py-[9px]">
@@ -241,7 +260,7 @@ function handleImagePreview(e) {
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">감사</p>
 					</div>
-					
+
 				</div>
 			</div>
 
@@ -293,12 +312,12 @@ function handleImagePreview(e) {
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">후회</p>
 					</div>
 					<div
-						class="flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
-							class="cursor-pointer flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
+							class=" flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							아쉬움</p>
 					</div>
-					
+
 				</div>
 			</div>
 			<div
@@ -315,9 +334,9 @@ function handleImagePreview(e) {
 							그리움</p>
 					</div>
 					<div
-						class="flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
+						class="cursor-pointer flex justify-center items-center  h-7 relative overflow-hidden gap-2.5 px-[11px] py-2.5 rounded-[5px] bg-[#aedff7]">
 						<p
-							class="cursor-pointer flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
+							class=" flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">
 							민망함</p>
 					</div>
 					<div
@@ -325,16 +344,20 @@ function handleImagePreview(e) {
 						<p
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">놀람</p>
 					</div>
-					
+
 				</div>
 				<div
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 h-7 w-[296px] overflow-hidden gap-[3px] py-[9px]">
-					
+
 				</div>
 			</div>
 
 		</div>
 	</div>
+	<div class="w-[1000px] flex justify-end">
+		<button form="moodForm" class="btn btn-neutral">글쓰기</button>
+	</div>
+
 </div>
 
 <%@ include file="../common/foot.jspf"%>
