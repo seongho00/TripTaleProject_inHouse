@@ -36,16 +36,17 @@ $(document).ready(function () {
       reader.onload = function (e) {
     	// 기존 글씨 지우기
     	$('.beforeDropFile').hide();
+    	$('.pictureSelectBox').removeClass('pt-[50px]');
     	
         // wrapper div
-        const $wrapper = $('<div></div>').addClass('relative w-40 h-40 border rounded overflow-hidden');
+        const $wrapper = $('<div></div>').addClass('relative w-40 h-40 border rounded');
 
         // image
         const $img = $('<img>').attr('src', e.target.result).addClass('w-full h-full object-cover');
 
         // delete button
-        const $btn = $('<button>×</button>').addClass(
-          'cursor-pointer absolute top-1 right-1 bg-white text-red-500 border border-red-300 rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-100'
+        const $btn = $('<button><i class="fa-solid fa-square-xmark text-2xl"></i></button>').addClass(
+          'cursor-pointer absolute top-1 right-1 rounded-full w-4 h-4 flex items-center justify-center bg-white'
         );
 
         $btn.on('click', function () {
@@ -53,6 +54,7 @@ $(document).ready(function () {
        	  // ✅ 모든 이미지가 삭제되었을 때 안내 문구 다시 표시
           if ($('#previewContainer').children().length === 0) {
         	  $('.beforeDropFile').show();
+        	  $('.pictureSelectBox').addClass('pt-[50px]');
           }
           
         });
@@ -69,11 +71,11 @@ $(document).ready(function () {
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
 	<div
-		class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[138px] w-[1700px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] !border !border-black">
+		class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[100px] w-[1700px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] !border !border-black">
 		<div
 			class="self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden">
 			<div
-				class="flex justify-center items-center w-[1008px] h-[138px] absolute left-[346px] top-0 gap-2.5 !border-0 !border-[#f00]">
+				class="flex justify-center items-center w-[1008px] h-[100px] absolute left-[346px] top-0 gap-2.5 !border-0 !border-[#f00]">
 				<a href="../home/main">
 					<img src="/images/로고.png"
 						class="flex-grow-0 flex-shrink-0 w-[138px] h-[138px] object-cover" />
@@ -128,7 +130,7 @@ $(document).ready(function () {
 				2024.05.24 ~ 2024.05.25</p>
 		</div>
 		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[1008px] relative overflow-hidden gap-2.5 pt-[50px] pb-[39px] border-2 border-black border-dashed">
+			class="pictureSelectBox flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[1008px] relative overflow-hidden gap-2.5 pt-[50px] pb-[39px] border-2 border-black border-dashed">
 			<div
 				class="beforeDropFile flex-grow-0 flex-shrink-0 w-[1008px] h-[100px] font-medium text-center text-black">
 				<span
@@ -139,8 +141,10 @@ $(document).ready(function () {
 				<span
 					class="flex-grow-0 flex-shrink-0 w-[1008px] h-[222px] text-xl font-medium text-center text-black">또는</span>
 			</div>
-
-			<div id="previewContainer" class="flex flex-wrap gap-4 mt-4"></div>
+			<div class="overflow-x-auto max-w-[1008px]">
+				<div id="previewContainer" class="flex gap-4 mt-4 min-w-max">
+				</div>
+			</div>
 			<div
 				class="flex justify-center z-10 items-center relative gap-2.5 p-2.5">
 				<label class="btn btn-dash btn-primary btn-xl">
