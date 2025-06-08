@@ -4,17 +4,7 @@
 
 <c:set var="pageTitle" value="관광사진" />
 <%@ include file="../common/head.jspf"%>
-<%--  --%><%@ include file="../common/daisyUi.jspf"%>
-<%-- <%@ include file="../common/toastUiEditorLib.jspf"%>
-
-
-
-<div class="w-[1000px] h-[600px] border-2 ">
-	<div class="toast-ui-editor">
-
-		<script type="text/x-template"></script>
-	</div>
-</div> --%>
+<%@ include file="../common/daisyUi.jspf"%>
 
 <style>
 .mood-box>div>div>div {
@@ -31,12 +21,15 @@
 	transition: all 0.3s ease;
 }
 </style>
+
 <script>
 	$(document).ready(
 			function() {
 				$('#imageInput').on('change', handleImagePreview);
 				const selectedContainer = $('#selectedMoodsContainer');
-				$('.mood-box .cursor-pointer').on('click',function() {
+				$('.mood-box .cursor-pointer').on(
+						'click',
+						function() {
 							const moodText = $(this).text().trim();
 							const isSelected = $(this).hasClass('active');
 
@@ -45,17 +38,19 @@
 								$(this).removeClass('active');
 								$(this).removeClass('bg-black');
 								$(this).find('p').removeClass('text-white');
-								selectedContainer.find(`input[value="${moodText}"]`).remove();
+								
+								selectedContainer.find('input[value=' + moodText+ ']').remove();
 							} else {
-								console.log("실행됨");
-								console.log(moodText);
 								// 선택
 								$(this).addClass('active');
 								$(this).addClass('bg-black');
 								$(this).find('p').addClass('text-white');
 
 								// hidden input 추가
-								$('<input>').attr('type', 'hidden').attr('name', 'selectedMoods[]').val(moodText).appendTo(selectedContainer);
+								$('<input>').attr('type', 'hidden').attr(
+										'name', 'selectedMoods[]')
+										.val(moodText).appendTo(
+												selectedContainer);
 							}
 						});
 
@@ -192,7 +187,7 @@
 			<div
 				class="flex justify-center z-10 items-center relative gap-2.5 p-2.5">
 				<form id="moodForm" action="doWrite" method="post">
-				<div id="selectedMoodsContainer"></div>
+					<div id="selectedMoodsContainer"></div>
 					<label class="btn btn-dash btn-primary btn-xl">
 						파일 선택
 						<input type="file" id="imageInput" multiple accept="image/*"

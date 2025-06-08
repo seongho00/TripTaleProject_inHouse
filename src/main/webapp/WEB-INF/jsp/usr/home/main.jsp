@@ -12,6 +12,7 @@
 <a href="../planner/region">지역선택</a>
 <a href="../planner/selectTime">시간선택</a>
 <a href="../member/profile">프로필 보기</a>
+<a href="../article/writeByAI">글쓰기</a>
 
 <div
 	class="flex flex-col justify-between items-center w-screen h-[2232px] overflow-hidden bg-white border border-[#0f0000]">
