@@ -31,6 +31,13 @@ public class UsrArticleController {
 		return "usr/article/list";
 	}
 	
+	@RequestMapping("usr/article/writeByAI")
+	public String writeByAI(Model model) {
+
+		return "usr/article/writeByAI";
+	}
+	
+
 	@RequestMapping("usr/article/write")
 	public String write(Model model) {
 
