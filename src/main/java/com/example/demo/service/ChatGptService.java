@@ -23,8 +23,11 @@ public class ChatGptService {
 
 	private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 	
-	public String askQuestion(String question) {
-		String API_KEY = "Bearer " + rq.getChatGptClientId(); // 🔑 실제 API 키로 바꾸세요
+	public String askQuestion(List<String> moods) {
+		
+		String question = "단어";
+		
+		String API_KEY = "Bearer " + rq.getChatGptClientId();
 		
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();

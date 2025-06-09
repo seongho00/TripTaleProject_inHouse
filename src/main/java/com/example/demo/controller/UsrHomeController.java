@@ -50,13 +50,13 @@ public class UsrHomeController {
 	@ResponseBody
 	public String chatGptTest(Model model) {
 
-		return chatGptService.askQuestion("chat gpt open api 테스트 중이야 아무거나 말해줘");
+		return chatGptService.askQuestion(null);
 	}
 
 	@RequestMapping("usr/test/tripLocationService")
 	@ResponseBody
-	public String tripLocationService(Model model, String keyword) {
-		tripLocationService.process(keyword);
+	public String tripLocationService(Model model, String keyword, int areaCode) {
+		tripLocationService.process(keyword, areaCode);
 		return "실행잘됨 ㅇㅇ";
 	}
 

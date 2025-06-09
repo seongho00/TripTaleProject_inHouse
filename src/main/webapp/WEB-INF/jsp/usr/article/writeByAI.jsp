@@ -186,11 +186,11 @@
 			</div>
 			<div
 				class="flex justify-center z-10 items-center relative gap-2.5 p-2.5">
-				<form id="moodForm" action="doWrite" method="post">
+				<form id="moodForm" action="doWrite" method="post" enctype="multipart/form-data">
 					<div id="selectedMoodsContainer"></div>
 					<label class="btn btn-dash btn-primary btn-xl">
 						파일 선택
-						<input type="file" id="imageInput" multiple accept="image/*"
+						<input type="file" id="imageInput" name ="images" multiple accept="image/*"
 							class="hidden" />
 					</label>
 				</form>

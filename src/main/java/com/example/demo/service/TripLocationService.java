@@ -33,19 +33,19 @@ public class TripLocationService {
 
 	private WebDriver driver;
 
-	public void process(String keyword) {
+	public void process(String keyword, int areaCode) {
 		String url = "https://map.naver.com/v5/search/" + keyword;
 		// 크롬 드라이버 세팅 (드라이버 설치 경로 입력)
 		System.setProperty("webdriver.chrome.driver", "C:\\Spring\\chromedriver-win64\\chromedriver.exe");
 
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--remote-allow-origins=*");
-		
+
 		// 브라우저 선택
 		driver = new ChromeDriver(options);
 		driver.get("https://www.google.com");
 
-		getDataList(url);
+		getDataList(url, areaCode);
 
 		// 탭 닫기
 		driver.close();
@@ -54,8 +54,8 @@ public class TripLocationService {
 	}
 
 	// 데이터 가져오기
-	private void getDataList(String url) {
-
+	private void getDataList(String url, int areaCode) {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		// (1) 브라우저에서 url로 이동한다.
 		driver.get(url);
 		// 브라우저 로딩될 때까지 잠시 기다린다.
@@ -63,7 +63,10 @@ public class TripLocationService {
 
 		// (2) 검색결과 iframe으로 frame을 바꾼다.
 		try {
-			driver.switchTo().frame(driver.findElement(By.cssSelector("iframe#searchIframe")));
+			// iframe이 로드될 때까지 대기
+			WebElement iframe = wait
+					.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("iframe#searchIframe")));
+			driver.switchTo().frame(iframe);
 
 			// 검색 결과 장소 목록을 elements에 담는다.
 			List<WebElement> elements = driver.findElements(By.cssSelector(".ApCpt>.place_bluelink"));
@@ -90,12 +93,12 @@ public class TripLocationService {
 			}
 
 		}
-		
+
 		driver.switchTo().defaultContent();
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
 		// (4) 상세정보가 나오는 프레임으로 이동한다.
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		
 		WebElement iframe = wait
 				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("iframe#entryIframe")));
 		driver.switchTo().frame(iframe);
@@ -159,7 +162,7 @@ public class TripLocationService {
 			int visitReviewCount = 0;
 			int vlogReviewCount = 0;
 			for (WebElement reviewSpan : reviewSpans) {
-				
+
 				if (reviewSpan.getText().contains("방문자 리뷰")) {
 					String visitReview = reviewSpan.getText().replace("방문자 리뷰", "").trim();
 					visitReviewCount = Integer.parseInt(visitReview.replace(",", ""));
@@ -168,7 +171,7 @@ public class TripLocationService {
 					vlogReviewCount = Integer.parseInt(vlogReview.replace(",", ""));
 				}
 			}
-			
+
 			reviewCount = visitReviewCount + vlogReviewCount;
 
 		} catch (Exception e) {
@@ -191,7 +194,7 @@ public class TripLocationService {
 			System.out.println(e + "소개글 정보 없음");
 			profile = "소개글 정보 없음";
 		}
-		tripLocationRepository.insertData(title, profile, address, number, schedule, star, reviewCount);
+		tripLocationRepository.insertData(areaCode, title, profile, address, number, schedule, star, reviewCount);
 		int id = tripLocationRepository.getLastInsertId();
 
 		// 사진 정보 요소 찾기 (6개정도)

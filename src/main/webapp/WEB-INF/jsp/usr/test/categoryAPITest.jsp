@@ -12,7 +12,7 @@ function sleep(ms) {
 	  return new Promise(resolve => setTimeout(resolve, ms));
 	}
 	
-function getAddressFromCoords(lat, lon) {
+function getAddressFromCoords(lat, lon, areaCode) {
     const url = "https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&lat="+ lat +"&lon="+ lon +"&coordType=WGS84GEO&addressType=A10";
 
     fetch(url, {
@@ -27,14 +27,13 @@ function getAddressFromCoords(lat, lon) {
             	const fullAddress = data.addressInfo.fullAddress; // 전체 주소 문자열
                 const parts = fullAddress.split(","); // 공백 기준으로 분리
                 const secondPart = parts[2]; // 두 번째 요소 (index는 0부터 시작)
-                
-                console.log("전체주소:", fullAddress);
+               
               	console.log("주소:", secondPart);
                 
               	$.ajax({
                      type: "GET",
                      url: "/usr/test/tripLocationService",
-                     data: { keyword: secondPart },
+                     data: { keyword: secondPart, areaCode : areaCode },
                      success: function (response) {
                        	console.log("서버 응답:", response);
                      },
@@ -56,15 +55,15 @@ function getAddressFromCoords(lat, lon) {
       });
   }  
   
-getAddressFromCoords(37.5756364926 ,126.9768570246);
 	const API_KEY = 'CtMWbR%2BmYCIwYQmPYdFuMiP4LsJ6aVV3CcbyZUXI5bGiblyS1OilOVAYopA9VxwIcRyQ7pT%2FADS7FzuMVs3uEw%3D%3D'; // Encoding된 키
-
+	
 	async function getAirData() {
+		const areaCode = 1;
 		const url = 'https://apis.data.go.kr/B551011/KorService2/areaBasedList2'
 				+ '?serviceKey='
 				+ API_KEY
 				+ '&_type=json&pageNo=1&numOfRows=52&MobileOS=Test&MobileApp=AppTest'
-				+ '&cat1=C01&contentTypeId=25&areaCode=1';
+				+ '&cat1=C01&contentTypeId=25&areaCode=' + areaCode;
 
 		try {
 			const response = await fetch(url);
@@ -76,15 +75,15 @@ getAddressFromCoords(37.5756364926 ,126.9768570246);
 			
 			
 			const datas = data.response.body.items.item;
-			
-			/* getAddressFromCoords(37.5756364926 ,126.9768570246); */
-	 		for (const [index, item] of datas.entries()) {
+			 
+			getAddressFromCoords(37.5071013134 ,127.0494329104 ,areaCode);
+	 		/*  for (const [index, item] of datas.entries()) {
 				console.log(index + "번 째 데이터");
 				console.log(item.mapy, item.mapx);
 				
-				await getAddressFromCoords(item.mapy, item.mapx);
-				await sleep(15000); // 15초 대기
-			}  
+				await getAddressFromCoords(item.mapy, item.mapx, areaCode);
+				await sleep(20000); // 15초 대기
+			}    */
 
 		} catch (e) {
 			console.error("API 호출 실패:", e);

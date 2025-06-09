@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface TripLocationRepository {
-	public void insertData(String title, String profile, String address, String number, String schedule,
+	public void insertData(int areaCode, String title, String profile, String address, String number, String schedule,
 			String star, int reviewCount);
 
 	public int getLastInsertId();
