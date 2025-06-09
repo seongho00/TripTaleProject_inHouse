@@ -34,6 +34,7 @@ public class TripLocationService {
 	private WebDriver driver;
 
 	public void process(String keyword, int areaCode) {
+//		keyword = "인천 강화군 화도면 상방리 산35";
 		String url = "https://map.naver.com/v5/search/" + keyword;
 		// 크롬 드라이버 세팅 (드라이버 설치 경로 입력)
 		System.setProperty("webdriver.chrome.driver", "C:\\Spring\\chromedriver-win64\\chromedriver.exe");
@@ -116,7 +117,7 @@ public class TripLocationService {
 				schedule += scheduleInfo.getText() + "\n";
 			}
 		} catch (Exception e) {
-			System.out.println("일정 정보 없음");
+
 			schedule = "일정 정보 없음";
 		}
 
@@ -141,7 +142,7 @@ public class TripLocationService {
 			number = numberSpan.getText();
 
 		} catch (Exception e) {
-			System.out.println("번호 정보 없음");
+
 			number = "번호 정보 없음";
 		}
 
@@ -152,7 +153,7 @@ public class TripLocationService {
 			WebElement starType = starSpan.findElement(By.tagName("span"));
 			star = starSpan.getText().replace(starType.getText(), "").trim();
 		} catch (Exception e) {
-			System.out.println("별점 정보 없음");
+
 			star = "별점 정보 없음";
 		}
 		int reviewCount = 0;
@@ -175,7 +176,7 @@ public class TripLocationService {
 			reviewCount = visitReviewCount + vlogReviewCount;
 
 		} catch (Exception e) {
-			System.out.println("리뷰 정보 없음");
+
 			reviewCount = 0;
 		}
 
@@ -191,7 +192,7 @@ public class TripLocationService {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e + "소개글 정보 없음");
+
 			profile = "소개글 정보 없음";
 		}
 		tripLocationRepository.insertData(areaCode, title, profile, address, number, schedule, star, reviewCount);

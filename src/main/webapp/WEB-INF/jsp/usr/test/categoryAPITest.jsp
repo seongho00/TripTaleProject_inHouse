@@ -58,7 +58,7 @@ function getAddressFromCoords(lat, lon, areaCode) {
 	const API_KEY = 'CtMWbR%2BmYCIwYQmPYdFuMiP4LsJ6aVV3CcbyZUXI5bGiblyS1OilOVAYopA9VxwIcRyQ7pT%2FADS7FzuMVs3uEw%3D%3D'; // Encoding된 키
 	
 	async function getAirData() {
-		const areaCode = 1;
+		const areaCode = 3;
 		const url = 'https://apis.data.go.kr/B551011/KorService2/areaBasedList2'
 				+ '?serviceKey='
 				+ API_KEY
@@ -76,14 +76,16 @@ function getAddressFromCoords(lat, lon, areaCode) {
 			
 			const datas = data.response.body.items.item;
 			 
-			getAddressFromCoords(37.5071013134 ,127.0494329104 ,areaCode);
-	 		/*  for (const [index, item] of datas.entries()) {
+			 
+			 
+			getAddressFromCoords(36.3686302309, 127.3862701991, areaCode);
+	 		/* for (const [index, item] of datas.entries()) {
 				console.log(index + "번 째 데이터");
 				console.log(item.mapy, item.mapx);
 				
 				await getAddressFromCoords(item.mapy, item.mapx, areaCode);
-				await sleep(20000); // 15초 대기
-			}    */
+				await sleep(20000); // 20초 대기
+			}   */
 
 		} catch (e) {
 			console.error("API 호출 실패:", e);
