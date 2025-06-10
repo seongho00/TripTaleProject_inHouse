@@ -12,7 +12,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.example.demo.repository.KakaoOAuthRepository;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;

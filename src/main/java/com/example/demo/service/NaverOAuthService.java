@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.repository.MemberRepository;
-import com.example.demo.repository.NaverOAuthRepository;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.databind.JsonNode;

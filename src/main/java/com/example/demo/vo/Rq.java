@@ -77,15 +77,6 @@ public class Rq {
 		session.setAttribute("loginedMember", loginedMember);
 	}
 
-	public void kakaoLogin(String loginedMemberId, KakaoMember loginedMember) {
-		session.setAttribute("loginedMemberId", loginedMemberId);
-		session.setAttribute("loginedMember", loginedMember);
-	}
-
-	public void naverLogin(String loginedMemberId, NaverMember loginedMember) {
-		session.setAttribute("loginedMemberId", loginedMemberId);
-		session.setAttribute("loginedMember", loginedMember);
-	}
 
 	public void initBeforeActionInterceptor() {
 		System.err.println("initBeforeActionInterceptor 실행됨");

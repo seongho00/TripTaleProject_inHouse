@@ -26,9 +26,9 @@ public class MemberService {
 		return ResultData.from("S-1", "로그인 성공", "memberId", id);
 	}
 
-	public Member getMemberByLoingId(String loginId) {
+	public Member getMemberById(String provider, String providerId) {
 
-		return memberRepository.getMemberByLoingId(loginId);
+		return memberRepository.getMemberById(provider, providerId);
 	}
 
 }

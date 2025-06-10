@@ -44,14 +44,13 @@ public class UsrMemberController {
 		this.webMvcConfigurer = webMvcConfigurer;
 
 	}
-	
+
 	@RequestMapping("usr/member/profile")
 	public String profile(Model model) {
 		rq.getLoginedMemberId();
 
 		return "usr/member/profile";
 	}
-
 
 	@RequestMapping("usr/member/developerJoin")
 	public String developerJoin(Model model) {
@@ -141,6 +140,11 @@ public class UsrMemberController {
 			return rq.historyBackOnView("이메일을 입력해주세요.");
 		}
 
+		Member member = memberService.getMemberById("local", loginId);
+		if (member != null) {
+			return rq.historyBackOnView("이미 존재하는 아이디입니다.");
+		}
+
 		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, email);
 
 		return rq.replace(name + "님 환영합니다.", "http://localhost:8080/usr/home/main");
@@ -148,7 +152,7 @@ public class UsrMemberController {
 
 	@RequestMapping("usr/member/login")
 	public String login(Model model) {
-		
+
 		String kakaoClientId = rq.getKakaoClientId();
 		String kakaoRedirectUri = "http://localhost:8080/usr/member/kakaoCallback";
 
@@ -183,7 +187,7 @@ public class UsrMemberController {
 			return rq.historyBackOnView("비밀번호를 입력해주세요.");
 		}
 
-		Member loginedMember = memberService.getMemberByLoingId(loginId);
+		Member loginedMember = memberService.getMemberById("local", loginId);
 
 		if (loginedMember == null) {
 			return rq.historyBackOnView("존재하지 않는 아이디입니다.");
@@ -191,7 +195,6 @@ public class UsrMemberController {
 		if (!loginedMember.getLoginPw().equals(loginPw)) {
 			return rq.historyBackOnView("비밀번호가 일치하지 않습니다.");
 		}
-		
 
 		return rq.replace(loginedMember.getName() + "님 환영합니다.", "http://localhost:8080/usr/home/main");
 	}
