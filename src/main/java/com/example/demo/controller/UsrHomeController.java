@@ -46,11 +46,11 @@ public class UsrHomeController {
 		return "usr/home/main";
 	}
 
-	@RequestMapping("usr/test/chatGptTest")
-	@ResponseBody
-	public String chatGptTest(Model model) {
+	@RequestMapping("usr/test/TmapRouteAPI")
 
-		return chatGptService.askQuestion(null);
+	public String TmapRouteAPI(Model model) {
+
+		return "usr/test/TmapRouteAPI";
 	}
 
 	@RequestMapping("usr/test/tripLocationService")
