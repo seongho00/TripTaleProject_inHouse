@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	    })
 	    .then(response => response.json())
 	    .then(data => {
-	    	
+	      const startLatLng = new kakao.maps.LatLng(37.5665, 126.9784);
+	      const endLatLng = new kakao.maps.LatLng(37.4979, 127.0276);
 	      new kakao.maps.Marker({
 	    	  position: startLatLng,
 	    	  map: map,

@@ -2,7 +2,6 @@ package com.example.demo.vo;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -69,10 +68,21 @@ public class Rq {
 
 	public void logout() {
 		session.removeAttribute("loginedMemberId");
+		session.removeAttribute("loginedMember");
 	}
 
-	public void login(String loginedMemberId) {
+	public void login(int loginedMemberId, Member loginedMember) {
 		session.setAttribute("loginedMemberId", loginedMemberId);
+		session.setAttribute("loginedMember", loginedMember);
+	}
+	public void kakaoLogin(String loginedMemberId, KakaoMember loginedMember) {
+		session.setAttribute("loginedMemberId", loginedMemberId);
+		session.setAttribute("loginedMember", loginedMember);
+	}
+	
+	public void naverLogin(String loginedMemberId, NaverMember loginedMember) {
+		session.setAttribute("loginedMemberId", loginedMemberId);
+		session.setAttribute("loginedMember", loginedMember);
 	}
 
 	public void initBeforeActionInterceptor() {

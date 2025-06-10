@@ -19,6 +19,7 @@ public class Member {
 	private String nickname;
 	private String name;
 	private String email;
+	private String profileImage;
 	private int delStatus;
 	private String delDate;
 	private int authLevel;

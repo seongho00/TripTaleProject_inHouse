@@ -190,6 +190,7 @@ public class UsrMemberController {
 		if (!loginedMember.getLoginPw().equals(loginPw)) {
 			return rq.historyBackOnView("비밀번호가 일치하지 않습니다.");
 		}
+		
 
 		return rq.replace(loginedMember.getName() + "님 환영합니다.", "http://localhost:8080/usr/home/main");
 	}

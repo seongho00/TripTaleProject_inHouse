@@ -1,5 +1,9 @@
 package com.example.demo.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +16,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.example.demo.repository.KakaoOAuthRepository;
+import com.example.demo.vo.KakaoMember;
 import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,8 +27,18 @@ import jakarta.servlet.http.HttpSession;
 @Service
 public class KakaoOAuthService {
 
+	private final ArticleService articleService;
+
 	@Autowired
 	private Rq rq;
+
+	@Autowired
+	private KakaoOAuthRepository kakaoOAuthRepository;
+
+	public KakaoOAuthService(KakaoOAuthRepository kakaoOAuthRepository, ArticleService articleService) {
+		this.kakaoOAuthRepository = kakaoOAuthRepository;
+		this.articleService = articleService;
+	}
 
 	// 토큰 요청 함수
 	public String requestAccessToken(String authorizationCode) {
@@ -118,13 +134,19 @@ public class KakaoOAuthService {
 			String thumbnailImage = root.path("properties").path("thumbnail_image").asText();
 			String email = root.path("kakao_account").path("email").asText();
 
-			rq.login(id);
-			System.out.println(id);
-			System.out.println(connectedAt);
-			System.out.println(nickname);
-			System.out.println(profileImage);
-			System.out.println(thumbnailImage);
-			System.out.println(email);
+			KakaoMember loginedMember = kakaoOAuthRepository.getKakaoMemberById(id);
+
+			// 1. 문자열 → Instant (UTC)
+	        Instant instant = Instant.parse(connectedAt);
+	        
+	        // 2. Instant → LocalDateTime (한국 시간대)
+	        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Seoul"));
+	        
+			if (loginedMember == null) {
+				kakaoOAuthRepository.doJoin(id, localDateTime, localDateTime, nickname, email, profileImage);
+			}
+			
+			rq.kakaoLogin(id, loginedMember);
 
 		} catch (Exception e) {
 			e.printStackTrace();

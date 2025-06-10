@@ -13,11 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.demo.vo.NaverMember;
 import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class NaverOAuthService {
@@ -112,7 +111,9 @@ public class NaverOAuthService {
 			String name = root.path("response").path("name").asText();
 			String birthyear = root.path("response").path("birthyear").asText();
 
-			rq.login(id);
+			NaverMember loginedMember = new NaverMember();
+			rq.naverLogin(id, null);
+			System.out.println(responseBody);
 			System.out.println(resultCode);
 			System.out.println(message);
 			System.out.println(id);
