@@ -20,7 +20,7 @@ public class MemberService {
 
 	public ResultData doJoin(String loginId, String loginPw, String name, String email) {
 
-		memberRepository.doJoin(loginId, loginPw, name, email);
+		memberRepository.doJoin("local", loginId, loginPw, name, email, null);
 		int id = memberRepository.getLastInsertId();
 
 		return ResultData.from("S-1", "로그인 성공", "memberId", id);

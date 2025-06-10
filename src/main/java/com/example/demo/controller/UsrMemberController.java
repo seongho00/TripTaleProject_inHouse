@@ -47,6 +47,7 @@ public class UsrMemberController {
 	
 	@RequestMapping("usr/member/profile")
 	public String profile(Model model) {
+		rq.getLoginedMemberId();
 
 		return "usr/member/profile";
 	}

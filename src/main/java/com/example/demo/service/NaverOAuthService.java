@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.NaverOAuthRepository;
-import com.example.demo.vo.NaverMember;
+import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +26,10 @@ public class NaverOAuthService {
 	private Rq rq;
 
 	@Autowired
-	private NaverOAuthRepository naverOAuthRepository;
+	private MemberRepository memberRepository;
 
-	public NaverOAuthService(NaverOAuthRepository naverOAuthRepository) {
-		this.naverOAuthRepository = naverOAuthRepository;
+	public NaverOAuthService(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
 	}
 
 	public String requestAccessToken(String code, String state) throws UnsupportedEncodingException {
@@ -119,14 +120,14 @@ public class NaverOAuthService {
 			String name = root.path("response").path("name").asText();
 			String profileImage = root.path("response").path("profile_image").asText();
 			String birthyear = root.path("response").path("birthyear").asText();
-			System.out.println(id);
-			NaverMember loginedMember = naverOAuthRepository.getNaverMemberById(id);
+
+			Member loginedMember = memberRepository.getMemberById("naver", id);
 
 			if (loginedMember == null) {
-				naverOAuthRepository.doJoin(id, name, email, profileImage);
+				memberRepository.doJoin("naver", id, null, name, email, profileImage);
 			}
-			
-			rq.naverLogin(id, loginedMember);
+
+			rq.login(loginedMember.getId(), loginedMember);
 
 		} catch (Exception e) {
 			e.printStackTrace();

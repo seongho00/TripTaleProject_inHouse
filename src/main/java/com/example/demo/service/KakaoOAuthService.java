@@ -1,9 +1,5 @@
 package com.example.demo.service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.repository.KakaoOAuthRepository;
-import com.example.demo.vo.KakaoMember;
+import com.example.demo.repository.MemberRepository;
+import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,15 +24,14 @@ import jakarta.servlet.http.HttpSession;
 @Service
 public class KakaoOAuthService {
 
-
 	@Autowired
 	private Rq rq;
 
 	@Autowired
-	private KakaoOAuthRepository kakaoOAuthRepository;
+	private MemberRepository memberRepository;
 
-	public KakaoOAuthService(KakaoOAuthRepository kakaoOAuthRepository) {
-		this.kakaoOAuthRepository = kakaoOAuthRepository;
+	public KakaoOAuthService(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
 
 	}
 
@@ -133,13 +129,13 @@ public class KakaoOAuthService {
 			String thumbnailImage = root.path("properties").path("thumbnail_image").asText();
 			String email = root.path("kakao_account").path("email").asText();
 
-			KakaoMember loginedMember = kakaoOAuthRepository.getKakaoMemberById(id);
+			Member loginedMember = memberRepository.getMemberById("kakao", id);
 
 			if (loginedMember == null) {
-				kakaoOAuthRepository.doJoin(id, nickname, email, profileImage);
+				memberRepository.doJoin("kakao", id, null, nickname, email, profileImage);
 			}
 
-			rq.kakaoLogin(id, loginedMember);
+			rq.login(loginedMember.getId(), loginedMember);
 
 		} catch (Exception e) {
 			e.printStackTrace();

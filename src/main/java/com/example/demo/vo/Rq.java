@@ -26,6 +26,7 @@ public class Rq {
 
 	private boolean isLogined = false;
 	private String loginedMemberId = "0";
+	private Member loginedMember = null;
 	private String kakaoClientId = "541f86bf90d42b106f889073398e10c1";
 	private String kakaoClientSecret = "pk0ZiCe51XiMuDwfRMLTeqVAM6YV9BNq";
 	private String naverClientId = "5lIc5HiT6OdtWBZYb5k5";
@@ -40,7 +41,7 @@ public class Rq {
 		if (session.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
 			loginedMemberId = session.getAttribute("loginedMemberId").toString();
-
+			loginedMember = (Member) session.getAttribute("loginedMember");
 		}
 
 		this.req.setAttribute("rq", this);
@@ -75,12 +76,12 @@ public class Rq {
 		session.setAttribute("loginedMemberId", loginedMemberId);
 		session.setAttribute("loginedMember", loginedMember);
 	}
-	
+
 	public void kakaoLogin(String loginedMemberId, KakaoMember loginedMember) {
 		session.setAttribute("loginedMemberId", loginedMemberId);
 		session.setAttribute("loginedMember", loginedMember);
 	}
-	
+
 	public void naverLogin(String loginedMemberId, NaverMember loginedMember) {
 		session.setAttribute("loginedMemberId", loginedMemberId);
 		session.setAttribute("loginedMember", loginedMember);

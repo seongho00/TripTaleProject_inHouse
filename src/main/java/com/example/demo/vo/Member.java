@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 public class Member {
 
 	private int id;
+	private String provider;
+	private String providerId;
 	private String regDate;
 	private String updateDate;
-	private String loginId;
 	private String loginPw;
-	private String nickname;
 	private String name;
 	private String email;
 	private String profileImage;
