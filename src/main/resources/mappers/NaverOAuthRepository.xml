@@ -4,23 +4,23 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="com.example.demo.repository.KakaoOAuthRepository">
+	namespace="com.example.demo.repository.NaverOAuthRepository">
 
 
-	<select id="getKakaoMemberById" parameterType="map"
-		resultType="com.example.demo.vo.KakaoMember">
+	<select id="getNaverMemberById" parameterType="map"
+		resultType="com.example.demo.vo.NaverMember">
 		SELECT *
-		FROM kakaoMember
+		FROM naverMember
 		WHERE id = #{id}
 	</select>
 	
 	<select id="doJoin" parameterType="map"
-		resultType="com.example.demo.vo.KakaoMember">
-		INSERT INTO kakaoMember
+		resultType="com.example.demo.vo.NaverMember">
+		INSERT INTO naverMember
 		SET id = #{id},
 		regDate = NOW(),
 		updateDate = NOW(),
-		`name` = #{nickname},
+		`name` = #{name},
 		email = #{email},
 		profileImage = #{profileImage}
 	</select>

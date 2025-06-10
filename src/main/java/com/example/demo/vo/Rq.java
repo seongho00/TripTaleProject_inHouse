@@ -75,6 +75,7 @@ public class Rq {
 		session.setAttribute("loginedMemberId", loginedMemberId);
 		session.setAttribute("loginedMember", loginedMember);
 	}
+	
 	public void kakaoLogin(String loginedMemberId, KakaoMember loginedMember) {
 		session.setAttribute("loginedMemberId", loginedMemberId);
 		session.setAttribute("loginedMember", loginedMember);

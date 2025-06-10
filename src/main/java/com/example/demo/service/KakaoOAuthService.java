@@ -27,7 +27,6 @@ import jakarta.servlet.http.HttpSession;
 @Service
 public class KakaoOAuthService {
 
-	private final ArticleService articleService;
 
 	@Autowired
 	private Rq rq;
@@ -35,9 +34,9 @@ public class KakaoOAuthService {
 	@Autowired
 	private KakaoOAuthRepository kakaoOAuthRepository;
 
-	public KakaoOAuthService(KakaoOAuthRepository kakaoOAuthRepository, ArticleService articleService) {
+	public KakaoOAuthService(KakaoOAuthRepository kakaoOAuthRepository) {
 		this.kakaoOAuthRepository = kakaoOAuthRepository;
-		this.articleService = articleService;
+
 	}
 
 	// 토큰 요청 함수
@@ -136,16 +135,10 @@ public class KakaoOAuthService {
 
 			KakaoMember loginedMember = kakaoOAuthRepository.getKakaoMemberById(id);
 
-			// 1. 문자열 → Instant (UTC)
-	        Instant instant = Instant.parse(connectedAt);
-	        
-	        // 2. Instant → LocalDateTime (한국 시간대)
-	        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Seoul"));
-	        
 			if (loginedMember == null) {
-				kakaoOAuthRepository.doJoin(id, localDateTime, localDateTime, nickname, email, profileImage);
+				kakaoOAuthRepository.doJoin(id, nickname, email, profileImage);
 			}
-			
+
 			rq.kakaoLogin(id, loginedMember);
 
 		} catch (Exception e) {

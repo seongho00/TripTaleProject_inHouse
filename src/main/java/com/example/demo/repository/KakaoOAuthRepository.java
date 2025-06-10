@@ -11,7 +11,6 @@ public interface KakaoOAuthRepository {
 
 	public KakaoMember getKakaoMemberById(String id);
 
-	public void doJoin(String id, LocalDateTime regDate, LocalDateTime updateDate, String nickname, String email,
-			String profileImage);
+	public void doJoin(String id, String nickname, String email, String profileImage);
 
 }

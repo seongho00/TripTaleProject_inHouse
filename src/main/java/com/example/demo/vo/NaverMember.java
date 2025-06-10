@@ -17,7 +17,6 @@ public class NaverMember {
 	private String id;
 	private String regDate;
 	private String updateDate;
-	private String nickname;
 	private String name;
 	private String email;
 	private String profileImage;
