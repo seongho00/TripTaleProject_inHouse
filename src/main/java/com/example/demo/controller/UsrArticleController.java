@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.TripTaleProjectApplication;
+import com.example.demo.service.ArticleService;
 import com.example.demo.service.ChatGptService;
+import com.example.demo.vo.ArticleImage;
 import com.example.demo.vo.Rq;
 
 @Controller
@@ -24,6 +27,8 @@ public class UsrArticleController {
 
 	@Autowired
 	ChatGptService chatGptService;
+	@Autowired
+	ArticleService articleService;
 
 	UsrArticleController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -51,17 +56,20 @@ public class UsrArticleController {
 	@RequestMapping("usr/article/doWrite")
 	@ResponseBody
 	public List<String> doWrite(Model model, @RequestParam(defaultValue = "") List<String> moods,
-			List<MultipartFile> images) {
+			List<MultipartFile> images) throws IOException {
 
 		for (MultipartFile image : images) {
 			if (!image.isEmpty()) {
-				String originalFilename = image.getOriginalFilename();
-				// 저장 또는 처리 로직
-				System.out.println("파일 이름: " + originalFilename);
+				String fileName = image.getOriginalFilename();
+				String contentType = image.getContentType();
+				byte[] data = image.getBytes();
+
+				articleService.addArticleImage(1, fileName, contentType, data);
+
 			}
 		}
 
-		chatGptService.askQuestion(moods);
+//		chatGptService.askQuestion(moods);
 
 		return moods;
 	}

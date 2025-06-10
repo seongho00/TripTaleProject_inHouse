@@ -21,4 +21,9 @@ public class ArticleService {
 
 	}
 
+	public void addArticleImage(int articleId, String fileName, String contentType, byte[] data) {
+
+		articleRepository.addArticleImage(articleId, fileName, contentType, data);
+	}
+
 }

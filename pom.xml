@@ -139,6 +139,13 @@
 			<artifactId>selenium-java</artifactId>
 			<version>4.20.0</version> <!-- 또는 최신 버전 -->
 		</dependency>
+		
+		<!-- 파일 데이터 넣기 @Lob 의존성  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
 	</dependencies>
 
 

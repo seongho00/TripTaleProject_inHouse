@@ -9,4 +9,6 @@ public interface ArticleRepository {
 
 	public Article getArticle();
 
+	public void addArticleImage(int articleId, String fileName, String contentType, byte[] data);
+
 }

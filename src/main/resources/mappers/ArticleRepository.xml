@@ -13,4 +13,14 @@
 		WHERE id = 1
 	</select>
 
+
+	<select id="addArticleImage" parameterType="map"
+		resultType="com.example.demo.vo.ArticleImage">
+		INSERT INTO articleImage
+		SET articleId = #{articleId}, 
+		fileName = #{fileName},
+		contentType = #{contentType},
+		`data` = #{data}
+
+	</select>
 </mapper>
