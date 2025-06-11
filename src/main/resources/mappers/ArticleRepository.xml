@@ -14,10 +14,26 @@
 	</select>
 
 
+	<select id="doWrite" parameterType="map"
+		resultType="com.example.demo.vo.Article">
+		INSERT INTO article
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		memberId = #{memberId},
+		title = #{title},
+		`body` = #{body};
+	</select>
+
+	<select id="getLastInsertId" parameterType="int">
+		SELECT
+		LAST_INSERT_ID()
+	</select>
+
+
 	<select id="addArticleImage" parameterType="map"
 		resultType="com.example.demo.vo.ArticleImage">
 		INSERT INTO articleImage
-		SET articleId = #{articleId}, 
+		SET articleId = #{articleId},
 		fileName = #{fileName},
 		contentType = #{contentType},
 		`data` = #{data}

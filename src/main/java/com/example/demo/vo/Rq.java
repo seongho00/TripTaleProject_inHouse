@@ -25,7 +25,7 @@ public class Rq {
 	private final HttpSession session;
 
 	private boolean isLogined = false;
-	private String loginedMemberId = "0";
+	private int loginedMemberId = 0;
 	private Member loginedMember = null;
 	private String kakaoClientId = "541f86bf90d42b106f889073398e10c1";
 	private String kakaoClientSecret = "pk0ZiCe51XiMuDwfRMLTeqVAM6YV9BNq";
@@ -40,7 +40,7 @@ public class Rq {
 
 		if (session.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
-			loginedMemberId = session.getAttribute("loginedMemberId").toString();
+			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 			loginedMember = (Member) session.getAttribute("loginedMember");
 		}
 
@@ -76,7 +76,6 @@ public class Rq {
 		session.setAttribute("loginedMemberId", loginedMemberId);
 		session.setAttribute("loginedMember", loginedMember);
 	}
-
 
 	public void initBeforeActionInterceptor() {
 		System.err.println("initBeforeActionInterceptor 실행됨");

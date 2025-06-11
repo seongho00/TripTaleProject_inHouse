@@ -124,6 +124,7 @@ public class NaverOAuthService {
 
 			if (loginedMember == null) {
 				memberRepository.doJoin("naver", id, null, name, email, profileImage);
+				loginedMember = memberRepository.getMemberById("naver", id);
 			}
 
 			rq.login(loginedMember.getId(), loginedMember);

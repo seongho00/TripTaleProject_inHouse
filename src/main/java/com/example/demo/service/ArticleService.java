@@ -26,4 +26,9 @@ public class ArticleService {
 		articleRepository.addArticleImage(articleId, fileName, contentType, data);
 	}
 
+	public int doWrite(int memberId, String title, String body) {
+		articleRepository.doWrite(memberId, title, body);
+		return articleRepository.getLastInsertId();
+	}
+
 }

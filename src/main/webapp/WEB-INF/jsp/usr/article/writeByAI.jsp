@@ -186,7 +186,7 @@
 			</div>
 			<div
 				class="flex justify-center z-10 items-center relative gap-2.5 p-2.5">
-				<form id="moodForm" action="doWrite" method="post" enctype="multipart/form-data">
+				<form id="moodForm" action="doWriteByAI" method="post" enctype="multipart/form-data">
 					<div id="selectedMoodsContainer"></div>
 					<label class="btn btn-dash btn-primary btn-xl">
 						파일 선택

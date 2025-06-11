@@ -47,16 +47,16 @@ public class UsrArticleController {
 		return "usr/article/writeByAI";
 	}
 
-	@RequestMapping("usr/article/write")
-	public String write(Model model) {
-
-		return "usr/article/write";
-	}
-
-	@RequestMapping("usr/article/doWrite")
+	@RequestMapping("usr/article/doWriteByAI")
 	@ResponseBody
 	public List<String> doWrite(Model model, @RequestParam(defaultValue = "") List<String> moods,
 			List<MultipartFile> images) throws IOException {
+
+		int memberId = rq.getLoginedMemberId();
+		String title = "";
+		String body = chatGptService.askQuestion(moods);
+
+		int articleId = articleService.doWrite(memberId, title, body);
 
 		for (MultipartFile image : images) {
 			if (!image.isEmpty()) {
@@ -64,14 +64,37 @@ public class UsrArticleController {
 				String contentType = image.getContentType();
 				byte[] data = image.getBytes();
 
-				articleService.addArticleImage(1, fileName, contentType, data);
-
+				articleService.addArticleImage(articleId, fileName, contentType, data);
 			}
 		}
 
-//		chatGptService.askQuestion(moods);
-
 		return moods;
+	}
+
+	@RequestMapping("usr/article/write")
+	public String write(Model model) {
+
+		return "usr/article/write";
+	}
+
+	@RequestMapping("usr/article/doWrite")
+	public String doWrite(Model model, String title, String body, List<MultipartFile> images) throws IOException {
+
+		int memberId = rq.getLoginedMemberId();
+
+		int articleId = articleService.doWrite(memberId, title, body);
+
+		for (MultipartFile image : images) {
+			if (!image.isEmpty()) {
+				String fileName = image.getOriginalFilename();
+				String contentType = image.getContentType();
+				byte[] data = image.getBytes();
+
+				articleService.addArticleImage(articleId, fileName, contentType, data);
+			}
+		}
+
+		return "usr/article/list";
 	}
 
 }
