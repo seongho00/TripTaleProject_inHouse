@@ -23,7 +23,6 @@ public class UsrPlannerController {
 	@Autowired
 	Rq rq;
 
-
 	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
 
@@ -82,7 +81,11 @@ public class UsrPlannerController {
 
 		return "usr/planner/region";
 	}
-	
-	
+
+	@RequestMapping("usr/planner/selectLocation")
+	public String selectLocation(Model model) {
+
+		return "usr/planner/selectLocation";
+	}
 
 }

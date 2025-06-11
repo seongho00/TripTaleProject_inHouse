@@ -82,6 +82,7 @@
 										{
 											dateFormat : "Y-m-d", // 출력 포맷
 											mode : "range",
+											minDate: "today", // 오늘 이전 날짜 선택 불가능
 											inline : true,
 											locale : "ko", // 한국어 사용 시
 											showMonths : 2,
