@@ -71,8 +71,7 @@ body {
 
 			$('.start-time[data-index=' + selectedIndex +']').text(startTimeStr);
 			$('.end-time[data-index=' + selectedIndex +']').text(endTimeStr);
-			
-			console.log(endHour);
+
 			$('.selectTime').addClass('hidden');
 		});
 	});
@@ -139,10 +138,10 @@ body {
 
 					<div
 						class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0 h-[99px] overflow-hidden gap-2.5 pl-[72px] pr-[85px] py-[19px]">
-						<div
-							class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 p-2.5 rounded-[10px] bg-black">
-							<p class="flex-grow-0 flex-shrink-0 w-[205px] h-[41px] text-xl font-medium text-center text-white">시간 설정 완료</p>
-						</div>
+						<button 
+							class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 p-2.5 rounded-[10px] bg-black cursor-pointer">
+							<p class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[205px] h-[41px] text-xl font-medium text-center text-white">시간 설정 완료</p>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -154,7 +153,7 @@ body {
 
 <div class="selectTime fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
 	<div
-		class="bg-white flex-grow-0 flex-shrink-0 w-[500px] h-[350px] relative overflow-hidden flex items-center justify-center rounded">
+		class="bg-white flex-col flex-grow-0 flex-shrink-0 w-[500px] h-[350px] relative overflow-hidden flex items-center justify-center rounded">
 
 		<div class="flex gap-10 mb-5">
 			<div>
@@ -167,10 +166,9 @@ body {
 			</div>
 		</div>
 
-		<div class="flex justify-end ">
+		<div class="flex justify-end">
 			<button type="submit" id="submitBtn">확인</button>
 		</div>
-
 
 	</div>
 </div>
