@@ -91,6 +91,8 @@ body {
 		function init() {
 			$('#recommendButton').addClass('btn-active');
 			$('.recommendUI').addClass('ui-active');
+			$('#infoButton').addClass('btn-active');
+			$('.infoUI').addClass('ui-active');
 		}
 		init();
 	});
@@ -119,30 +121,58 @@ body {
 		$('.recommendUI').toggleClass('ui-active');
 		$('.searchUI').toggleClass('ui-active');
 	}
-
+	
+	// infoDiv의 정보&사진 버튼 클릭
 	function infoButton() {
-		if ($('#recommendButton').hasClass('btn-active')) {
+		if ($('#infoButton').hasClass('btn-active')) {
 			return;
 		}
-		$('#recommendButton').toggleClass('btn-active');
-		$('#searchButton').toggleClass('btn-active');
-		$('.recommendUI').toggleClass('ui-active');
-		$('.searchUI').toggleClass('ui-active');
+		$('#infoButton').toggleClass('btn-active');
+		$('#pictureButton').toggleClass('btn-active');
+		$('.infoUI').toggleClass('ui-active');
+		$('.pictureUI').toggleClass('ui-active');
 	}
 	function pictureButton() {
-		if ($('#searchButton').hasClass('btn-active')) {
+		if ($('#pictureButton').hasClass('btn-active')) {
 			return;
 		}
-		$('#recommendButton').toggleClass('btn-active');
-		$('#searchButton').toggleClass('btn-active');
-		$('.recommendUI').toggleClass('ui-active');
-		$('.searchUI').toggleClass('ui-active');
+		$('#infoButton').toggleClass('btn-active');
+		$('#pictureButton').toggleClass('btn-active');
+		$('.infoUI').toggleClass('ui-active');
+		$('.pictureUI').toggleClass('ui-active');
 	}
+
+	/* 장소 정보 나타내는 div 열고 닫기 애니메이션 */
+	function openInfoDiv() {
+    const $div = $('.infoDiv');
+
+    // 우선 hidden 제거해서 DOM에 보이게
+    $div.removeClass('hidden');
+
+    // 애니메이션 적용: 왼쪽 → 제자리, 투명도 → 1
+    requestAnimationFrame(() => {
+      $div.removeClass('-translate-x-1/3 opacity-0');
+      $div.addClass('translate-x-0 opacity-100');
+    });
+  }
+
+  function closeInfoDiv() {
+    const $div = $('.infoDiv');
+
+    // 다시 왼쪽으로 숨김 + 투명도 0
+    $div.removeClass('translate-x-0 opacity-100');
+    $div.addClass('-translate-x-1/3 opacity-0');
+
+    // transition 후 hidden 처리
+    setTimeout(() => {
+      $div.addClass('hidden');
+    }, 300); 
+  }
 </script>
 
 
 <style>
-/* 아이디 찾기, 비밀번호 찾기 클릭시 색깔, 밑줄 코드 */
+/* 추천장소, 장소 찾기 클릭시 색깔, 밑줄 코드 */
 #recommendButton.btn-active, #searchButton.btn-active {
 	opacity: 1;
 	color: black;
@@ -171,12 +201,50 @@ body {
 	transition: transform 0.3s;
 }
 
-/* 아이디 찾기, 비밀번호 찾기 Ui 코드 */
+/* 추천장소, 장소 찾기 UI css  */
 .recommendUI, .searchUI {
 	display: none;
 }
 
 .recommendUI.ui-active, .searchUI.ui-active {
+	display: block;
+}
+
+/* 정보, 사진 클릭시 색깔, 밑줄 코드 */
+#infoButton.btn-active, #pictureButton.btn-active {
+	opacity: 1;
+	color: black;
+}
+
+#infoButton, #pictureButton {
+	position: relative;
+	display: inline-block;
+	border-bottom: 2px solid transparent; /* 기본은 안 보임 */
+}
+
+#infoButton::after, #pictureButton::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 2px;
+	width: 100%;
+	background-color: black;
+	transform: scaleX(0); /* 처음엔 안 보이게 */
+	transform-origin: left; /* 왼쪽에서 시작 */
+}
+
+#infoButton.btn-active::after, #pictureButton.btn-active::after {
+	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
+	transition: transform 0.3s;
+}
+
+/* 아이디 찾기, 비밀번호 찾기 Ui 코드 */
+.infoUI, .pictureUI {
+	display: none;
+}
+
+.infoUI.ui-active, .pictureUI.ui-active {
 	display: block;
 }
 </style>
@@ -253,7 +321,7 @@ body {
 
 			</div>
 			<div
-				class="selectLocationDiv  flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 py-4">
+				class="selectLocationDiv flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 py-4">
 				<p class="flex-grow-0 flex-shrink-0 w-[184px] h-[27px] text-3xl font-medium text-center text-black">장소 선택</p>
 				<div
 					class="flex justify-start items-start flex-grow-0 flex-shrink-0 w-[244px] relative overflow-hidden gap-2.5 px-[22px] py-[9px]">
@@ -290,8 +358,9 @@ body {
 
 				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
 					<c:forEach var="i" begin="0" end="2" step="1">
-						<div
-							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]">
+						<div onClick="openInfoDiv()"
+							;
+							class="cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]">
 							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
 								<p
@@ -322,7 +391,7 @@ body {
 
 		</div>
 		<div
-			class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] relative gap-2.5 rounded-[20px] bg-white border border-black">
+			class="infoDiv transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] relative gap-2.5 rounded-[20px] bg-white border border-black">
 			<img src="image-9.png"
 				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
 			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] overflow-hidden px-0.5 py-[7px]">
@@ -346,13 +415,15 @@ body {
 			</div>
 			<div
 				class="flex justify-center items-start flex-grow-0 flex-shrink-0 w-[260px] relative overflow-hidden gap-[54px] px-4">
-				<p class="flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black">정보</p>
-				<p class="flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
+				<p onClick="infoButton()" id="infoButton"
+					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black">정보</p>
+				<p onClick="pictureButton()" id="pictureButton"
+					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
 			</div>
-			<div class="flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
+			<div class="infoUI flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
 				<div
 					class=" flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
-					<div class="p-w-3">
+					<div class="pr-2 pl-3">
 						<i class="fa-solid fa-location-dot text-3xl"></i>
 					</div>
 					<p
@@ -362,7 +433,7 @@ body {
 				<div
 					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[11px] px-2">
 
-					<div class="pr-3">
+					<div class="">
 						<i class="fa-solid fa-clock text-3xl"></i>
 					</div>
 
@@ -372,18 +443,26 @@ body {
 				</div>
 				<div
 					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
-					<div class="pr-3">
+					<div class="pr-2 pl-2">
 						<i class="fa-solid fa-phone text-3xl"></i>
 					</div>
 					<p
 						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black">번호
 						정보</p>
 				</div>
-				<div class="flex justify-center items-center self-stretch flex-grow relative overflow-hidden gap-2.5">
-					<i class="fa-solid fa-pen-to-square"></i>
-					<p class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-center text-black">소개글 정보</p>
+				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
+					<div class="pl-2">
+						<i class="fa-solid fa-pen-to-square text-3xl"></i>
+					</div>
+					<p class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black">소개글 정보</p>
 				</div>
+
 			</div>
+			<button onClick="closeInfoDiv()"
+				class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
+						hover:bg-gray-300">
+				<i class="fa-solid fa-xmark text-lg text-black"></i>
+			</button>
 		</div>
 	</div>
 
