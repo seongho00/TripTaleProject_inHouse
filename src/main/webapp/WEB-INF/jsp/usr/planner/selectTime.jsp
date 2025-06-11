@@ -143,18 +143,32 @@ body {
 	}
 
 	/* 장소 정보 나타내는 div 열고 닫기 애니메이션 */
-	function openInfoDiv() {
-    const $div = $('.infoDiv');
+	function toggleInfoDiv() {
+		const $div = $('.infoDiv');
 
-    // 우선 hidden 제거해서 DOM에 보이게
-    $div.removeClass('hidden');
 
-    // 애니메이션 적용: 왼쪽 → 제자리, 투명도 → 1
-    requestAnimationFrame(() => {
-      $div.removeClass('-translate-x-1/3 opacity-0');
-      $div.addClass('translate-x-0 opacity-100');
-    });
-  }
+		const isHidden = $div.hasClass('hidden');
+
+
+		if (isHidden) {
+
+	    	$div.removeClass('hidden');
+	
+			requestAnimationFrame(() => {
+			$div.removeClass('-translate-x-1/3 opacity-0');
+			$div.addClass('translate-x-0 opacity-100');
+		});
+		} else {
+			// 트랜지션으로 숨기는 애니메이션 시작
+			$div.removeClass('translate-x-0 opacity-100');
+			$div.addClass('-translate-x-1/3 opacity-0');
+
+			// 트랜지션 완료 후 hidden 적용 (트랜지션 시간에 맞춰서)
+			setTimeout(() => {
+				$div.addClass('hidden');
+			}, 300); // Tailwind transition-duration 기준 (기본 300ms)
+		}
+	}
 
   function closeInfoDiv() {
     const $div = $('.infoDiv');
@@ -358,7 +372,7 @@ body {
 
 				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
 					<c:forEach var="i" begin="0" end="2" step="1">
-						<div onClick="openInfoDiv()"
+						<div onClick="toggleInfoDiv()"
 							;
 							class="cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]">
 							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
@@ -373,7 +387,10 @@ body {
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
 									장소 주소</p>
 							</div>
-							<i class="fa-solid fa-square-plus text-3xl"></i>
+							<button class="cursor-pointer pointer-events-auto">
+								<i class="fa-solid fa-square-plus text-3xl"></i>
+							</button>
+
 						</div>
 					</c:forEach>
 
@@ -391,7 +408,7 @@ body {
 
 		</div>
 		<div
-			class="infoDiv transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] relative gap-2.5 rounded-[20px] bg-white border border-black">
+			class="infoDiv z-1 transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] relative gap-2.5 rounded-[20px] bg-white border border-black">
 			<img src="image-9.png"
 				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
 			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] overflow-hidden px-0.5 py-[7px]">
@@ -464,9 +481,61 @@ body {
 				<i class="fa-solid fa-xmark text-lg text-black"></i>
 			</button>
 		</div>
+
+	</div>
+	<div
+		class="flex flex-col justify-start bg-red-400 items-center flex-grow-0 flex-shrink-0 h-[914px] w-[527px] absolute overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
+		<div class="self-stretch flex-grow-0 flex-shrink-0 h-[134px] relative overflow-hidden">
+			<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">설정
+				초기화</p>
+			<p class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black">1일차 일정 장바구니</p>
+			<svg width="23" height="18" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg"
+				class="absolute left-[509.5px] top-[17.5px]" preserveAspectRatio="none">
+      <path d="M2 9L9.59494 16.5M2 9L9.59494 1M2 9H22" stroke="black" stroke-width="2" stroke-linecap="round"></path></svg>
+
+			<p class="w-[207px] h-10 absolute left-6 top-[89px] text-xl font-medium text-center text-black">시간 : 10:00 ~
+				22:00</p>
+
+		</div>
+		<div class="flex flex-col justify-start items-center self-stretch flex-grow overflow-hidden gap-2.5">
+			<div
+				class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-[114px] overflow-hidden gap-2.5 px-0.5">
+				<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+					<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
+					<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+					<div
+						class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 py-[5px]">
+						<div
+							class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-1.5">
+							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3.5 py-[3px]">
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
+							</div>
+							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
+							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 주소</p>
+						</div>
+						<div
+							class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
+							<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
+								<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
+									시간</span>
+								<br />
+								<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
+							</p>
+						</div>
+					</div>
+					<div
+						class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 px-px">
+						<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </div>
+
+
 
 <div class="timepicker fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
 	<div
