@@ -73,7 +73,7 @@
 }
 
 #idButton.btn-active::after, #pwButton.btn-active::after {
-	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
+	transform: scaleX(1); /* 애니메    이션으로 왼쪽→오른쪽 확장 */
 	transition: transform 0.3s;
 }
 
