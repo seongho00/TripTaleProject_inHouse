@@ -14,7 +14,69 @@ body {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
+<script>
+	let instance;
 
+	$(function() {
+		// 시작 시간 TimePicker 인스턴스 생성
+
+		const startTimeInstance = new tui.TimePicker('#startTimePicker', {
+			initialHour : 10,
+			inputType : 'spinbox',
+			format : 'HH:mm',
+			showMeridiem : true
+		});
+
+		// 종료 시간 TimePicker 인스턴스 생성
+
+		const endTimeInstance = new tui.TimePicker('#endTimePicker', {
+			initialHour : 22,
+			inputType : 'spinbox',
+			format : 'HH:mm',
+			showMeridiem : true
+		});
+
+		// 시간 클릭 시 팝업 열고 index 기억
+		$('.time-range').on('click', function() {
+			selectedIndex = $(this).data('index');
+			console.log(selectedIndex);
+			$('.selectTime').removeClass('hidden');
+		});
+
+		$('#submitBtn').on('click', function() {
+
+			let startHour = String(startTimeInstance.getHour()).padStart(2, '0');
+			const startMin = String(startTimeInstance.getMinute()).padStart(2, '0');
+			let endHour = String(endTimeInstance.getHour()).padStart(2, '0');
+			const endMin = String(endTimeInstance.getMinute()).padStart(2, '0');
+			
+			const startIsAM = startHour < 12;
+			const startMeridiemStr = startIsAM ? 'AM' : 'PM';
+			
+			const endIsAM = endHour < 12;
+			const endMeridiemStr = endIsAM ? 'AM' : 'PM';
+			
+			if (!startIsAM) {
+				startHour -= 12;
+				startHour = String(endHour).padStart(2, '0');
+			}
+			
+			if (!endIsAM) {
+				endHour -= 12;
+				endHour = String(endHour).padStart(2, '0');
+			}
+			
+			const startTimeStr = startHour + ': ' + startMin + ' ' + startMeridiemStr;
+			const endTimeStr = endHour + ': ' + endMin  + ' ' + endMeridiemStr;
+
+			$('.start-time[data-index=' + selectedIndex +']').text(startTimeStr);
+			$('.end-time[data-index=' + selectedIndex +']').text(endTimeStr);
+			
+			console.log(endHour);
+			$('.selectTime').addClass('hidden');
+		});
+	});
+</script>
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
@@ -51,20 +113,23 @@ body {
 									<p class="flex-grow-0 flex-shrink-0 w-[78px] h-[18px] text-[10px] font-medium text-center text-black">출발 시간</p>
 									<p class="flex-grow-0 flex-shrink-0 w-[73px] h-[17px] text-[10px] font-medium text-center text-black">종료 시간</p>
 								</div>
-								<div onClick=""
-									class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[283px] relative overflow-hidden gap-2.5 px-2.5 pb-px cursor-pointer">
+								<div onClick="$('.selectTime').removeClass('hidden');"
+									class="time-range flex justify-start items-center flex-grow-0 flex-shrink-0 w-[283px] relative overflow-hidden gap-2.5 px-2.5 pb-px cursor-pointer"
+									data-index="${status.index}">
 									<div
 										class="relative flex justify-start items-center flex-grow-0 flex-shrink-0 h-[37px] relative overflow-hidden gap-2.5 py-[11px] ">
 										<i class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
-										<p class="flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black">10:
-											00 AM</p>
+										<div
+											class="start-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black"
+											data-index="${status.index}">10: 00 AM</div>
 									</div>
 									<p class="flex-grow-0 flex-shrink-0 w-[21px] h-[13px] text-[15px] font-medium text-center text-black">~</p>
 									<div onClick=""
 										class="flex justify-start items-center flex-grow-0 flex-shrink-0 h-[37px] relative overflow-hidden gap-2.5 py-[11px] ">
 										<i class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
-										<p class="flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black">10:
-											00 AM</p>
+										<div
+											class="end-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black"
+											data-index="${status.index}">10: 00 AM</div>
 									</div>
 								</div>
 							</div>
@@ -87,7 +152,7 @@ body {
 
 </div>
 
-<div class="selectTime fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center">
+<div class="selectTime fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
 	<div
 		class="bg-white flex-grow-0 flex-shrink-0 w-[500px] h-[350px] relative overflow-hidden flex items-center justify-center rounded">
 
@@ -109,33 +174,5 @@ body {
 
 	</div>
 </div>
-<script>
-	let instance;
 
-	$(function() {
-		// 시작 시간 TimePicker 인스턴스 생성
-		const startTimeInstance = new tui.TimePicker('#startTimePicker', {
-			initialHour : 10,
-			inputType : 'spinbox',
-			format : 'HH:mm',
-			showMeridiem : false
-		});
-
-		// 종료 시간 TimePicker 인스턴스 생성
-		const endTimeInstance = new tui.TimePicker('#endTimePicker', {
-			initialHour : 22,
-			inputType : 'spinbox',
-			format : 'HH:mm',
-			showMeridiem : false
-		});
-
-		$('#submitBtn').on('click', function() {
-			const start = startTimeInstance.getTime();
-			const end = endTimeInstance.getTime();
-
-			const h = String(start.getHours()).padStart(2, '0');
-			console.log(h);
-		});
-	});
-</script>
 <%@ include file="../common/foot.jspf"%>
