@@ -39,13 +39,10 @@ body {
 		// 시간 클릭 시 팝업 열고 index 기억
 		$('.time-range').on('click', function() {
 			selectedIndex = $(this).data('index');
-			console.log(selectedIndex);
 			$('.timepicker').removeClass('hidden');
 		});
 
-		$('#submitBtn').on(
-				'click',
-				function() {
+		$('#submitBtn').on('click',function() {
 
 					let startHour = String(startTimeInstance.getHour())
 							.padStart(2, '0');
@@ -81,8 +78,10 @@ body {
 							startTimeStr);
 					$('.end-time[data-index=' + selectedIndex + ']').text(
 							endTimeStr);
-
-					$('.selectTime').addClass('hidden');
+					
+					
+					
+					$('.timepicker').addClass('hidden');
 				});
 	});
 
@@ -298,7 +297,7 @@ body {
 									<p class="flex-grow-0 flex-shrink-0 w-[78px] h-[18px] text-[10px] font-medium text-center text-black">출발 시간</p>
 									<p class="flex-grow-0 flex-shrink-0 w-[73px] h-[17px] text-[10px] font-medium text-center text-black">종료 시간</p>
 								</div>
-								<div onClick="hideTimeSelectDiv();"
+								<div
 									class="time-range flex justify-start items-center flex-grow-0 flex-shrink-0 w-[283px] relative overflow-hidden gap-2.5 px-2.5 pb-px cursor-pointer"
 									data-index="${status.index}">
 									<div
@@ -481,57 +480,55 @@ body {
 				<i class="fa-solid fa-xmark text-lg text-black"></i>
 			</button>
 		</div>
+		<div
+			class="flex flex-col justify-start bg-red-400 items-center flex-grow-0 flex-shrink-0 h-[914px] w-[527px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
+			<div class="self-stretch flex-grow-0 flex-shrink-0 h-[134px] relative overflow-hidden">
+				<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">설정
+					초기화</p>
+				<p class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black">1일차 일정 장바구니</p>
 
-	</div>
-	<div
-		class="flex flex-col justify-start bg-red-400 items-center flex-grow-0 flex-shrink-0 h-[914px] w-[527px] absolute overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
-		<div class="self-stretch flex-grow-0 flex-shrink-0 h-[134px] relative overflow-hidden">
-			<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">설정
-				초기화</p>
-			<p class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black">1일차 일정 장바구니</p>
-			<svg width="23" height="18" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg"
-				class="absolute left-[509.5px] top-[17.5px]" preserveAspectRatio="none">
-      <path d="M2 9L9.59494 16.5M2 9L9.59494 1M2 9H22" stroke="black" stroke-width="2" stroke-linecap="round"></path></svg>
 
-			<p class="w-[207px] h-10 absolute left-6 top-[89px] text-xl font-medium text-center text-black">시간 : 10:00 ~
-				22:00</p>
+				<p class="w-[207px] h-10 absolute left-6 top-[89px] text-xl font-medium text-center text-black">시간 : 10:00 ~
+					22:00</p>
 
-		</div>
-		<div class="flex flex-col justify-start items-center self-stretch flex-grow overflow-hidden gap-2.5">
-			<div
-				class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-[114px] overflow-hidden gap-2.5 px-0.5">
-				<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-					<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
-					<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-					<div
-						class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 py-[5px]">
+			</div>
+			<div class="flex flex-col justify-start items-center self-stretch flex-grow overflow-hidden gap-2.5">
+				<div
+					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-[114px] overflow-hidden gap-2.5 px-0.5">
+					<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+						<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
+						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 						<div
-							class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-1.5">
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3.5 py-[3px]">
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
+							class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 py-[5px]">
+							<div
+								class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-1.5">
+								<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3.5 py-[3px]">
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
+								</div>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 주소</p>
 							</div>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 주소</p>
+							<div
+								class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
+								<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
+									<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
+										시간</span>
+									<br />
+									<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
+								</p>
+							</div>
 						</div>
 						<div
-							class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
-							<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
-								<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
-									시간</span>
-								<br />
-								<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
-							</p>
+							class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 px-px mr-3">
+							<i class="fa-solid fa-trash-can"></i>
 						</div>
-					</div>
-					<div
-						class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 px-px">
-						<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
 
 </div>
 
@@ -553,7 +550,7 @@ body {
 		</div>
 
 		<div class="flex justify-end">
-			<button type="submit" id="submitBtn">확인</button>
+			<button class="cursor-pointer" type="submit" id="submitBtn">확인</button>
 		</div>
 
 	</div>
