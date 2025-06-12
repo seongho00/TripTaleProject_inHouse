@@ -72,7 +72,7 @@ public class UsrHomeController {
 	
 	@RequestMapping("usr/test/naverAPI")
 	public String naverAPI(Model model) {
-		naverOAuthService.searchLocal("서울 카페");
+		naverOAuthService.searchLocal("서울 관광지");
 		return "usr/test/naverAPI";
 	}
 

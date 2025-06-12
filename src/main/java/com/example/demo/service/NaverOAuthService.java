@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class NaverOAuthService {
+
+	private final TripLocationService tripLocationService;
 	@Autowired
 	private Rq rq;
 
 	@Autowired
 	private MemberRepository memberRepository;
 
-	public NaverOAuthService(MemberRepository memberRepository) {
+	public NaverOAuthService(MemberRepository memberRepository, TripLocationService tripLocationService) {
 		this.memberRepository = memberRepository;
+		this.tripLocationService = tripLocationService;
 	}
 
 	public String requestAccessToken(String code, String state) throws UnsupportedEncodingException {
@@ -141,28 +145,40 @@ public class NaverOAuthService {
 		String clientId = rq.getNaverClientId();
 		String clientSecret = rq.getNaverClientSecret();
 		RestTemplate restTemplate = new RestTemplate();
-
-		String url = "https://openapi.naver.com/v1/search/local.json";
-
-		UriComponentsBuilder builder = UriComponentsBuilder
-				.fromHttpUrl("https://openapi.naver.com/v1/search/local.json").queryParam("query", query) // 인코딩 자동 처리됨
-				.queryParam("display", 3).queryParam("start", 1).queryParam("sort", "comment");
+		int start = 10;
+		String url = "https://openapi.naver.com/v1/search/local.json?display=5&sort=comment&start=" + start + "&query="
+				+ query;
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Naver-Client-Id", clientId);
 		headers.set("X-Naver-Client-Secret", clientSecret);
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON)); // 추가!!
-		headers.set("User-Agent", "Mozilla/5.0"); // ✅ 매우 중요!
 
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
-		ResponseEntity<Map> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity,
-				new ParameterizedTypeReference<>() {
+		ResponseEntity<Map<String, Object>> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+				new ParameterizedTypeReference<Map<String, Object>>() {
 				});
 		System.out.println("Query: [" + query + "]");
-		System.out.println(">>> 최종 URL: " + builder.toUriString());
-		System.out.println(response.getBody());
-		return null;
+
+		Map<String, Object> body = response.getBody();
+		System.out.println(body);
+		if (body != null && body.containsKey("items")) {
+			List<Map<String, Object>> items = (List<Map<String, Object>>) body.get("items");
+			System.out.println("items.size = " + items.size());
+
+			for (Map<String, Object> item : items) {
+				System.out.println(item.get("title"));
+				System.out.println(item.get("link"));
+				System.out.println(item.get("category"));
+				System.out.println(item.get("description"));
+				System.out.println(item.get("roadAddress"));
+				System.out.println(item.get("mapx"));
+				System.out.println(item.get("mapy"));
+			}
+		}
+
+		return body;
+
 	}
 
 }
