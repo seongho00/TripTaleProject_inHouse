@@ -168,18 +168,37 @@ body {
 			}, 300); // Tailwind transition-duration 기준 (기본 300ms)
 		}
 	}
+	
+	// 상세보기 Div 닫기
+	function closeInfoDiv() {
+		const $div = $('.infoDiv');
 
-  function closeInfoDiv() {
-    const $div = $('.infoDiv');
+		// 다시 왼쪽으로 숨김 + 투명도 0
+		$div.removeClass('translate-x-0 opacity-100');
+		$div.addClass('-translate-x-1/3 opacity-0');
 
-    // 다시 왼쪽으로 숨김 + 투명도 0
-    $div.removeClass('translate-x-0 opacity-100');
-    $div.addClass('-translate-x-1/3 opacity-0');
+		// transition 후 hidden 처리
+		setTimeout(() => {
 
-    // transition 후 hidden 처리
-    setTimeout(() => {
-      $div.addClass('hidden');
-    }, 300); 
+			$div.addClass('hidden');
+		}, 300); 
+	}
+  
+  // N일차 장바구니 toggle
+
+  function toggleDailyPlan() {
+	  
+	  
+	  
+	  if ($('.dailyPlan').hasClass('w-0')){
+		  // 다시 열기
+		  $('.dailyPlan').removeClass('w-0').addClass('w-[527px]');
+	  } else {
+		  // 넣기
+		  $('.dailyPlan').removeClass('w-[527px]').addClass('w-0');
+	  }
+	  
+	  $('.toggleDailyPlanButton').toggleClass('rotate-180');
   }
 </script>
 
@@ -264,7 +283,7 @@ body {
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<div class="flex absolute  justify-start items-center self-stretch flex-grow relative overflow-hidden gap-5 pr-2.5">
+	<div class="flex absolute  justify-start items-center self-stretch flex-grow relative overflow-hidden  pr-2.5">
 		<div
 			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
 			<div
@@ -407,7 +426,7 @@ body {
 
 		</div>
 		<div
-			class="infoDiv z-1 transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] relative gap-2.5 rounded-[20px] bg-white border border-black">
+			class="infoDiv z-1 left-[520px] transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] absolute gap-2.5 rounded-[20px] bg-white border border-black">
 			<img src="image-9.png"
 				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
 			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] overflow-hidden px-0.5 py-[7px]">
@@ -480,51 +499,62 @@ body {
 				<i class="fa-solid fa-xmark text-lg text-black"></i>
 			</button>
 		</div>
-		<div
-			class="flex flex-col justify-start bg-red-400 items-center flex-grow-0 flex-shrink-0 h-[914px] w-[527px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
-			<div class="self-stretch flex-grow-0 flex-shrink-0 h-[134px] relative overflow-hidden">
-				<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">설정
-					초기화</p>
-				<p class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black">1일차 일정 장바구니</p>
 
+		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden ">
+			<div
+				class="dailyPlan w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
+				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
+					<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
+						설정 초기화</p>
+					<p class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black">1일차 일정 장바구니</p>
+					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
+						22:00</p>
 
-				<p class="w-[207px] h-10 absolute left-6 top-[89px] text-xl font-medium text-center text-black">시간 : 10:00 ~
-					22:00</p>
-
-			</div>
-			<div class="flex flex-col justify-start items-center self-stretch flex-grow overflow-hidden gap-2.5">
-				<div
-					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-[114px] overflow-hidden gap-2.5 px-0.5">
-					<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-						<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
-						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-						<div
-							class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 py-[5px]">
+				</div>
+				<div class="flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
+					<div
+						class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-[114px] overflow-hidden gap-2.5 px-0.5">
+						<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+							<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
+							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div
-								class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-1.5">
-								<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3.5 py-[3px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
+								class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 py-[5px]">
+								<div
+									class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-1.5">
+									<div
+										class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3.5 py-[3px]">
+										<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
+										<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
+									</div>
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 주소</p>
 								</div>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 주소</p>
+								<div
+									class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
+									<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
+										<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
+											시간</span>
+										<br />
+										<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
+									</p>
+								</div>
 							</div>
 							<div
-								class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
-								<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
-									<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
-										시간</span>
-									<br />
-									<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
-								</p>
+								class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 px-px">
+								<i class="fa-solid fa-trash-can"></i>
 							</div>
-						</div>
-						<div
-							class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 px-px mr-3">
-							<i class="fa-solid fa-trash-can"></i>
 						</div>
 					</div>
+
+
 				</div>
+			</div>
+			<div onClick="toggleDailyPlan();"
+				class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer">
+				<p
+					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[30px] h-[50px] text-xs font-medium text-center text-black">
+					<i class="toggleDailyPlanButton fa-solid fa-chevron-left text-2xl transition-transform duration-300"></i>
+				</p>
 			</div>
 		</div>
 	</div>
