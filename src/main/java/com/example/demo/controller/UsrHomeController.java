@@ -10,6 +10,7 @@ import com.example.demo.TripTaleProjectApplication;
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.ChatGptService;
 import com.example.demo.service.KakaoOAuthService;
+import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.TripLocationService;
 import com.example.demo.vo.Rq;
 
@@ -28,6 +29,9 @@ public class UsrHomeController {
 	private TripLocationService tripLocationService;
 	@Autowired
 	private ChatGptService chatGptService;
+	
+	@Autowired
+	private NaverOAuthService naverOAuthService;
 
 	UsrHomeController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -64,6 +68,12 @@ public class UsrHomeController {
 	public String categoryAPITest(Model model) {
 
 		return "usr/test/categoryAPITest";
+	}
+	
+	@RequestMapping("usr/test/naverAPI")
+	public String naverAPI(Model model) {
+		naverOAuthService.searchLocal("서울 카페");
+		return "usr/test/naverAPI";
 	}
 
 }

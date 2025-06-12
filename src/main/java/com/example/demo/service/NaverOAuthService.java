@@ -2,16 +2,19 @@ package com.example.demo.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.vo.Member;
@@ -32,7 +35,6 @@ public class NaverOAuthService {
 	}
 
 	public String requestAccessToken(String code, String state) throws UnsupportedEncodingException {
-
 		String clientId = rq.getNaverClientId();
 		String clientSecret = rq.getNaverClientSecret();
 		String redirectURI = URLEncoder.encode("http://localhost:8080/usr/home/main", "UTF-8");
@@ -135,11 +137,32 @@ public class NaverOAuthService {
 
 	}
 
-	@ResponseBody
-	public String doLogout() {
+	public Map<String, Object> searchLocal(String query) {
+		String clientId = rq.getNaverClientId();
+		String clientSecret = rq.getNaverClientSecret();
+		RestTemplate restTemplate = new RestTemplate();
 
-		return "<script>location.replace('https://nid.naver.com/nidlogin.logout')</script>";
+		String url = "https://openapi.naver.com/v1/search/local.json";
 
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl("https://openapi.naver.com/v1/search/local.json").queryParam("query", query) // 인코딩 자동 처리됨
+				.queryParam("display", 3).queryParam("start", 1).queryParam("sort", "comment");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("X-Naver-Client-Id", clientId);
+		headers.set("X-Naver-Client-Secret", clientSecret);
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON)); // 추가!!
+		headers.set("User-Agent", "Mozilla/5.0"); // ✅ 매우 중요!
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		ResponseEntity<Map> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity,
+				new ParameterizedTypeReference<>() {
+				});
+		System.out.println("Query: [" + query + "]");
+		System.out.println(">>> 최종 URL: " + builder.toUriString());
+		System.out.println(response.getBody());
+		return null;
 	}
 
 }

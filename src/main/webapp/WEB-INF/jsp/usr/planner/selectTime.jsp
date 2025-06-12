@@ -506,7 +506,12 @@ body {
 				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
 					<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
 						설정 초기화</p>
-					<p class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black">1일차 일정 장바구니</p>
+					<select id="daySelect"
+						class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
+						<c:forEach var="i" begin="1" end="${diffDays}">
+							<option value="${i}">${i}일차 일정 장바구니</option>
+						</c:forEach>
+					</select>
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
 						22:00</p>
 
