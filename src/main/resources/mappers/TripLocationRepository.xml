@@ -18,7 +18,9 @@
 		`number` = #{number},
 		`profile` = #{profile},
 		star = #{star},
-		reviewCount = #{reviewCount}
+		reviewCount = #{reviewCount},
+		mapX = #{mapX},
+		mapY = #{mapY}
 	</select>
 
 	<select id="getLastInsertId" parameterType="int">

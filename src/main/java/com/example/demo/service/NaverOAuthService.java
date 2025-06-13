@@ -142,7 +142,7 @@ public class NaverOAuthService {
 	}
 
 	public Map<String, Object> searchLocal() {
-		String query = "대전 유성구 관광지";
+		String query = "대전 대덕구 관광지";
 		String clientId = rq.getNaverClientId();
 		String clientSecret = rq.getNaverClientSecret();
 		RestTemplate restTemplate = new RestTemplate();
@@ -177,14 +177,18 @@ public class NaverOAuthService {
 				System.out.println(item.get("mapx"));
 				System.out.println(item.get("mapy"));
 				System.out.println();
-				
+
 				if (!title.contains("대전")) {
 					title = "대전 " + title;
 				}
-				
-				tripLocationService.process(title, 3);
+
+				double mapx = Double.parseDouble(item.get("mapx").toString()) / 10000000.0;
+				double mapy = Double.parseDouble(item.get("mapy").toString()) / 10000000.0;
+
+
+				tripLocationService.process(title, 3, mapx, mapy);
 				try {
-					Thread.sleep(10000); // 15초 대기
+					Thread.sleep(5000); // 15초 대기
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt(); // ← 권장 방식
 				}

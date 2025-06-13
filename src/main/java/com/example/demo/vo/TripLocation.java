@@ -25,6 +25,8 @@ public class TripLocation {
 	private String star;
 	private int reviewCount;
 	private int areaCode;
+	private double mapX; 
+	private double mapY;
 
 	private String extra__pictureUrl;
 

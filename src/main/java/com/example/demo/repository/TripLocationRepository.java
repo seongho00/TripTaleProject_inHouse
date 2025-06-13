@@ -9,7 +9,7 @@ import com.example.demo.vo.TripLocation;
 @Mapper
 public interface TripLocationRepository {
 	public void insertData(int areaCode, String title, String profile, String address, String number, String schedule,
-			String star, int reviewCount);
+			String star, int reviewCount, double mapX, double mapY);
 
 	public int getLastInsertId();
 

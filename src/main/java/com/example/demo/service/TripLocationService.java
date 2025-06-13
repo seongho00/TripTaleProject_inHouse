@@ -34,7 +34,7 @@ public class TripLocationService {
 
 	private WebDriver driver;
 
-	public void process(String keyword, int areaCode) {
+	public void process(String keyword, int areaCode, double mapX, double mapY) {
 //		keyword = "보라매공원";
 		String url = "https://map.naver.com/v5/search/" + keyword;
 		// 크롬 드라이버 세팅 (드라이버 설치 경로 입력)
@@ -47,7 +47,7 @@ public class TripLocationService {
 		driver = new ChromeDriver(options);
 		driver.get("https://www.google.com");
 
-		getDataList(url, areaCode);
+		getDataList(url, areaCode, mapX, mapY);
 
 		// 탭 닫기
 		driver.close();
@@ -56,7 +56,7 @@ public class TripLocationService {
 	}
 
 	// 데이터 가져오기
-	private void getDataList(String url, int areaCode) {
+	private void getDataList(String url, int areaCode, double mapX, double mapY) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		// (1) 브라우저에서 url로 이동한다.
 		driver.get(url);
@@ -196,7 +196,8 @@ public class TripLocationService {
 
 			profile = "소개글 정보 없음";
 		}
-		tripLocationRepository.insertData(areaCode, title, profile, address, number, schedule, star, reviewCount);
+		tripLocationRepository.insertData(areaCode, title, profile, address, number, schedule, star, reviewCount, mapX,
+				mapY);
 		int id = tripLocationRepository.getLastInsertId();
 
 		// 사진 정보 요소 찾기 (6개정도)

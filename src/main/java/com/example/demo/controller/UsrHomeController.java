@@ -29,7 +29,7 @@ public class UsrHomeController {
 	private TripLocationService tripLocationService;
 	@Autowired
 	private ChatGptService chatGptService;
-	
+
 	@Autowired
 	private NaverOAuthService naverOAuthService;
 
@@ -56,20 +56,21 @@ public class UsrHomeController {
 
 		return "usr/test/TmapRouteAPI";
 	}
+	
 
-	@RequestMapping("usr/test/tripLocationService")
+	@RequestMapping("usr/test/coordToAddress")
 	@ResponseBody
-	public String tripLocationService(Model model, String keyword, int areaCode) {
-		tripLocationService.process(keyword, areaCode);
-		return "실행잘됨 ㅇㅇ";
+	public String coordToAddress(Model model) {
+		
+		kakaoOAuthService.coordToAddress("127.4428168", "36.4050302");
+		return "ㅇㅇ";
 	}
-
 	@RequestMapping("usr/test/categoryAPITest")
 	public String categoryAPITest(Model model) {
 
 		return "usr/test/categoryAPITest";
 	}
-	
+
 	@RequestMapping("usr/test/naverAPI")
 	public String naverAPI(Model model) {
 		// 각 도시의 "시"마다 5개씩 데이터를 받고 DB에 넣기 + 별점 데이터 종합

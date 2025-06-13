@@ -10,7 +10,67 @@
 		$('.fa-caret-down').toggleClass('!hidden');
 		$('.fa-caret-up').toggleClass('!hidden');
 	}
+
+	/* 처음 활성화될 버튼 설정 */
+	$(document).ready(function() {
+		$('#lookupPlanButton').addClass('btn-active');
+
+
+	});
+
+	// 여행계획조회 찾기, 여행기록조회 찾기 눌렀을 때
+	function lookupPlanButton() {
+		if ($('#lookupPlanButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#lookupPlanButton').toggleClass('btn-active');
+		$('#lookupRecordButton').toggleClass('btn-active');
+
+	}
+	function lookupRecordButton() {
+		if ($('#lookupRecordButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#lookupPlanButton').toggleClass('btn-active');
+		$('#lookupRecordButton').toggleClass('btn-active');
+
+	}
 </script>
+
+<style>
+/* 여행계획조회, 여행기록조회 클릭시 색깔, 밑줄 코드 */
+#lookupPlanButton.btn-active, #lookupRecordButton.btn-active {
+	opacity: 1;
+	color: black;
+}
+
+#lookupPlanButton, #lookupRecordButton {
+	position: relative;
+	display: inline-block;
+	border-bottom: 2px solid transparent; /* 기본은 안 보임 */
+}
+
+#lookupPlanButton::after, #lookupRecordButton::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 2px;
+	width: 100%;
+	background-color: black;
+	transform: scaleX(0); /* 처음엔 안 보이게 */
+	transform-origin: left; /* 왼쪽에서 시작 */
+}
+
+#lookupPlanButton.btn-active::after, #lookupRecordButton.btn-active::after
+	{
+	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
+	transition: transform 0.3s;
+}
+
+
+
+</style>
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
@@ -54,8 +114,12 @@
 		<div
 			class="flex flex-col justify-between items-center self-stretch flex-grow-0 flex-shrink-0 w-[745px] overflow-hidden px-[171px] py-[29px]">
 			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[323px] relative overflow-hidden py-[11px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">여행 계획 조회</p>
-				<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black/40">여행 기록 조회</p>
+				<p onClick="lookupPlanButton();" id="lookupPlanButton"
+					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50  text-black/80 cursor-pointer">여행
+					계획 조회</p>
+				<p onClick="lookupRecordButton();" id="lookupRecordButton"
+					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">여행 기록
+					조회</p>
 			</div>
 			<div
 				class="flex flex-col justify-start items-center flex-grow w-[565px] relative overflow-hidden gap-2.5 pt-[18px] pb-[62px]">

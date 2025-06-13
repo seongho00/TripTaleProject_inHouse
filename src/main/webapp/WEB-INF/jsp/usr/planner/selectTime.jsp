@@ -237,7 +237,7 @@ body {
 		const img = $(btn).parent().data('img')
 		let address = $(btn).parent().data('address');
 		if (address.length > 16){
-			address = address.slice(0, 16)
+			address = address.slice(0, 16) + "..."
 		}
 		
 		// select 박스에서 현재 선택된 일차
@@ -518,7 +518,6 @@ body {
 								class="addDailyPlanButton cursor-pointer pointer-events-auto">
 								<i class="fa-solid fa-square-plus text-3xl"></i>
 							</button>
-
 						</div>
 					</c:forEach>
 

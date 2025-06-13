@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -169,6 +171,27 @@ public class KakaoOAuthService {
 		System.out.println("응답 결과:");
 		System.out.println(response.getBody());
 		return response.getBody();
+	}
+
+	public void convertNaverMapxMapyToLatLng(String mapx, String mapy) {
+		mapx = "127.4514722";
+		mapy = "36.3928268";
+		// 네이버 응답값은 TM * 10^7 형식 → 변환 필요
+		double x = Double.parseDouble(mapx) / 10000000.0;
+		double y = Double.parseDouble(mapy) / 10000000.0;
+		String kakaoApiKey = "KakaoAK " + rq.getKakaoClientId();
+		String url = "https://dapi.kakao.com/v2/local/geo/transcoord.json" + "?x=" + mapx + "&y=" + mapy
+				+ "&input_coord=TM" + "&output_coord=WGS84";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", kakaoApiKey);
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+
+		ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+		System.out.println(response.getBody());
+
 	}
 
 }

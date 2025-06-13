@@ -11,7 +11,7 @@
 
 </script>
 
-<script defer>
+<script>
 	/* 처음 활성화될 버튼 설정 */
 	$(document).ready(function() {
 		function init() {
