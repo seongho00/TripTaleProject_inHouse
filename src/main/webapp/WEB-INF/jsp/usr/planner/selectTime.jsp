@@ -145,12 +145,12 @@ body {
 
 	function toggleDailyPlan() {
 
-	   if ($('.dailyPlan').hasClass('w-0')){
+	   if ($('.dailyPlanContainer').hasClass('w-0')){
 		  // 다시 열기
-		   $('.dailyPlan').removeClass('w-0').addClass('w-[527px]');
+		   $('.dailyPlanContainer').removeClass('w-0').addClass('w-[527px]');
 	   } else {
 		   // 넣기
-		   $('.dailyPlan').removeClass('w-[527px]').addClass('w-0');
+		   $('.dailyPlanContainer').removeClass('w-[527px]').addClass('w-0');
 	   }
 	   $('.toggleDailyPlanButton').toggleClass('rotate-180');
 
@@ -265,6 +265,14 @@ body {
 		    // index는 0부터 시작하므로 +1
 		    $(this).find('.index-num').text(index + 1);
 		  });
+	}
+	
+	// 모든 일정 삭제
+	function deleteAllDailyPlan() {
+		if(!confirm("정말 모든 일정을 삭제하시겠습니까?")){
+			return;
+		}
+		$('.dailyPlan').children().remove();
 	}
 </script>
 
@@ -576,9 +584,9 @@ body {
 
 		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden ">
 			<div
-				class="w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
+				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
 				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
-					<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
+					<p onClick="deleteAllDailyPlan();" class="cursor-pointer w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
 						설정 초기화</p>
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
@@ -590,39 +598,11 @@ body {
 						22:00</p>
 
 				</div>
-				<div class="flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
+				<div class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
 					<div
 						class="dailyPlan flex-col flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-1 px-0.5">
-						<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-							<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
-							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-							<div
-								class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 py-[5px]">
-								<div
-									class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-1.5">
-									<div
-										class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3.5 py-[3px]">
-										<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
-										<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
-									</div>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 주소</p>
-								</div>
-								<div
-									class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
-									<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
-										<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
-											시간</span>
-										<br />
-										<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
-									</p>
-								</div>
-							</div>
-							<div
-								class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 px-px">
-								<i class="fa-solid fa-trash-can"></i>
-							</div>
-						</div>
+					<!-- javascript를 통해 일정 생성공간 -->
+					
 					</div>
 
 
