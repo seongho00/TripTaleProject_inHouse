@@ -16,6 +16,35 @@ body {
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
 <script>
+/* 처음 활성화될 버튼 설정 */
+$(document).ready(function() {
+	function init() {
+		$('#recommendButton').addClass('btn-active');
+		$('.recommendUI').addClass('ui-active');
+		$('#infoButton').addClass('btn-active');
+		$('.infoUI').addClass('ui-active');
+	}
+	init();
+	
+	// N일차 날짜 선택 태그 변할 때 다른 dailyPlan 안 보이게
+
+	$('#daySelect').on('change', function () {
+		const day = $(this).val();
+		$('.dailyPlan').addClass('hidden');
+		$(`.dailyPlan[data-day="\${day}"]`).removeClass('hidden');
+	});
+	
+	// 카테고리 버튼 활성화
+	$('#categoryButtons .btn').on('click', function () {
+		// 모든 버튼에 btn-outline 다시 추가
+		$('#categoryButtons .btn').addClass('btn-outline');
+		// 클릭한 버튼만 btn-outline 제거
+		$(this).removeClass('btn-outline');
+	});
+		
+	initMap();
+});
+
 	let instance;
 
 	$(function() {
@@ -86,34 +115,7 @@ body {
 				});
 	});
 
-	/* 처음 활성화될 버튼 설정 */
-	$(document).ready(function() {
-		function init() {
-			$('#recommendButton').addClass('btn-active');
-			$('.recommendUI').addClass('ui-active');
-			$('#infoButton').addClass('btn-active');
-			$('.infoUI').addClass('ui-active');
-		}
-		init();
-		
-		// N일차 날짜 선택 태그 변할 때 다른 dailyPlan 안 보이게
-		$('#daySelect').on('change', function () {
-			const day = $(this).val();
-			$('.dailyPlan').addClass('hidden');
-			$(`.dailyPlan[data-day="\${day}"]`).removeClass('hidden');
-		});
-		
-		// 카테고리 버튼 활성화
-		$('#categoryButtons .btn').on('click', function () {
-			  // 모든 버튼에 btn-outline 다시 추가
-			  $('#categoryButtons .btn').addClass('btn-outline');
-
-			  // 클릭한 버튼만 btn-outline 제거
-			  $(this).removeClass('btn-outline');
-		});
-		
-		
-	});
+	
 	
 	
 	function hideTimeSelectDiv() {
@@ -306,7 +308,28 @@ body {
 		$('.dailyPlan').children().remove();
 	}
 	
+	// 카카오톡 맵 설정
+	function initMap() {
+	    const container = document.getElementById('map'); // 지도 담을 영역
+	    const options = {
+	      center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청 좌표
+	      level: 3 // 확대 레벨 (작을수록 확대)
+	    };
 
+	    const map = new kakao.maps.Map(container, options);
+
+	    // 마커 위치
+	    const markerPosition = new kakao.maps.LatLng(37.5665, 126.9780);
+
+	    // 마커 생성
+	    const marker = new kakao.maps.Marker({
+	      position: markerPosition
+	    });
+
+	    // 마커를 지도에 표시
+	    marker.setMap(map);
+	  }
+	
 </script>
 
 
@@ -387,13 +410,12 @@ body {
 .infoUI.ui-active, .pictureUI.ui-active {
 	display: block;
 }
-
-/*  */
 </style>
 
 <div
-	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<div class="flex absolute  justify-start items-center self-stretch flex-grow relative overflow-hidden pr-2.5">
+	class=" relative flex justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
+	<div class="bg-black h-screen w-screen" id="map" ></div>
+	<div class="flex absolute justify-start items-center self-stretch flex-grow overflow-hidden pr-2.5">
 		<div
 			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
 			<div
@@ -612,9 +634,9 @@ body {
 			</button>
 		</div>
 
-		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden ">
+		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
 			<div
-				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
+				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-screen relative overflow-hidden gap-[9px] border-t-0 border-r border-b-0 border-l-0 border-black">
 				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
 					<p onClick="deleteAllDailyPlan();"
 						class="cursor-pointer w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
@@ -622,7 +644,7 @@ body {
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-2 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차 일정 장바구니</option>
+							<option value="${i}">${i}일차일정장바구니</option>
 						</c:forEach>
 					</select>
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
@@ -639,14 +661,18 @@ body {
 					</c:forEach>
 				</div>
 			</div>
-			<div onClick="toggleDailyPlan();"
-				class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer">
-				<p
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[30px] h-[50px] text-xs font-medium text-center text-black">
-					<i class="toggleDailyPlanButton fa-solid fa-chevron-left text-2xl transition-transform duration-300"></i>
-				</p>
+			<div class="h-screen flex items-center">
+				<div onClick="toggleDailyPlan();"
+					class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer">
+					<p
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[30px] h-[50px] text-xs font-medium text-center text-black">
+						<i class="toggleDailyPlanButton fa-solid fa-chevron-left text-2xl transition-transform duration-300"></i>
+					</p>
+				</div>
 			</div>
+
 		</div>
+
 	</div>
 
 

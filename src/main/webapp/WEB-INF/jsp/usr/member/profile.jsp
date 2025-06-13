@@ -15,7 +15,6 @@
 	$(document).ready(function() {
 		$('#lookupPlanButton').addClass('btn-active');
 
-
 	});
 
 	// 여행계획조회 찾기, 여행기록조회 찾기 눌렀을 때
@@ -35,6 +34,29 @@
 		$('#lookupRecordButton').toggleClass('btn-active');
 
 	}
+	
+	// 카카오톡 맵 설정
+	function initMap() {
+	    const container = document.getElementById('map'); // 지도 담을 영역
+	    const options = {
+	      center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청 좌표
+	      level: 3 // 확대 레벨 (작을수록 확대)
+	    };
+
+	    const map = new kakao.maps.Map(container, options);
+
+	    // 마커 위치
+	    const markerPosition = new kakao.maps.LatLng(37.5665, 126.9780);
+
+	    // 마커 생성
+	    const marker = new kakao.maps.Marker({
+	      position: markerPosition
+	    });
+
+	    // 마커를 지도에 표시
+	    marker.setMap(map);
+	  }
+	
 </script>
 
 <style>
@@ -67,11 +89,8 @@
 	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
 	transition: transform 0.3s;
 }
-
-
-
 </style>
-
+<div id="map" style="width: 100%; height: 400px;"></div>
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
 	<div
