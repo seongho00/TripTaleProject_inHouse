@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
-import com.mysql.cj.xdevapi.Result;
 
 @Service
 public class MemberService {
