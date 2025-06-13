@@ -26,4 +26,6 @@ public class TripLocation {
 	private int reviewCount;
 	private int areaCode;
 
+	private String extra__pictureUrl;
+
 }

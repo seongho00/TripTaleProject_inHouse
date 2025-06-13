@@ -64,17 +64,20 @@ public class UsrPlannerController {
 		long diffDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 		List<String> dateList = plannerService.getDateList(startDate, diffDays);
 
-		// areaCode를 통해 장소 데이터 가져오기
+		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
 		int locationTypeId = 1;
-		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationTypeId ,areaCode);
+		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationTypeId, areaCode);
+		System.out.println(tripLocations);
+		// tripLocationPicture 가져오기
+//		tripLocationService.getLocationPicuture();
 
 		model.addAttribute("startDate", dateFormattedStartDate);
 		model.addAttribute("endDate", dateFormattedEndDate);
 		model.addAttribute("dateList", dateList); // ✅ 날짜 리스트 전달
 		model.addAttribute("diffDays", diffDays);
 		model.addAttribute("tripLocations", tripLocations);
-		
+
 		return "usr/planner/selectTime";
 	}
 

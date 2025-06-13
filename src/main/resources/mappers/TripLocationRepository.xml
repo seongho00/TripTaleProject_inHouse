@@ -28,11 +28,15 @@
 
 	<select id="getLocationInfo" parameterType="map"
 		resultType="com.example.demo.vo.TripLocation">
-		SELECT *
-		FROM tripLocation
-		WHERE areaCode = #{areaCode} AND
+		SELECT TL.*, TLP.pictureUrl AS extra__pictureUrl
+		FROM tripLocation AS TL
+		LEFT JOIN tripLocationPicture AS TLP
+		ON TL.id = TLP.tripLocationId
+		WHERE TL.areaCode = #{areaCode}
 		<if test="locationTypeId != -1">
-			locationTypeId = #{locationTypeId};
+			AND TL.locationTypeId = #{locationTypeId}
 		</if>
+		GROUP BY TL.id
+		ORDER BY reviewCount DESC
 	</select>
 </mapper>

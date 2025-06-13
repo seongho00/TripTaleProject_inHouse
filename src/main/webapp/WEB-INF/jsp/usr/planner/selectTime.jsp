@@ -392,18 +392,18 @@ body {
 					<c:forEach var="tripLocation" items="${tripLocations}">
 						<div onClick="toggleInfoDiv()"
 							class="cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]">
-							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-							${tripLocation.id }
+							<img src="${tripLocation.extra__pictureUrl }" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+							
 							<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
-									명소</p>
+									${tripLocation.locationTypeId }</p>
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
-									장소 이름</p>
+									${tripLocation.locationName }</p>
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
-									장소 주소</p>
+									${tripLocation.address }</p>
 							</div>
 							<button class="cursor-pointer pointer-events-auto">
 								<i class="fa-solid fa-square-plus text-3xl"></i>
