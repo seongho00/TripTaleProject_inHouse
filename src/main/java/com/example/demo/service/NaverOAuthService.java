@@ -2,10 +2,10 @@ package com.example.demo.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.vo.Member;
@@ -26,12 +25,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class NaverOAuthService {
 
-	private final TripLocationService tripLocationService;
 	@Autowired
 	private Rq rq;
 
 	@Autowired
 	private MemberRepository memberRepository;
+	@Autowired
+	private TripLocationService tripLocationService;
 
 	public NaverOAuthService(MemberRepository memberRepository, TripLocationService tripLocationService) {
 		this.memberRepository = memberRepository;
@@ -141,7 +141,8 @@ public class NaverOAuthService {
 
 	}
 
-	public Map<String, Object> searchLocal(String query) {
+	public Map<String, Object> searchLocal() {
+		String query = "대전 유성구 관광지";
 		String clientId = rq.getNaverClientId();
 		String clientSecret = rq.getNaverClientSecret();
 		RestTemplate restTemplate = new RestTemplate();
@@ -167,13 +168,26 @@ public class NaverOAuthService {
 			System.out.println("items.size = " + items.size());
 
 			for (Map<String, Object> item : items) {
-				System.out.println(item.get("title"));
+				String title = Jsoup.parse((String) item.get("title")).text();
+				System.out.println(title);
 				System.out.println(item.get("link"));
 				System.out.println(item.get("category"));
 				System.out.println(item.get("description"));
 				System.out.println(item.get("roadAddress"));
 				System.out.println(item.get("mapx"));
 				System.out.println(item.get("mapy"));
+				System.out.println();
+				
+				if (!title.contains("대전")) {
+					title = "대전 " + title;
+				}
+				
+				tripLocationService.process(title, 3);
+				try {
+					Thread.sleep(10000); // 15초 대기
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt(); // ← 권장 방식
+				}
 			}
 		}
 

@@ -25,4 +25,14 @@
 		SELECT
 		LAST_INSERT_ID()
 	</select>
+
+	<select id="getLocationInfo" parameterType="map"
+		resultType="com.example.demo.vo.TripLocation">
+		SELECT *
+		FROM tripLocation
+		WHERE areaCode = #{areaCode} AND
+		<if test="locationTypeId != -1">
+			locationTypeId = #{locationTypeId};
+		</if>
+	</select>
 </mapper>

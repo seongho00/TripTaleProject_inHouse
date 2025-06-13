@@ -387,13 +387,13 @@ body {
 						<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">맛집</p>
 					</div>
 				</div>
-
+				
 				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
-					<c:forEach var="i" begin="0" end="2" step="1">
+					<c:forEach var="tripLocation" items="${tripLocations}">
 						<div onClick="toggleInfoDiv()"
-							;
 							class="cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]">
 							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+							${tripLocation.id }
 							<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
@@ -509,7 +509,7 @@ body {
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차 일정 장바구니</option>
+							<option value="${i}">${i}일차일정 장바구니</option>
 						</c:forEach>
 					</select>
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~

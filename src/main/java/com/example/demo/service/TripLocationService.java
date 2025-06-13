@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.TripLocationPictureRepository;
 import com.example.demo.repository.TripLocationRepository;
+import com.example.demo.vo.TripLocation;
 
 @Service
 public class TripLocationService {
@@ -34,10 +35,10 @@ public class TripLocationService {
 	private WebDriver driver;
 
 	public void process(String keyword, int areaCode) {
-//		keyword = "인천 강화군 화도면 상방리 산35";
+//		keyword = "보라매공원";
 		String url = "https://map.naver.com/v5/search/" + keyword;
 		// 크롬 드라이버 세팅 (드라이버 설치 경로 입력)
-		System.setProperty("webdriver.chrome.driver", "C:\\Spring\\chromedriver-win64\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "C:\\LSH_spring_work\\chromedriver-win64\\chromedriver.exe");
 
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--remote-allow-origins=*");
@@ -99,7 +100,7 @@ public class TripLocationService {
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
 		// (4) 상세정보가 나오는 프레임으로 이동한다.
-		
+
 		WebElement iframe = wait
 				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("iframe#entryIframe")));
 		driver.switchTo().frame(iframe);
@@ -221,6 +222,12 @@ public class TripLocationService {
 			profile = "사진 정보 없음";
 		}
 
+	}
+
+	public List<TripLocation> getLocationInfo(int locationTypeId, int areaCode) {
+
+		List<TripLocation> tripLocations = tripLocationRepository.getLocationInfo(locationTypeId, areaCode);
+		return tripLocations;
 	}
 
 }
