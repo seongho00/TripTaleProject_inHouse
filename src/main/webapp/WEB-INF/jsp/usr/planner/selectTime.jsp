@@ -485,10 +485,10 @@ body {
 				</div>
 
 
-				<div id="categoryButtons" class="recommendUI flex !justify-between !items-center w-[300px] px-4 py-2">
-					<button class="btn btn-info text-black !text-lg w-[80px]">추천</button>
-					<button class="btn btn-outline btn-info text-black !text-lg w-[80px]">명소</button>
-					<button class="btn btn-outline btn-info text-black !text-lg w-[80px]">맛집</button>
+				<div id="categoryButtons" class="recommendUI flex !justify-between !items-center w-[315px] px-4 py-2">
+					<button class="btn btn-info text-black !text-lg w-[90px]">관광지</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]">명소</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]">맛집</button>
 				</div>
 
 				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
