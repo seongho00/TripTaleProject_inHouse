@@ -19,8 +19,8 @@ public class TripLocation {
 	private String locationName;
 	private int locationTypeId;
 	private String address;
-	private String scheduleInfo;
-	private String numberInfo;
+	private String schedule;
+	private String number;
 	private String profile;
 	private String star;
 	private int reviewCount;

@@ -68,9 +68,9 @@ public class UsrPlannerController {
 		int areaCode = 3;
 		int locationTypeId = 1;
 		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationTypeId, areaCode);
-		System.out.println(tripLocations);
 		// tripLocationPicture 가져오기
 //		tripLocationService.getLocationPicuture();
+//		System.out.println(tripLocations);
 
 		model.addAttribute("startDate", dateFormattedStartDate);
 		model.addAttribute("endDate", dateFormattedEndDate);

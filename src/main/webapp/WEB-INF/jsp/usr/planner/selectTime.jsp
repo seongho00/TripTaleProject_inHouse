@@ -140,66 +140,63 @@ body {
 		$('.infoUI').toggleClass('ui-active');
 		$('.pictureUI').toggleClass('ui-active');
 	}
-
-	/* 장소 정보 나타내는 div 열고 닫기 애니메이션 */
-	function toggleInfoDiv() {
-		const $div = $('.infoDiv');
-
-
-		const isHidden = $div.hasClass('hidden');
-
-
-		if (isHidden) {
-
-	    	$div.removeClass('hidden');
-	
-			requestAnimationFrame(() => {
-			$div.removeClass('-translate-x-1/3 opacity-0');
-			$div.addClass('translate-x-0 opacity-100');
-		});
-		} else {
-			// 트랜지션으로 숨기는 애니메이션 시작
-			$div.removeClass('translate-x-0 opacity-100');
-			$div.addClass('-translate-x-1/3 opacity-0');
-
-			// 트랜지션 완료 후 hidden 적용 (트랜지션 시간에 맞춰서)
-			setTimeout(() => {
-				$div.addClass('hidden');
-			}, 300); // Tailwind transition-duration 기준 (기본 300ms)
-		}
-	}
-	
-	// 상세보기 Div 닫기
-	function closeInfoDiv() {
-		const $div = $('.infoDiv');
-
-		// 다시 왼쪽으로 숨김 + 투명도 0
-		$div.removeClass('translate-x-0 opacity-100');
-		$div.addClass('-translate-x-1/3 opacity-0');
-
-		// transition 후 hidden 처리
-		setTimeout(() => {
-
-			$div.addClass('hidden');
-		}, 300); 
-	}
-  
   // N일차 장바구니 toggle
 
-  function toggleDailyPlan() {
-	  
-	  
-	  
-	  if ($('.dailyPlan').hasClass('w-0')){
+
+	function toggleDailyPlan() {
+
+	   if ($('.dailyPlan').hasClass('w-0')){
 		  // 다시 열기
-		  $('.dailyPlan').removeClass('w-0').addClass('w-[527px]');
-	  } else {
-		  // 넣기
-		  $('.dailyPlan').removeClass('w-[527px]').addClass('w-0');
-	  }
-	  
-	  $('.toggleDailyPlanButton').toggleClass('rotate-180');
-  }
+		   $('.dailyPlan').removeClass('w-0').addClass('w-[527px]');
+	   } else {
+		   // 넣기
+		   $('.dailyPlan').removeClass('w-[527px]').addClass('w-0');
+	   }
+	   $('.toggleDailyPlanButton').toggleClass('rotate-180');
+
+	}
+  
+
+
+	// infoDiv 열고 닫기 & 정보 추가하기
+   $(function() {
+	   $('.trip-item').on('click', function() {
+		   const name = $(this).data('name');
+		   const type = $(this).data('type');
+		   const address = $(this).data('address');
+		   const img = $(this).data('img');
+		   const schedule = $(this).data('schedule');
+		   const profile = $(this).data('profile');
+		   const number = $(this).data('number');
+		   const reviewCount = $(this).data('reviewcount');
+		   
+			console.log(reviewCount);
+			
+		   $('#info-locationName').text(name);
+	       $('#info-locationType').text(type);
+	       $('#info-address').text(address);
+	       $('#info-schedule').text(schedule);
+	       $('#info-profile').text(profile);
+	       $('#info-number').text(number);
+	       $('#info-reviewCount').text("리뷰 : " + reviewCount);
+	       $('#info-img').attr('src', img);
+
+ 	       const $infoDiv = $('.infoDiv');
+ 	       $infoDiv.removeClass('hidden');
+ 	       requestAnimationFrame(() => {
+	         $infoDiv.removeClass('-translate-x-1/3 opacity-0')
+	                 .addClass('translate-x-0 opacity-100');
+	      		});
+ 	       });
+
+	  $('.closeInfoDiv').on('click', function() {
+		  const $infoDiv = $('.infoDiv');
+	      $infoDiv
+	      .removeClass('translate-x-0 opacity-100')
+	      .addClass('-translate-x-1/3 opacity-0');
+	  });
+
+  });
 </script>
 
 
@@ -387,13 +384,19 @@ body {
 						<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">맛집</p>
 					</div>
 				</div>
-				
+
 				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
 					<c:forEach var="tripLocation" items="${tripLocations}">
-						<div onClick="toggleInfoDiv()"
-							class="cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]">
-							<img src="${tripLocation.extra__pictureUrl }" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+						<div
+							class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
+							data-name="${tripLocation.locationName}" data-type="${tripLocation.locationTypeId}"
+							data-address="${tripLocation.address}" data-number="${tripLocation.number }"
+							data-profile="${tripLocation.profile }" data-schedule="${tripLocation.schedule }"
+							data-img="${tripLocation.extra__pictureUrl}" data-reviewCount="${tripLocation.reviewCount }">
 							
+							<img src="${tripLocation.extra__pictureUrl }"
+								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+
 							<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
@@ -427,17 +430,19 @@ body {
 		</div>
 		<div
 			class="infoDiv z-1 left-[520px] transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] absolute gap-2.5 rounded-[20px] bg-white border border-black">
-			<img src="image-9.png"
+			<img id="info-img"
 				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
 			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] overflow-hidden px-0.5 py-[7px]">
 				<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
 					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
-						<p class="flex-grow-0 flex-shrink-0 w-[142px] h-[42px] text-[25px] font-medium text-center text-black">서울 대공원</p>
-						<p class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
+						<p id='info-locationName'
+							class="flex-grow-0 flex-shrink-0 w-[142px] h-[42px] text-[25px] font-medium text-center text-black"></p>
+						<p id='info-locationTypeId'
+							class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
 					</div>
 					<div
 						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
-						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">리뷰 : 2000</p>
+						<p id="info-reviewCount" class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
 						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
 					</div>
 				</div>
@@ -461,9 +466,8 @@ body {
 					<div class="pr-2 pl-3">
 						<i class="fa-solid fa-location-dot text-3xl"></i>
 					</div>
-					<p
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black">위치
-						정보</p>
+					<p id="info-address"
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
 				</div>
 				<div
 					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[11px] px-2">
@@ -472,30 +476,28 @@ body {
 						<i class="fa-solid fa-clock text-3xl"></i>
 					</div>
 
-					<p
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black">일정
-						정보</p>
+					<p id="info-schedule"
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
 				</div>
 				<div
 					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
 					<div class="pr-2 pl-2">
 						<i class="fa-solid fa-phone text-3xl"></i>
 					</div>
-					<p
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black">번호
-						정보</p>
+					<p id="info-number"
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
 				</div>
 				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
 					<div class="pl-2">
 						<i class="fa-solid fa-pen-to-square text-3xl"></i>
 					</div>
-					<p class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black">소개글 정보</p>
+					<p id="info-profile" class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black"></p>
 				</div>
 
 			</div>
-			<button onClick="closeInfoDiv()"
-				class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
-						hover:bg-gray-300">
+			<button
+				class="closeInfoDiv absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
+						hover:bg-gray-300 cursor-pointer">
 				<i class="fa-solid fa-xmark text-lg text-black"></i>
 			</button>
 		</div>
@@ -509,7 +511,7 @@ body {
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차일정 장바구니</option>
+							<option value="${i}">${i}일차일정장바구니</option>
 						</c:forEach>
 					</select>
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
