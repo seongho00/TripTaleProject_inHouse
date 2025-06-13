@@ -3,6 +3,7 @@
 
 <c:set var="pageTitle" value="TIME PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
+<%@ include file="../common/daisyUi.jspf"%>
 
 <style>
 body {
@@ -102,13 +103,22 @@ body {
 			$(`.dailyPlan[data-day="\${day}"]`).removeClass('hidden');
 		});
 		
+		// 카테고리 버튼 활성화
+		$('#categoryButtons .btn').on('click', function () {
+			  // 모든 버튼에 btn-outline 다시 추가
+			  $('#categoryButtons .btn').addClass('btn-outline');
+
+			  // 클릭한 버튼만 btn-outline 제거
+			  $(this).removeClass('btn-outline');
+		});
+		
 		
 	});
-
+	
+	
 	function hideTimeSelectDiv() {
 		$('.selectTimeDiv').addClass('hidden');
 		$('.selectLocationDiv').removeClass('hidden');
-
 	}
 
 	function recommendButton() {
@@ -149,9 +159,8 @@ body {
 		$('.infoUI').toggleClass('ui-active');
 		$('.pictureUI').toggleClass('ui-active');
 	}
+	
   // N일차 장바구니 toggle
-
-
 	function toggleDailyPlan() {
 
 	   if ($('.dailyPlanContainer').hasClass('w-0')){
@@ -210,14 +219,18 @@ body {
 
   });
 	
-	
+	// 추가하기 버튼 눌렀을 때 일정에 장소 추가하기
 	function addDailyPlan() {
-		console.log("실행됨");
-
+		addDailyPlanForPlus($('.addDailyPlanButton'));
 	}
 	
 	// + 버튼 누를 때 일정에 장소 추가하기
 	function addDailyPlanForPlus(btn) {
+		
+		// 버튼 눌렀을 때 일정 장바구니가 안 보이면 열기
+		if ($('.dailyPlanContainer').hasClass('w-0')){
+			toggleDailyPlan();
+		}
 		
 		const locationTypeId = $(btn).parent().data('locationtypeid');
 		const name = $(btn).parent().data('name');
@@ -292,7 +305,10 @@ body {
 		}
 		$('.dailyPlan').children().remove();
 	}
+	
+
 </script>
+
 
 
 <style>
@@ -371,6 +387,8 @@ body {
 .infoUI.ui-active, .pictureUI.ui-active {
 	display: block;
 }
+
+/*  */
 </style>
 
 <div
@@ -466,19 +484,11 @@ body {
 					<i class="fa-solid fa-magnifying-glass text-lg"></i>
 				</div>
 
-				<div class="recommendUI flex-grow-0 flex-shrink-0 w-[268px] h-14 relative overflow-hidden">
-					<div
-						class="flex justify-center items-center w-[66px] h-[34px] absolute left-4 top-3 gap-2.5 px-[13px] py-2 rounded-[10px] bg-[#9dcbff]/[0.63]">
-						<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">추천</p>
-					</div>
-					<div
-						class="flex justify-center items-center w-[66px] h-[34px] absolute left-[103px] top-3 gap-2.5 px-[13px] py-2 rounded-[10px] bg-white/[0.63]">
-						<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">명소</p>
-					</div>
-					<div
-						class="flex justify-center items-center w-[66px] h-[34px] absolute left-[183px] top-3 gap-2.5 px-[13px] py-2 rounded-[10px] bg-white/[0.63]">
-						<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">맛집</p>
-					</div>
+
+				<div id="categoryButtons" class="recommendUI flex !justify-between !items-center w-[300px] px-4 py-2">
+					<button class="btn btn-info text-black !text-lg w-[80px]">추천</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[80px]">명소</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[80px]">맛집</button>
 				</div>
 
 				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
@@ -504,7 +514,8 @@ body {
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
 									${tripLocation.address }</p>
 							</div>
-							<button onClick="event.stopPropagation(); addDailyPlanForPlus(this);" class="cursor-pointer pointer-events-auto">
+							<button onClick="event.stopPropagation(); addDailyPlanForPlus(this);"
+								class="addDailyPlanButton cursor-pointer pointer-events-auto">
 								<i class="fa-solid fa-square-plus text-3xl"></i>
 							</button>
 
@@ -610,9 +621,9 @@ body {
 						class="cursor-pointer w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
 						설정 초기화</p>
 					<select id="daySelect"
-						class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
+						class="w-60 h-[59px] absolute left-2 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차일정장바구니</option>
+							<option value="${i}">${i}일차 일정 장바구니</option>
 						</c:forEach>
 					</select>
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
