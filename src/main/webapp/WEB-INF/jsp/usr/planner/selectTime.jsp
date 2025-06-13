@@ -94,6 +94,15 @@ body {
 			$('.infoUI').addClass('ui-active');
 		}
 		init();
+		
+		// N일차 날짜 선택 태그 변할 때 다른 dailyPlan 안 보이게
+		$('#daySelect').on('change', function () {
+			const day = $(this).val();
+			$('.dailyPlan').addClass('hidden');
+			$(`.dailyPlan[data-day="\${day}"]`).removeClass('hidden');
+		});
+		
+		
 	});
 
 	function hideTimeSelectDiv() {
@@ -218,8 +227,16 @@ body {
 			address = address.slice(0, 16)
 		}
 		
+		// select 박스에서 현재 선택된 일차
+		const selectedDay = $('#daySelect').val();
+		
+		// 2해당 일차의 dailyPlan div를 찾기
+		const $targetDailyPlan = $(`.dailyPlan[data-day="\${selectedDay}"]`);
+		
 		// 현재 plan-item 개수를 기준으로 인덱스 계산
-		  const currentIndex = $('.dailyPlan .plan-item').length + 1;
+		const currentIndex = $targetDailyPlan.find('.plan-item').length + 1;
+		
+		
 		const html = `
 			<div class="plan-item flex justify-between items-center flex-grow relative overflow-auto px-2.5 py-3.5 border w-full">
 				<p class="index-num flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">\${currentIndex}</p>
@@ -252,8 +269,9 @@ body {
 				</div>
 			</div>
 			`;
-						
-		$('.dailyPlan').append(html);
+					
+			
+		$targetDailyPlan.append(html);
 
 	}
 	
@@ -357,7 +375,7 @@ body {
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<div class="flex absolute  justify-start items-center self-stretch flex-grow relative overflow-hidden  pr-2.5">
+	<div class="flex absolute  justify-start items-center self-stretch flex-grow relative overflow-hidden pr-2.5">
 		<div
 			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
 			<div
@@ -428,7 +446,7 @@ body {
 
 			</div>
 			<div
-				class="selectLocationDiv flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 py-4">
+				class="selectLocationDiv flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 pt-4">
 				<p class="flex-grow-0 flex-shrink-0 w-[184px] h-[27px] text-3xl font-medium text-center text-black">장소 선택</p>
 				<div
 					class="flex justify-start items-start flex-grow-0 flex-shrink-0 w-[244px] relative overflow-hidden gap-2.5 px-[22px] py-[9px]">
@@ -495,14 +513,16 @@ body {
 
 
 				</div>
-				<div
-					class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 py-1.5">
-					<div
-						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[51px] h-[25px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black">
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-white">완료</p>
-					</div>
 
+			</div>
+			<div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
+				<div onClick="if(!confirm('일정을 생성하시겠습니까?')) return false"
+					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[80px] h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">
+					<p
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-white">일정
+						생성</p>
 				</div>
+
 			</div>
 
 		</div>
@@ -586,7 +606,8 @@ body {
 			<div
 				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
 				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
-					<p onClick="deleteAllDailyPlan();" class="cursor-pointer w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
+					<p onClick="deleteAllDailyPlan();"
+						class="cursor-pointer w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
 						설정 초기화</p>
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-0 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
@@ -596,16 +617,16 @@ body {
 					</select>
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
 						22:00</p>
-
 				</div>
 				<div class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
-					<div
-						class="dailyPlan flex-col flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-1 px-0.5">
-					<!-- javascript를 통해 일정 생성공간 -->
-					
-					</div>
+					<c:forEach var="i" begin="1" end="${diffDays}">
+						<div
+							class="dailyPlan flex-col flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-1 px-0.5"
+							data-day="${i}">
+							<!-- javascript를 통해 일정 생성하는 공간 -->
 
-
+						</div>
+					</c:forEach>
 				</div>
 			</div>
 			<div onClick="toggleDailyPlan();"
