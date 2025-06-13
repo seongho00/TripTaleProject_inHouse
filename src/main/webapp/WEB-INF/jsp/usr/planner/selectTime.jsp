@@ -170,7 +170,6 @@ body {
 		   const number = $(this).data('number');
 		   const reviewCount = $(this).data('reviewcount');
 		   
-			console.log(reviewCount);
 			
 		   $('#info-locationName').text(name);
 	       $('#info-locationType').text(type);
@@ -194,9 +193,79 @@ body {
 	      $infoDiv
 	      .removeClass('translate-x-0 opacity-100')
 	      .addClass('-translate-x-1/3 opacity-0');
+	   // 300ms 후에 hidden 추가
+	      setTimeout(() => {
+	        $infoDiv.addClass('hidden');
+	      }, 300); // Tailwind의 duration-300과 일치
 	  });
 
   });
+	
+	
+	function addDailyPlan() {
+		console.log("실행됨");
+
+	}
+	
+	// + 버튼 누를 때 일정에 장소 추가하기
+	function addDailyPlanForPlus(btn) {
+		
+		const locationTypeId = $(btn).parent().data('locationtypeid');
+		const name = $(btn).parent().data('name');
+		const img = $(btn).parent().data('img')
+		let address = $(btn).parent().data('address');
+		if (address.length > 16){
+			address = address.slice(0, 16)
+		}
+		
+		// 현재 plan-item 개수를 기준으로 인덱스 계산
+		  const currentIndex = $('.dailyPlan .plan-item').length + 1;
+		const html = `
+			<div class="plan-item flex justify-between items-center flex-grow relative overflow-auto px-2.5 py-3.5 border w-full">
+				<p class="index-num flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">\${currentIndex}</p>
+				<img src="\${img}" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+				<div
+					class="flex justify-between items-start self-stretch flex-grow-0 flex-shrink-0 w-[306px] overflow-hidden px-0.5 ">
+					<div
+						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 w-[200px] relative overflow-hidden gap-2.5 py-1.5">
+						<div
+							class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1 py-[3px]">
+							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
+							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${name}</p>
+							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${address}</p>
+						</div>
+					
+					</div>
+					<div
+						class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
+						<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
+							<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
+								시간</span>
+							<br />
+							<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
+						</p>
+					</div>
+				</div>
+				<div
+					class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 ">
+					<i onclick="deleteDailyPlan(this);" class="fa-solid fa-trash-can cursor-pointer p-2"></i>
+				</div>
+			</div>
+			`;
+						
+		$('.dailyPlan').append(html);
+
+	}
+	
+	// 일정 삭제하기
+	function deleteDailyPlan(i) {
+		$(i).parent().parent().remove();
+		// 인덱스 재조정
+		  $('.dailyPlan .plan-item').each(function(index) {
+		    // index는 0부터 시작하므로 +1
+		    $(this).find('.index-num').text(index + 1);
+		  });
+	}
 </script>
 
 
@@ -289,7 +358,8 @@ body {
 					<img src="/images/로고.png" class="w-[77px] h-[53px] absolute left-[-1px] top-[-1px] object-cover" />
 				</a>
 				<div class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
-					<p class="flex-grow-0 flex-shrink-0 w-[51px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
+					<p
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[85px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
@@ -393,7 +463,7 @@ body {
 							data-address="${tripLocation.address}" data-number="${tripLocation.number }"
 							data-profile="${tripLocation.profile }" data-schedule="${tripLocation.schedule }"
 							data-img="${tripLocation.extra__pictureUrl}" data-reviewCount="${tripLocation.reviewCount }">
-							
+
 							<img src="${tripLocation.extra__pictureUrl }"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 
@@ -408,7 +478,7 @@ body {
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
 									${tripLocation.address }</p>
 							</div>
-							<button class="cursor-pointer pointer-events-auto">
+							<button onClick="event.stopPropagation(); addDailyPlanForPlus(this);" class="cursor-pointer pointer-events-auto">
 								<i class="fa-solid fa-square-plus text-3xl"></i>
 							</button>
 
@@ -432,22 +502,24 @@ body {
 			class="infoDiv z-1 left-[520px] transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] absolute gap-2.5 rounded-[20px] bg-white border border-black">
 			<img id="info-img"
 				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
-			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] overflow-hidden px-0.5 py-[7px]">
+			<div
+				class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] relative overflow-hidden px-0.5 py-[7px]">
 				<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
 					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
 						<p id='info-locationName'
-							class="flex-grow-0 flex-shrink-0 w-[142px] h-[42px] text-[25px] font-medium text-center text-black"></p>
+							class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
 						<p id='info-locationTypeId'
 							class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
 					</div>
 					<div
 						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
-						<p id="info-reviewCount" class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
+						<p id="info-reviewCount"
+							class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
 						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
 					</div>
 				</div>
-				<div onClick=""
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 rounded-[10px] bg-black cursor-pointer">
+				<div onClick="addDailyPlan();"
+					class="top-[50px] left-[230px] flex justify-center items-center flex-grow-0 flex-shrink-0 absolute overflow-hidden gap-2.5 rounded-[10px] bg-black cursor-pointer">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[104px] h-[50px] text-xl font-medium text-white">
 						추가하기</p>
@@ -467,7 +539,7 @@ body {
 						<i class="fa-solid fa-location-dot text-3xl"></i>
 					</div>
 					<p id="info-address"
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] font-medium text-black text-sm"></p>
 				</div>
 				<div
 					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[11px] px-2">
@@ -504,7 +576,7 @@ body {
 
 		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden ">
 			<div
-				class="dailyPlan w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
+				class="w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[914px] relative overflow-hidden gap-[9px] bg-white border-t-0 border-r border-b-0 border-l-0 border-black">
 				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
 					<p class="w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
 						설정 초기화</p>
@@ -520,7 +592,7 @@ body {
 				</div>
 				<div class="flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
 					<div
-						class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 h-[114px] overflow-hidden gap-2.5 px-0.5">
+						class="dailyPlan flex-col flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-1 px-0.5">
 						<div class="flex justify-start items-center flex-grow relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 							<p class="flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">1</p>
 							<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
