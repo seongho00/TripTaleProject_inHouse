@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -9,12 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.TripTaleProjectApplication;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripLocation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class UsrPlannerController {
@@ -89,5 +92,17 @@ public class UsrPlannerController {
 
 		return "usr/planner/region";
 	}
+
+	@RequestMapping("/ai/generatePlan")
+	@ResponseBody
+	public String generatePlan(@RequestParam("planData") String planData, Model model) throws IOException {
+	    ObjectMapper mapper = new ObjectMapper();
+
+	    System.out.println(planData);
+	    return "ㅇㅇ";
+	}
+	
+	
+	
 
 }

@@ -66,6 +66,44 @@ $(document).ready(function() {
 	kakao.maps.load(function () {
 		initMap(); // API가 완전히 로드된 후 실행해야 함
 	});
+	
+	
+	// 계획 생성 버튼
+	$('#planForm').on('submit', function (e) {
+		e.preventDefault(); // 일단 막고
+		  const plansByDay = {};
+
+		  $('.dailyPlanContainer').each(function () {
+		    const $container = $(this);
+		    
+
+		    // 같은 index의 selectTimeDiv에서 시간 읽기
+		    const index = $('.dailyPlanContainer').index(this);
+		    const day = "2025-06-15"; // 예: "2025-06-15"
+
+		    const $timeDiv = $('.timeInfoDiv').eq(index);
+		    const start = $timeDiv.find('.start-time').text().trim();
+		    const end = $timeDiv.find('.end-time').text().trim();
+		    const plans = [];
+
+		    $container.find('.plan-item').each(function () {
+		      const $item = $(this);
+
+		      const name = $item.find('.text-black').eq(0).text().trim();
+		      const address = $item.find('.text-black').eq(1).text().trim();
+		      const duration = $item.find('.duration').text().trim(); // "02:00"
+
+		      plans.push({ name, address, duration });
+		    });
+
+		    plansByDay[day] = {
+		      availableTime: { start, end },
+		      plans: plans
+		    };
+		  });
+
+		  $('#planDataInput').val(JSON.stringify(plansByDay));
+		});
 });
 
 	let instance;
@@ -328,12 +366,13 @@ $(document).ready(function() {
 		const mapX = $(btn).parent().data('mapx');
 		const mapY = $(btn).parent().data('mapy');
 		
+	    const lat = parseFloat(mapY);
+	    const lng = parseFloat(mapX);
+		
 		// select 박스에서 현재 선택된 일차
 		const selectedDay = $('#daySelect').val();
 		
 		if (mapX && mapY) {
-		    const lat = parseFloat(mapY);
-		    const lng = parseFloat(mapX);
 		    if (!isNaN(lat) && !isNaN(lng)) {
 		      const position = new kakao.maps.LatLng(lat, lng);
 		      const newMarker = new kakao.maps.Marker({ position, map });
@@ -372,7 +411,8 @@ $(document).ready(function() {
 		
 		
 		const html = `
-			<div class="plan-item flex justify-between items-center flex-grow relative overflow-auto px-2.5 py-3.5 border w-full">
+			<div class="plan-item flex justify-between items-center flex-grow relative overflow-auto px-2.5 py-3.5 border w-full"
+				data-lat="\${lat}" data-lng="\${lng}">
 				<p class="index-num flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">\${currentIndex}</p>
 				<img src="\${img}" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 				<div
@@ -393,13 +433,13 @@ $(document).ready(function() {
 							<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
 								시간</span>
 							<br />
-							<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
+							<span class="duration flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
 						</p>
 					</div>
 				</div>
 				<div
 					class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 w-[27px] relative overflow-hidden gap-2.5 ">
-					<i onclick="deleteDailyPlan(this);" class="fa-solid fa-trash-can cursor-pointer p-2"></i>
+					<i onclick="deleteDailyPlan(this); " class="fa-solid fa-trash-can cursor-pointer p-2"></i>
 				</div>
 			</div>
 			`;
@@ -411,7 +451,30 @@ $(document).ready(function() {
 	
 	// 일정 삭제하기
 	function deleteDailyPlan(i) {
-		$(i).parent().parent().remove();
+		const $planItem = $(i).closest('.plan-item');
+
+	    const lat = $planItem.data('lat');
+	    const lng = $planItem.data('lng');
+	    const selectedDay = $('#daySelect').val();
+
+	    // 마커/오버레이 제거
+	    if (dayMarkersMap[selectedDay]) {
+	        dayMarkersMap[selectedDay] = dayMarkersMap[selectedDay].filter(entry => {
+	            const markerPos = entry.marker.getPosition();
+	            const match = markerPos.getLat() === lat && markerPos.getLng() === lng;
+
+	            if (match) {
+	                entry.marker.setMap(null);
+	                entry.overlay.setMap(null);
+	            }
+
+	            return !match; // 필터링해서 제거
+	        });
+	    }
+
+	    // DOM에서 삭제
+	    $planItem.remove();
+		
 		// 인덱스 재조정
 		  $('.dailyPlan .plan-item').each(function(index) {
 		    // index는 0부터 시작하므로 +1
@@ -439,6 +502,8 @@ $(document).ready(function() {
 
 	    marker = new kakao.maps.Marker({ map: map });
 	  }
+	
+	
 	
 </script>
 
@@ -550,7 +615,7 @@ body {
 				<div class="flex flex-col justify-start items-start w-[407px] absolute left-[35px] top-[95px] gap-3">
 					<c:forEach var="date" items="${dateList}" varStatus="status">
 						<div
-							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 border border-black">
+							class="timeInfoDiv flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 border border-black">
 							<div
 								class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
 								<p class="flex-grow-0 flex-shrink-0 text-xs font-medium text-center text-black">${status.index + 1}일차</p>
@@ -662,18 +727,19 @@ body {
 
 			</div>
 			<div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
-				<div onClick="if(!confirm('일정을 생성하시겠습니까?')) return false"
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[80px] h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">
-					<p
-						class="flex justify-center items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-white">일정
-						생성</p>
-				</div>
-
+				<form id="planForm" action="/ai/generatePlan" method="post">
+					<input type="hidden" name="planData" id="planDataInput" />
+					<button type="submit" onclick="return confirm('일정을 생성하시겠습니까?')"
+						class="flex justify-center items-center  h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">
+						<p class="text-[15px] font-medium text-center text-white">일정 생성</p>
+					</button>
+				</form>
 			</div>
 
 		</div>
 
 		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
+
 			<div
 				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-screen relative overflow-hidden gap-[9px] border-t-0 border-r border-b-0 border-l-0 border-black">
 				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
@@ -689,7 +755,7 @@ body {
 					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
 						22:00</p>
 				</div>
-				<div class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
+				<div class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-auto gap-2.5">
 					<c:forEach var="i" begin="1" end="${diffDays}">
 						<div
 							class="dailyPlan flex-col flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-1 px-0.5"
@@ -700,6 +766,7 @@ body {
 					</c:forEach>
 				</div>
 			</div>
+
 			<div class="bg-transparent h-screen flex items-center">
 				<div onClick="toggleDailyPlan();"
 					class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer">
