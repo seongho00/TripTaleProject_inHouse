@@ -9,6 +9,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 
 /* 카카오맵 관련 전역번수 */
@@ -79,7 +82,9 @@ $(document).ready(function() {
 
 		    // 같은 index의 selectTimeDiv에서 시간 읽기
 		    const index = $('.dailyPlanContainer').index(this);
-		    const day = "2025-06-15"; // 예: "2025-06-15"
+
+		    const dateList = ${dateListJson};
+		    const day = dateList[index];
 
 		    const $timeDiv = $('.timeInfoDiv').eq(index);
 		    const start = $timeDiv.find('.start-time').text().trim();
@@ -91,7 +96,7 @@ $(document).ready(function() {
 
 		      const name = $item.find('.text-black').eq(0).text().trim();
 		      const address = $item.find('.text-black').eq(1).text().trim();
-		      const duration = $item.find('.duration').text().trim(); // "02:00"
+		      const duration = $item.find('.duration-input').text().trim(); // "02:00"
 
 		      plans.push({ name, address, duration });
 		    });
@@ -428,12 +433,12 @@ $(document).ready(function() {
 					
 					</div>
 					<div
-						class="flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6">
+						class="durationDiv flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6 cursor-pointer">
 						<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center">
 							<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-black">머무는
 								시간</span>
 							<br />
-							<span class="duration flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
+							<span class="duration-input flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]">02:00</span>
 						</p>
 					</div>
 				</div>
@@ -503,6 +508,32 @@ $(document).ready(function() {
 	    marker = new kakao.maps.Marker({ map: map });
 	  }
 	
+	// 머무는 시간 클릭 시
+	$(document).on('click', '.durationDiv', function () {
+  		const $div = $(this);
+  		const $span = $div.find('.duration-input');
+  		const currentValue = $span.text().trim();
+		
+ 		// input 생성 후 span 대체
+ 		const $input = $('<input type="text" class="temp-duration-input w-[60px] text-center border text-sm" />');
+ 		$input.val(currentValue);
+ 		$span.replaceWith($input);
+	
+ 		// Flatpickr 바인딩
+		flatpickr($input[0], {
+  			enableTime: true,
+  			noCalendar: true,
+ 			dateFormat: "H:i",
+  			time_24hr: true,
+  			defaultDate: currentValue,
+  			onClose: function (selectedDates, dateStr) {
+  		    const $newSpan = $('<span class="duration-input flex-grow-0 flex-shrink-0 w-[60px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]"></span>').text(dateStr);
+  			$input.replaceWith($newSpan);
+ 			}
+  		});
+
+ 		$input[0].focus(); // 입력 포커스
+	});
 	
 	
 </script>
@@ -587,6 +618,12 @@ body {
 
 .infoUI.ui-active, .pictureUI.ui-active {
 	display: block;
+}
+
+/* 머무는 시간 ui 크기 설정 코드 */
+.flatpickr-calendar {
+	width: 90px !important;
+	font-size: 13px;
 }
 </style>
 
