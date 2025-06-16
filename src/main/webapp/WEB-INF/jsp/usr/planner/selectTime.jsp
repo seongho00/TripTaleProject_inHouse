@@ -73,26 +73,21 @@ $(document).ready(function() {
 	
 	// 일정 생성 버튼
 	$('#planForm').on('submit', function (e) {
-
+		e.preventDefault();
 		  const plansByDay = {};
+		  const dateList = ${dateListJson};
+		  $('.dailyPlan').each(function () {
+			    const $dayDiv = $(this);
+			    const dayIndex = parseInt($dayDiv.data('day')) - 1; // data-day="1" → index 0
+			    const day = dateList[dayIndex];
 
-		  $('.dailyPlanContainer').each(function () {
+			    const $timeDiv = $('.timeInfoDiv').eq(dayIndex); // 날짜별 시간
+			    const start = $timeDiv.find('.start-time').text().trim();
+			    const end = $timeDiv.find('.end-time').text().trim();
 
-		    const $container = $(this);
+			    const plans = [];
 
-		    // 같은 index의 selectTimeDiv에서 시간 읽기
-		    const index = $('.dailyPlanContainer').index(this);
-
-		    const dateList = ${dateListJson};
-		    const day = dateList[index];
-
-
-		    const $timeDiv = $('.timeInfoDiv').eq(index);
-		    const start = $timeDiv.find('.start-time').text().trim();
-		    const end = $timeDiv.find('.end-time').text().trim();
-		    const plans = [];
-
-		    $container.find('.plan-item').each(function () {
+		    $dayDiv.find('.plan-item').each(function () {
 		      const $item = $(this);
 			  const lat = $item.data('lat'); 
 			  const lng = $item.data('lng');
