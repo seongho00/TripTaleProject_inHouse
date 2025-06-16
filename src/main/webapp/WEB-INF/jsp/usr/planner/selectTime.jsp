@@ -1,27 +1,24 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="TIME PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
 <%@ include file="../common/daisyUi.jspf"%>
 
-<style>
-body {
-	position: relative;
-}
-</style>
-
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script
-	src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
 <script>
+
 /* 카카오맵 관련 전역번수 */
 let map;       // 전역 지도 객체
 let marker;    // 전역 마커 객체
+
+const dayMarkersMap = {};   // 일정별 마커 저장용 배열
+
+let infoMarker = null;    // trip-item 클릭 시 마커
+let infoOverlay = null;   // trip-item 클릭 시 이름 오버레이
 
 /* 처음 활성화될 버튼 설정 */
 $(document).ready(function() {
@@ -34,11 +31,28 @@ $(document).ready(function() {
 	init();
 	
 	// N일차 날짜 선택 태그 변할 때 다른 dailyPlan 안 보이게
-
 	$('#daySelect').on('change', function () {
-		const day = $(this).val();
+		const selectedDay = $(this).val();
+		
+		// 기존 마커/오버레이 모두 숨기기
+		  Object.values(dayMarkersMap).forEach(list =>
+		    list.forEach(({ marker, overlay }) => {
+		      marker.setMap(null);
+		      overlay.setMap(null);
+		    })
+		  );
+
+		  // 해당 일차만 다시 보여주기
+		  if (dayMarkersMap[selectedDay]) {
+		    dayMarkersMap[selectedDay].forEach(({ marker, overlay }) => {
+		      marker.setMap(map);
+		      overlay.setMap(map);
+		    });
+		  }
+
 		$('.dailyPlan').addClass('hidden');
-		$(`.dailyPlan[data-day="\${day}"]`).removeClass('hidden');
+		$(`.dailyPlan[data-day="\${selectedDay}"]`).removeClass('hidden');	
+		
 	});
 	
 	// 카테고리 버튼 활성화
@@ -199,10 +213,9 @@ $(document).ready(function() {
 		   const profile = $(this).data('profile');
 		   const number = $(this).data('number');
 		   const reviewCount = $(this).data('reviewcount');
-		   const mapX = $(this).data('mapX');
-		   const mapY = $(this).data('mapY');
-		   console.log(mapX);
-		   console.log(mapY);
+		   const mapX = $(this).data('mapx');
+		   const mapY = $(this).data('mapy');
+
 		   
 		   // 넘겨받은 데이터 넣기
 		   $('#info-locationName').text(name);
@@ -220,20 +233,43 @@ $(document).ready(function() {
  	       requestAnimationFrame(() => {
 	         $infoDiv.removeClass('-translate-x-1/3 opacity-0')
 	                 .addClass('translate-x-0 opacity-100');
-	      		});
+	      	});
+ 	       
+ 	 	  // 지도에 마커 찍기
+ 		   const lat = parseFloat(mapY);
+ 		   const lng = parseFloat(mapX);
+
+ 		   if (!isNaN(lat) && !isNaN(lng)) {
+ 		     const newPosition = new kakao.maps.LatLng(lat, lng);
+
+ 		 // 이전 마커/오버레이 제거
+ 		    if (infoMarker) infoMarker.setMap(null);
+ 		    if (infoOverlay) infoOverlay.setMap(null);
+
+ 		    // 마커 생성
+ 		    infoMarker = new kakao.maps.Marker({
+ 		      position: newPosition,
+ 		      map: map
+ 		    });
+
+ 		    // 이름 오버레이 생성
+ 		    const content = `<div style="padding:4px 10px; background:white; border:1px solid #333; border-radius:4px; font-size:13px;">
+ 		                       \${name}
+ 		                     </div>`;
+
+ 		    infoOverlay = new kakao.maps.CustomOverlay({
+ 		      content: content,
+ 		      position: newPosition,
+ 		      yAnchor: 2.5
+ 		    });
+
+ 		    infoOverlay.setMap(map);
+ 		    map.setCenter(newPosition);
+ 		   }
+
  	       });
 	   
-	   // 지도에 마커 찍기
-	   const lat = parseFloat(mapY);
-	   const lng = parseFloat(mapX);
-
-	   if (!isNaN(lat) && !isNaN(lng)) {
-	     const newPosition = new kakao.maps.LatLng(lat, lng);
-
-	     marker.setPosition(newPosition);  // 마커 위치 이동
-	     map.setCenter(newPosition);       // 지도 중심 이동
-	   }
-
+	   
 	  // 닫는 버튼 누르기
 	  $('.closeInfoDiv').on('click', function() {
 		  const $infoDiv = $('.infoDiv');
@@ -269,8 +305,45 @@ $(document).ready(function() {
 			address = address.slice(0, 16) + "..."
 		}
 		
+		// 지도에 마커 추가 (새로운 위치라면)
+		const mapX = $(btn).parent().data('mapx');
+		const mapY = $(btn).parent().data('mapy');
+		
 		// select 박스에서 현재 선택된 일차
 		const selectedDay = $('#daySelect').val();
+		
+		if (mapX && mapY) {
+		    const lat = parseFloat(mapY);
+		    const lng = parseFloat(mapX);
+		    if (!isNaN(lat) && !isNaN(lng)) {
+		      const position = new kakao.maps.LatLng(lat, lng);
+		      const newMarker = new kakao.maps.Marker({ position, map });
+		      
+		      // 🟡 오버레이 생성 (이름 띄우기)
+		      const content = `<div style="padding:4px 10px; background:white; border:1px solid #333; border-radius:4px; font-size:13px;">
+		                        \${name}
+		                      </div>
+		                      `;
+		      const overlay = new kakao.maps.CustomOverlay({
+				 content: content,
+		     	 position: position,
+		     	 yAnchor: 2.5
+		      });
+		       
+		      overlay.setMap(map);
+		      map.setCenter(position);
+
+		      // 일차별로 저장
+		      if (!dayMarkersMap[selectedDay]) {
+		        dayMarkersMap[selectedDay] = [];
+		      }
+		      dayMarkersMap[selectedDay].push({
+		          marker: newMarker,
+		          overlay: overlay
+		        });
+		    }
+		  }
+	
 		
 		// 해당 일차의 dailyPlan div를 찾기
 		const $targetDailyPlan = $(`.dailyPlan[data-day="\${selectedDay}"]`);
@@ -345,9 +418,6 @@ $(document).ready(function() {
 
 	    map = new kakao.maps.Map(container, options); // 전역 map 설정
 
-	    // 마커 위치
-	    const markerPosition = new kakao.maps.LatLng(37.5665, 126.9780);
-
 	    marker = new kakao.maps.Marker({ map: map });
 	  }
 	
@@ -356,6 +426,9 @@ $(document).ready(function() {
 
 
 <style>
+body {
+	position: relative;
+}
 /* 추천장소, 장소 찾기 클릭시 색깔, 밑줄 코드 */
 #recommendButton.btn-active, #searchButton.btn-active {
 	opacity: 1;
@@ -436,75 +509,54 @@ $(document).ready(function() {
 <div
 	class=" relative flex justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
 	<div class="z-0 h-screen w-screen" id="map"></div>
-	<div
-		class="flex absolute justify-start items-center self-stretch flex-grow overflow-hidden pr-2.5">
+	<div class="flex absolute justify-start items-center self-stretch flex-grow overflow-hidden pr-2.5">
 		<div
 			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
 			<div
 				class="self-stretch flex-grow-0 flex-shrink-0 h-[121px] relative overflow-hidden bg-[#aedff7] border-b border-black">
 				<a href="../home/main">
-					<img src="/images/로고.png"
-						class="w-[77px] h-[53px] absolute left-[-1px] top-[-1px] object-cover" />
+					<img src="/images/로고.png" class="w-[77px] h-[53px] absolute left-[-1px] top-[-1px] object-cover" />
 				</a>
-				<div
-					class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
+				<div class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[85px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
-					<p
-						class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
+					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
-				<p
-					class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행
-					이름</p>
+				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
 			</div>
 
-			<div
-				class="selectTimeDiv hidden self-stretch flex-grow-0 flex-shrink-0 h-[759px] relative overflow-auto">
-				<p
-					class="w-[184px] h-[51px] absolute left-[146.5px] top-0 text-3xl font-medium text-center text-black">시간
-					선택</p>
-				<div
-					class="flex flex-col justify-start items-start w-[407px] absolute left-[35px] top-[95px] gap-3">
+			<div class="selectTimeDiv hidden self-stretch flex-grow-0 flex-shrink-0 h-[759px] relative overflow-auto">
+				<p class="w-[184px] h-[51px] absolute left-[146.5px] top-0 text-3xl font-medium text-center text-black">시간 선택</p>
+				<div class="flex flex-col justify-start items-start w-[407px] absolute left-[35px] top-[95px] gap-3">
 					<c:forEach var="date" items="${dateList}" varStatus="status">
 						<div
 							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 border border-black">
 							<div
 								class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<p
-									class="flex-grow-0 flex-shrink-0 text-xs font-medium text-center text-black">${status.index + 1}일차</p>
-								<p
-									class="flex-grow-0 flex-shrink-0 w-[61px] h-[23px] text-[15px] font-medium text-center text-black">${date}
+								<p class="flex-grow-0 flex-shrink-0 text-xs font-medium text-center text-black">${status.index + 1}일차</p>
+								<p class="flex-grow-0 flex-shrink-0 w-[61px] h-[23px] text-[15px] font-medium text-center text-black">${date}
 								</p>
 							</div>
-							<div
-								class="flex flex-col justify-between items-center self-stretch flex-grow overflow-hidden py-2.5">
-								<div
-									class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[227px] relative overflow-hidden">
-									<p
-										class="flex-grow-0 flex-shrink-0 w-[78px] h-[18px] text-[10px] font-medium text-center text-black">출발
-										시간</p>
-									<p
-										class="flex-grow-0 flex-shrink-0 w-[73px] h-[17px] text-[10px] font-medium text-center text-black">종료
-										시간</p>
+							<div class="flex flex-col justify-between items-center self-stretch flex-grow overflow-hidden py-2.5">
+								<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[227px] relative overflow-hidden">
+									<p class="flex-grow-0 flex-shrink-0 w-[78px] h-[18px] text-[10px] font-medium text-center text-black">출발 시간</p>
+									<p class="flex-grow-0 flex-shrink-0 w-[73px] h-[17px] text-[10px] font-medium text-center text-black">종료 시간</p>
 								</div>
 								<div
 									class="time-range flex justify-start items-center flex-grow-0 flex-shrink-0 w-[283px] relative overflow-hidden gap-2.5 px-2.5 pb-px cursor-pointer"
 									data-index="${status.index}">
 									<div
 										class="relative flex justify-start items-center flex-grow-0 flex-shrink-0 h-[37px] relative overflow-hidden gap-2.5 py-[11px] ">
-										<i
-											class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
+										<i class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
 										<div
 											class="start-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black"
 											data-index="${status.index}">10: 00 AM</div>
 									</div>
-									<p
-										class="flex-grow-0 flex-shrink-0 w-[21px] h-[13px] text-[15px] font-medium text-center text-black">~</p>
+									<p class="flex-grow-0 flex-shrink-0 w-[21px] h-[13px] text-[15px] font-medium text-center text-black">~</p>
 									<div onClick=""
 										class="flex justify-start items-center flex-grow-0 flex-shrink-0 h-[37px] relative overflow-hidden gap-2.5 py-[11px] ">
-										<i
-											class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
+										<i class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
 										<div
 											class="end-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black"
 											data-index="${status.index}">10: 00 AM</div>
@@ -529,9 +581,7 @@ $(document).ready(function() {
 			</div>
 			<div
 				class="selectLocationDiv flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 pt-4">
-				<p
-					class="flex-grow-0 flex-shrink-0 w-[184px] h-[27px] text-3xl font-medium text-center text-black">장소
-					선택</p>
+				<p class="flex-grow-0 flex-shrink-0 w-[184px] h-[27px] text-3xl font-medium text-center text-black">장소 선택</p>
 				<div
 					class="flex justify-start items-start flex-grow-0 flex-shrink-0 w-[244px] relative overflow-hidden gap-2.5 px-[22px] py-[9px]">
 					<button onClick="recommendButton()" id="recommendButton"
@@ -551,36 +601,26 @@ $(document).ready(function() {
 				</div>
 
 
-				<div id="categoryButtons"
-					class="recommendUI flex !justify-between !items-center w-[315px] px-4 py-2">
+				<div id="categoryButtons" class="recommendUI flex !justify-between !items-center w-[315px] px-4 py-2">
 					<button class="btn btn-info text-black !text-lg w-[90px]">관광지</button>
-					<button
-						class="btn btn-outline btn-info text-black !text-lg w-[90px]">명소</button>
-					<button
-						class="btn btn-outline btn-info text-black !text-lg w-[90px]">맛집</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]">명소</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]">맛집</button>
 				</div>
 
-				<div
-					class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
+				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
 					<c:forEach var="tripLocation" items="${tripLocations}">
 						<div
 							class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
-							data-name="${tripLocation.locationName}"
-							data-type="${tripLocation.locationTypeId}"
-							data-address="${tripLocation.address}"
-							data-number="${tripLocation.number }"
-							data-profile="${tripLocation.profile }"
-							data-schedule="${tripLocation.schedule }"
-							data-img="${tripLocation.extra__pictureUrl}"
-							data-reviewCount="${tripLocation.reviewCount }"
-							data-mapX="${tripLocation.mapX }"
-							data-mapY="${tripLocation.mapY }">
+							data-name="${tripLocation.locationName}" data-type="${tripLocation.locationTypeId}"
+							data-address="${tripLocation.address}" data-number="${tripLocation.number }"
+							data-profile="${tripLocation.profile }" data-schedule="${tripLocation.schedule }"
+							data-img="${tripLocation.extra__pictureUrl}" data-reviewCount="${tripLocation.reviewCount }"
+							data-mapX="${tripLocation.mapX }" data-mapY="${tripLocation.mapY }">
 
 							<img src="${tripLocation.extra__pictureUrl }"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 
-							<div
-								class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
+							<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
 									${tripLocation.locationTypeId }</p>
@@ -591,8 +631,7 @@ $(document).ready(function() {
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
 									${tripLocation.address }</p>
 							</div>
-							<button
-								onClick="event.stopPropagation(); addDailyPlanForPlus(this);"
+							<button onClick="event.stopPropagation(); addDailyPlanForPlus(this);"
 								class="addDailyPlanButton cursor-pointer pointer-events-auto">
 								<i class="fa-solid fa-square-plus text-3xl"></i>
 							</button>
@@ -603,8 +642,7 @@ $(document).ready(function() {
 				</div>
 
 			</div>
-			<div
-				class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
+			<div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
 				<div onClick="if(!confirm('일정을 생성하시겠습니까?')) return false"
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[80px] h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">
 					<p
@@ -621,10 +659,8 @@ $(document).ready(function() {
 				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
 			<div
 				class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] relative overflow-hidden px-0.5 py-[7px]">
-				<div
-					class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
-					<div
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
+				<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
+					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
 						<p id='info-locationName'
 							class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
 						<p id='info-locationTypeId'
@@ -634,9 +670,7 @@ $(document).ready(function() {
 						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
 						<p id="info-reviewCount"
 							class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
-						<p
-							class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수
-							: 2000</p>
+						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
 					</div>
 				</div>
 				<div onClick="addDailyPlan();"
@@ -653,8 +687,7 @@ $(document).ready(function() {
 				<p onClick="pictureButton()" id="pictureButton"
 					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
 			</div>
-			<div
-				class="infoUI flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
+			<div class="infoUI flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
 				<div
 					class=" flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
 					<div class="pr-2 pl-3">
@@ -681,13 +714,11 @@ $(document).ready(function() {
 					<p id="info-number"
 						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
 				</div>
-				<div
-					class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
+				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
 					<div class="pl-2">
 						<i class="fa-solid fa-pen-to-square text-3xl"></i>
 					</div>
-					<p id="info-profile"
-						class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black"></p>
+					<p id="info-profile" class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black"></p>
 				</div>
 
 			</div>
@@ -698,12 +729,10 @@ $(document).ready(function() {
 			</button>
 		</div>
 
-		<div
-			class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
+		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
 			<div
 				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-screen relative overflow-hidden gap-[9px] border-t-0 border-r border-b-0 border-l-0 border-black">
-				<div
-					class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
+				<div class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
 					<p onClick="deleteAllDailyPlan();"
 						class="cursor-pointer w-[99px] h-[21px] absolute left-[428px] top-[113px] text-[15px] font-medium text-center text-[#f00]">
 						설정 초기화</p>
@@ -713,12 +742,10 @@ $(document).ready(function() {
 							<option value="${i}">${i}일차일정장바구니</option>
 						</c:forEach>
 					</select>
-					<p
-						class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간
-						: 10:00 ~ 22:00</p>
+					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
+						22:00</p>
 				</div>
-				<div
-					class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
+				<div class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-hidden gap-2.5">
 					<c:forEach var="i" begin="1" end="${diffDays}">
 						<div
 							class="dailyPlan flex-col flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-1 px-0.5"
@@ -734,8 +761,7 @@ $(document).ready(function() {
 					class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[30px] h-[50px] text-xs font-medium text-center text-black">
-						<i
-							class="toggleDailyPlanButton fa-solid fa-chevron-left text-2xl transition-transform duration-300"></i>
+						<i class="toggleDailyPlanButton fa-solid fa-chevron-left text-2xl transition-transform duration-300"></i>
 					</p>
 				</div>
 			</div>
@@ -749,8 +775,7 @@ $(document).ready(function() {
 
 
 
-<div
-	class="timepicker fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
+<div class="timepicker fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
 	<div
 		class="bg-white flex-col flex-grow-0 flex-shrink-0 w-[500px] h-[350px] relative overflow-hidden flex items-center justify-center rounded">
 
