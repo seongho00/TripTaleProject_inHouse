@@ -31,7 +31,7 @@ public class Rq {
 	private String kakaoClientSecret = "pk0ZiCe51XiMuDwfRMLTeqVAM6YV9BNq";
 	private String naverClientId = "5lIc5HiT6OdtWBZYb5k5";
 	private String naverClientSecret = "OhDWVNoA76";
-	private String chatGptClientId = "OPENAI_API_KEY";
+	private String chatGptClientId = "";
 
 	public Rq(HttpServletRequest req, HttpServletResponse resp) {
 		this.req = req;

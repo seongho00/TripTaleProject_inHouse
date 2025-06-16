@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.TripTaleProjectApplication;
 import com.example.demo.service.ChatGptService;
+import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
 import com.example.demo.vo.DailyPlan;
@@ -29,6 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class UsrPlannerController {
 
+	private final NaverOAuthService naverOAuthService;
+
 	private final TripTaleProjectApplication tripTaleProjectApplication;
 
 	@Autowired
@@ -40,8 +44,9 @@ public class UsrPlannerController {
 	@Autowired
 	private ChatGptService chatGptService;
 
-	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication) {
+	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication, NaverOAuthService naverOAuthService) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
+		this.naverOAuthService = naverOAuthService;
 
 	}
 
@@ -109,8 +114,6 @@ public class UsrPlannerController {
 	@ResponseBody
 	public String generatePlan(@RequestParam("planData") String planDataJson, Model model) throws IOException {
 
-//		chatGptService.askQuestion(null);
-
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		// JSON → Map<String, DailyPlan>으로 파싱
@@ -121,23 +124,23 @@ public class UsrPlannerController {
 		PlanRequest planRequest = new PlanRequest();
 		planRequest.setPlansByDay(plansByDay);
 
+		List<String> results = new ArrayList<>();
+		;
 		// 데이터 까보기
 		for (Map.Entry<String, DailyPlan> entry : plansByDay.entrySet()) {
+
 			String day = entry.getKey();
 			DailyPlan dailyPlan = entry.getValue();
+			if (dailyPlan == null) {
+				continue;
+			}
 
-			System.out.println("날짜: " + day);
-			System.out.println("  시작 시간: " + dailyPlan.getAvailableTime().getStart());
-			System.out.println("  종료 시간: " + dailyPlan.getAvailableTime().getEnd());
-
+			results.add(chatGptService.generateOptimizedSchedule(day, dailyPlan));
 			for (PlacePlan place : dailyPlan.getPlans()) {
-				System.out.println("    장소: " + place.getName());
-				System.out.println("    주소: " + place.getAddress());
-				System.out.println("    시간: " + place.getDuration());
-				System.out.println("    좌표: (" + place.getLat() + ", " + place.getLng() + ")");
+
 			}
 		}
-		return "ㅇㅇ";
+		return results.toString();
 	}
 
 }

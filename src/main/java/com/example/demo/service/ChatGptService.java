@@ -55,21 +55,17 @@ public class ChatGptService {
 		return messageData.get("content").toString();
 	}
 
-	public String generateOptimizedSchedule(PlanRequest planRequest) {
+	public String generateOptimizedSchedule(String day, DailyPlan dailyPlan) {
 		String OPENAI_API_KEY = rq.getChatGptClientId();
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 
-			Map<String, DailyPlan> plansByDay = planRequest.getPlansByDay();
-
 			// ✅ 날짜 하루씩 계산 (06/15처럼 하루만)
-			String day = plansByDay.keySet().iterator().next(); // 예: "06/15"
-			DailyPlan daily = plansByDay.get(day);
-			String startTime = daily.getAvailableTime().getStart();
-			String endTime = daily.getAvailableTime().getEnd();
+			String startTime = dailyPlan.getAvailableTime().getStart();
+			String endTime = dailyPlan.getAvailableTime().getEnd();
 
 			// 👇 여행 계획 JSON 문자열
-			String planJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(plansByDay);
+			String planJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dailyPlan);
 
 			// ✅ 사용자 프롬프트 구성
 			String prompt = """
@@ -82,13 +78,34 @@ public class ChatGptService {
 					- 장소 간 거리를 고려해 이동 시간은 대략 20~40분으로 추정해줘
 
 					요구사항:
-					1. 하루 시간(12시간) 안에서 가능한 한 많은 장소를 방문하도록 계획해줘
+					1. 하루 시간 안에서 가능한 한 많은 장소를 방문하도록 계획해줘
 					2. 같은 장소는 중복 방문하지 말아줘
 					3. 각 장소의 머무는 시간 + 이동 시간을 고려해서 계산해줘
-					4. 결과는 다음과 같은 JSON 배열 형식으로 응답해줘. JSON만 출력해줘
+					4. 결과는 다음 JSON 형식의 **배열만** 출력해줘. `배열 안에 있는 요소는 장소 객체이고, 그 외에는 아무것도 출력하지 마`
 
+					출력 형식:
+					[
+					  {
+					    "place": "동춘당공원",
+					    "lat": 36.3657396,
+					    "lng": 127.441732,
+					    "start": "10:00 AM",
+					    "end": "12:30 PM",
+					    "duration": "02:00"
+					  },
+					  {
+					    "place": "계족산",
+					    "lat": 36.3847228,
+					    "lng": 127.4391981,
+					    "start": "1:00 PM",
+					    "end": "3:30 PM",
+					    "duration": "02:00"
+					  }
+					]
 					장소 정보:
 					""".formatted(day, startTime, endTime) + planJson;
+
+			System.out.println(prompt);
 
 			// 👇 ChatGPT 메시지 포맷
 			Map<String, Object> message = Map.of("role", "user", "content", prompt);

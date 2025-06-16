@@ -73,7 +73,6 @@ $(document).ready(function() {
 	
 	// 일정 생성 버튼
 	$('#planForm').on('submit', function (e) {
-		e.preventDefault();
 		  const plansByDay = {};
 		  const dateList = ${dateListJson};
 		  $('.dailyPlan').each(function () {
