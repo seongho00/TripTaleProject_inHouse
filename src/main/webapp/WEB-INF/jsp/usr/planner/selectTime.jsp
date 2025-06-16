@@ -227,8 +227,17 @@ $(document).ready(function() {
 	       $('#info-reviewCount').text("리뷰 : " + reviewCount);
 	       $('#info-img').attr('src', img);
 
-	       // infoDiv 열 때 애니메이션
+	      
+	       
+	       
  	       const $infoDiv = $('.infoDiv');
+	       
+ 	       if (!$infoDiv.hasClass('hidden')){
+ 	    	 closeInfoDiv();
+ 		  	 return;
+ 	       }
+ 	       
+ 	       // infoDiv 열 때 애니메이션
  	       $infoDiv.removeClass('hidden');
  	       requestAnimationFrame(() => {
 	         $infoDiv.removeClass('-translate-x-1/3 opacity-0')
@@ -268,21 +277,31 @@ $(document).ready(function() {
  		   }
 
  	       });
-	   
-	   
-	  // 닫는 버튼 누르기
-	  $('.closeInfoDiv').on('click', function() {
-		  const $infoDiv = $('.infoDiv');
-	      $infoDiv
-	      .removeClass('translate-x-0 opacity-100')
-	      .addClass('-translate-x-1/3 opacity-0');
-	   // 300ms 후에 hidden 추가
-	      setTimeout(() => {
-	        $infoDiv.addClass('hidden');
-	      }, 300); // Tailwind의 duration-300과 일치
-	  });
-
   });
+	
+   
+   
+	  // 닫는 버튼 눌렀을 때 
+	  function closeInfoDiv() {
+			  const $infoDiv = $('.infoDiv');
+			  $infoDiv.removeClass('translate-x-0 opacity-100')
+		      .addClass('-translate-x-1/3 opacity-0');
+			  
+			  // 🔻 마커 및 오버레이 제거
+			    if (infoMarker) {
+			        infoMarker.setMap(null);
+			        infoMarker = null;
+			    }
+			    if (infoOverlay) {
+			        infoOverlay.setMap(null);
+			        infoOverlay = null;
+			    }
+		  	 // 300ms 후에 hidden 추가
+		      setTimeout(() => {
+		        $infoDiv.addClass('hidden');
+		      }, 300); // Tailwind의 duration-300과 일치
+		}
+	  
 	
 	// 추가하기 버튼 눌렀을 때 일정에 장소 추가하기
 	function addDailyPlan() {
@@ -508,7 +527,7 @@ body {
 
 <div
 	class=" relative flex justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<div class="z-0 h-screen w-screen" id="map"></div>
+	<div class="left-[500px] z-0 h-screen w-screen" id="map"></div>
 	<div class="flex absolute justify-start items-center self-stretch flex-grow overflow-hidden pr-2.5">
 		<div
 			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
@@ -653,81 +672,6 @@ body {
 			</div>
 
 		</div>
-		<div
-			class="infoDiv z-1 left-[520px] transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] absolute gap-2.5 rounded-[20px] bg-white border border-black">
-			<img id="info-img"
-				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
-			<div
-				class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] relative overflow-hidden px-0.5 py-[7px]">
-				<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
-					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
-						<p id='info-locationName'
-							class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
-						<p id='info-locationTypeId'
-							class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
-					</div>
-					<div
-						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
-						<p id="info-reviewCount"
-							class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
-						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
-					</div>
-				</div>
-				<div onClick="addDailyPlan();"
-					class="top-[50px] left-[230px] flex justify-center items-center flex-grow-0 flex-shrink-0 absolute overflow-hidden gap-2.5 rounded-[10px] bg-black cursor-pointer">
-					<p
-						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[104px] h-[50px] text-xl font-medium text-white">
-						추가하기</p>
-				</div>
-			</div>
-			<div
-				class="flex justify-center items-start flex-grow-0 flex-shrink-0 w-[260px] relative overflow-hidden gap-[54px] px-4">
-				<p onClick="infoButton()" id="infoButton"
-					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black">정보</p>
-				<p onClick="pictureButton()" id="pictureButton"
-					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
-			</div>
-			<div class="infoUI flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
-				<div
-					class=" flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
-					<div class="pr-2 pl-3">
-						<i class="fa-solid fa-location-dot text-3xl"></i>
-					</div>
-					<p id="info-address"
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] font-medium text-black text-sm"></p>
-				</div>
-				<div
-					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[11px] px-2">
-
-					<div class="">
-						<i class="fa-solid fa-clock text-3xl"></i>
-					</div>
-
-					<p id="info-schedule"
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
-				</div>
-				<div
-					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
-					<div class="pr-2 pl-2">
-						<i class="fa-solid fa-phone text-3xl"></i>
-					</div>
-					<p id="info-number"
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
-				</div>
-				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
-					<div class="pl-2">
-						<i class="fa-solid fa-pen-to-square text-3xl"></i>
-					</div>
-					<p id="info-profile" class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black"></p>
-				</div>
-
-			</div>
-			<button
-				class="closeInfoDiv absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
-						hover:bg-gray-300 cursor-pointer">
-				<i class="fa-solid fa-xmark text-lg text-black"></i>
-			</button>
-		</div>
 
 		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
 			<div
@@ -769,8 +713,81 @@ body {
 		</div>
 
 	</div>
+	<div
+		class="infoDiv z-1 left-[520px] transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] absolute gap-2.5 rounded-[20px] bg-white border border-black">
+		<img id="info-img"
+			class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
+		<div
+			class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] relative overflow-hidden px-0.5 py-[7px]">
+			<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
+				<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
+					<p id='info-locationName'
+						class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
+					<p id='info-locationTypeId'
+						class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
+				</div>
+				<div
+					class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
+					<p id="info-reviewCount"
+						class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
+					<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
+				</div>
+			</div>
+			<div onClick="addDailyPlan();"
+				class="top-[50px] left-[230px] flex justify-center items-center flex-grow-0 flex-shrink-0 absolute overflow-hidden gap-2.5 rounded-[10px] bg-black cursor-pointer">
+				<p
+					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[104px] h-[50px] text-xl font-medium text-white">
+					추가하기</p>
+			</div>
+		</div>
+		<div
+			class="flex justify-center items-start flex-grow-0 flex-shrink-0 w-[260px] relative overflow-hidden gap-[54px] px-4">
+			<p onClick="infoButton()" id="infoButton"
+				class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black">정보</p>
+			<p onClick="pictureButton()" id="pictureButton"
+				class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
+		</div>
+		<div class="infoUI flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
+			<div
+				class=" flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
+				<div class="pr-2 pl-3">
+					<i class="fa-solid fa-location-dot text-3xl"></i>
+				</div>
+				<p id="info-address"
+					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] font-medium text-black text-sm"></p>
+			</div>
+			<div
+				class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[11px] px-2">
 
+				<div class="">
+					<i class="fa-solid fa-clock text-3xl"></i>
+				</div>
 
+				<p id="info-schedule"
+					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
+			</div>
+			<div
+				class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
+				<div class="pr-2 pl-2">
+					<i class="fa-solid fa-phone text-3xl"></i>
+				</div>
+				<p id="info-number"
+					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
+			</div>
+			<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
+				<div class="pl-2">
+					<i class="fa-solid fa-pen-to-square text-3xl"></i>
+				</div>
+				<p id="info-profile" class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black"></p>
+			</div>
+
+		</div>
+		<button onClick="closeInfoDiv();"
+			class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
+						hover:bg-gray-300 cursor-pointer">
+			<i class="fa-solid fa-xmark text-lg text-black"></i>
+		</button>
+	</div>
 </div>
 
 
