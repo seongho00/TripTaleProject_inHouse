@@ -71,20 +71,21 @@ $(document).ready(function() {
 	});
 	
 	
-	// 계획 생성 버튼
+	// 일정 생성 버튼
 	$('#planForm').on('submit', function (e) {
-		e.preventDefault(); // 일단 막고
+
 		  const plansByDay = {};
 
 		  $('.dailyPlanContainer').each(function () {
+
 		    const $container = $(this);
-		    
 
 		    // 같은 index의 selectTimeDiv에서 시간 읽기
 		    const index = $('.dailyPlanContainer').index(this);
 
 		    const dateList = ${dateListJson};
 		    const day = dateList[index];
+
 
 		    const $timeDiv = $('.timeInfoDiv').eq(index);
 		    const start = $timeDiv.find('.start-time').text().trim();
@@ -93,12 +94,13 @@ $(document).ready(function() {
 
 		    $container.find('.plan-item').each(function () {
 		      const $item = $(this);
-
-		      const name = $item.find('.text-black').eq(0).text().trim();
-		      const address = $item.find('.text-black').eq(1).text().trim();
+			  const lat = $item.data('lat'); 
+			  const lng = $item.data('lng');
+		      const name = $item.find('.name').text().trim();
+		      const address = $item.data('address');
 		      const duration = $item.find('.duration-input').text().trim(); // "02:00"
-
-		      plans.push({ name, address, duration });
+		      
+		      plans.push({ name, address, duration, lat, lng });
 		    });
 
 		    plansByDay[day] = {
@@ -271,8 +273,6 @@ $(document).ready(function() {
 	       $('#info-img').attr('src', img);
 
 	      
-	       
-	       
  	       const $infoDiv = $('.infoDiv');
 	       
  	       if (!$infoDiv.hasClass('hidden')){
@@ -363,8 +363,11 @@ $(document).ready(function() {
 		const name = $(btn).parent().data('name');
 		const img = $(btn).parent().data('img')
 		let address = $(btn).parent().data('address');
+		let newAddress = "";
 		if (address.length > 16){
-			address = address.slice(0, 16) + "..."
+			newAddress = address.slice(0, 16) + "..."
+		} else {
+			newAddress = address;
 		}
 		
 		// 지도에 마커 추가 (새로운 위치라면)
@@ -406,7 +409,6 @@ $(document).ready(function() {
 		        });
 		    }
 		  }
-	
 		
 		// 해당 일차의 dailyPlan div를 찾기
 		const $targetDailyPlan = $(`.dailyPlan[data-day="\${selectedDay}"]`);
@@ -417,7 +419,7 @@ $(document).ready(function() {
 		
 		const html = `
 			<div class="plan-item flex justify-between items-center flex-grow relative overflow-auto px-2.5 py-3.5 border w-full"
-				data-lat="\${lat}" data-lng="\${lng}">
+				data-lat="\${lat}" data-lng="\${lng}" data-address="\${address}">
 				<p class="index-num flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">\${currentIndex}</p>
 				<img src="\${img}" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 				<div
@@ -427,8 +429,8 @@ $(document).ready(function() {
 						<div
 							class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1 py-[3px]">
 							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
-							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${name}</p>
-							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${address}</p>
+							<p class="name flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${name}</p>
+							<p class="address flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${address}</p>
 						</div>
 					
 					</div>
@@ -680,7 +682,7 @@ body {
 										<i class="fa-regular fa-clock flex-grow-0 flex-shrink-0 w-3.5 h-3.5 object-cover"></i>
 										<div
 											class="end-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[15px] font-medium text-center text-black"
-											data-index="${status.index}">10: 00 AM</div>
+											data-index="${status.index}">10: 00 PM</div>
 									</div>
 								</div>
 							</div>
@@ -764,7 +766,7 @@ body {
 
 			</div>
 			<div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
-				<form id="planForm" action="/ai/generatePlan" method="post">
+				<form id="planForm" action="createPlan" method="post">
 					<input type="hidden" name="planData" id="planDataInput" />
 					<button type="submit" onclick="return confirm('일정을 생성하시겠습니까?')"
 						class="flex justify-center items-center  h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">

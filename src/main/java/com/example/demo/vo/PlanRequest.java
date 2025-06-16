@@ -1,5 +1,7 @@
 package com.example.demo.vo;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PlanDto {
-	private String name;
-	private String address;
-	private double lat;
-	private double lng;
+public class PlanRequest {
+	private Map<String, DailyPlan> plansByDay;
+
 }

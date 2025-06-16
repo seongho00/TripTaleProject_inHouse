@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,11 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.TripTaleProjectApplication;
+import com.example.demo.service.ChatGptService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
+import com.example.demo.vo.DailyPlan;
+import com.example.demo.vo.PlacePlan;
+import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripLocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -31,6 +37,8 @@ public class UsrPlannerController {
 	private PlannerService plannerService;
 	@Autowired
 	private TripLocationService tripLocationService;
+	@Autowired
+	private ChatGptService chatGptService;
 
 	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -67,7 +75,6 @@ public class UsrPlannerController {
 		// 날짜 차이를 이용해 MM/dd 형식으로 formatting
 		long diffDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 		List<String> dateList = plannerService.getDateList(startDate, diffDays);
-		System.out.println(dateList);
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
@@ -77,7 +84,6 @@ public class UsrPlannerController {
 		// 날짜 jason으로 넘기기
 		ObjectMapper mapper = new ObjectMapper();
 		String dateListJson = mapper.writeValueAsString(dateList); // ["2025-06-15", "2025-06-16", ...]
-		
 
 		// tripLocationPicture 가져오기
 //		tripLocationService.getLocationPicuture();
@@ -99,12 +105,38 @@ public class UsrPlannerController {
 		return "usr/planner/region";
 	}
 
-	@RequestMapping("/ai/generatePlan")
+	@RequestMapping("/usr/planner/createPlan")
 	@ResponseBody
-	public String generatePlan(@RequestParam("planData") String planData, Model model) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
+	public String generatePlan(@RequestParam("planData") String planDataJson, Model model) throws IOException {
 
-		System.out.println(planData);
+//		chatGptService.askQuestion(null);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		// JSON → Map<String, DailyPlan>으로 파싱
+		Map<String, DailyPlan> plansByDay = objectMapper.readValue(planDataJson,
+				new TypeReference<Map<String, DailyPlan>>() {
+				});
+
+		PlanRequest planRequest = new PlanRequest();
+		planRequest.setPlansByDay(plansByDay);
+
+		// 데이터 까보기
+		for (Map.Entry<String, DailyPlan> entry : plansByDay.entrySet()) {
+			String day = entry.getKey();
+			DailyPlan dailyPlan = entry.getValue();
+
+			System.out.println("날짜: " + day);
+			System.out.println("  시작 시간: " + dailyPlan.getAvailableTime().getStart());
+			System.out.println("  종료 시간: " + dailyPlan.getAvailableTime().getEnd());
+
+			for (PlacePlan place : dailyPlan.getPlans()) {
+				System.out.println("    장소: " + place.getName());
+				System.out.println("    주소: " + place.getAddress());
+				System.out.println("    시간: " + place.getDuration());
+				System.out.println("    좌표: (" + place.getLat() + ", " + place.getLng() + ")");
+			}
+		}
 		return "ㅇㅇ";
 	}
 
