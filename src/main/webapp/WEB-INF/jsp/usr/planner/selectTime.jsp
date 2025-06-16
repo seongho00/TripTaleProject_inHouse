@@ -740,7 +740,7 @@ body {
 							<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
-									${tripLocation.locationTypeId }</p>
+									${tripLocation.extra__locationType }</p>
 								<p
 									class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
 									${tripLocation.locationName }</p>

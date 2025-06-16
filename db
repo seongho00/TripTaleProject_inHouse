@@ -74,25 +74,16 @@ CREATE TABLE tripLocation (
 	updateDate DATETIME NOT NULL,
 	locationName	VARCHAR(50)	NOT NULL,
 	locationTypeId	INT(10)	NOT NULL,
+	areaCode INT(10) NOT NULL,
 	address	VARCHAR(200)	NOT NULL,
 	`schedule`	TEXT	NULL,
 	`number`	VARCHAR(20)	NULL,
 	`profile`	TEXT	NULL,
 	star VARCHAR(20)	NOT NULL,
-	reviewCount INT(10) NOT NULL
+	reviewCount INT(10) NOT NULL,
+	mapX DOUBLE(10, 7) NOT NULL,
+	mapY DOUBLE(10, 7) NOT NULL
 );
-
-INSERT INTO tripLocation
-SET regDate = NOW(),
-updateDate = NOW(),
-locationName = '서서울호수공원',
-locationTypeId = 1,
-address = '서울 양천구 남부순환로64길 26 신월야구장',
-`schedule` = '월',
-`number` = '02-2604-3004',
-`profile` = '소개 정보 없음',
-star = '4.16',
-reviewCount = 100;
 
 
 # 여행 테이블 생성
@@ -104,11 +95,73 @@ CREATE TABLE tripLocationPicture (
 	tripLocationId INT(10) NOT NULL
 );
 
-INSERT INTO tripLocationPicture
+
+# 게시글 이미지 테이블 생성
+CREATE TABLE articleImage (
+	id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	articleId INT(10) NOT NULL,
+	fileName VARCHAR(100) NOT NULL,
+	contentType CHAR(60) NOT NULL,
+	`data` LONGBLOB
+);
+
+INSERT INTO articleImage
+SET articleId = 1,
+fileName = 'test1',
+contentType = 'img',
+`data` = 'asdfsgsdg';
+
+
+# 게시글 테이블 생성
+CREATE TABLE article (
+	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	regDate DATETIME NOT NULL,
+	updateDate DATETIME NOT NULL,
+	memberId INT(10) NOT NULL,
+	title VARCHAR(100) NOT NULL,
+	`body` TEXT NOT NULL,
+	hitCount INT(10) NOT NULL,
+	delStatus TINYINT(1) NOT NULL DEFAULT 0,
+	delDate DATETIME
+);
+
+
+INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
-pictureUrl = 'asfjoseg',
-tripLocationId = 1;
+memberId = 1,
+title = '제목1',
+`body` = '내용1';
+
+# 여행 타입 테이블 생성
+CREATE TABLE tripLocationType (
+	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	regDate DATETIME NOT NULL,
+	updateDate DATETIME NOT NULL,
+	typeName VARCHAR(30) NOT NULL,
+	delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '삭제 여부 (0=삭제 전, 1=삭제 후)',
+	delDate DATETIME COMMENT '삭제 날짜'
+);
+
+INSERT INTO tripLocationType
+SET regDate = NOW(),
+updateDate = NOW(),
+typeName = '관광지';
+
+INSERT INTO tripLocationType
+SET regDate = NOW(),
+updateDate = NOW(),
+typeName = '맛집';
+
+INSERT INTO tripLocationType
+SET regDate = NOW(),
+updateDate = NOW(),
+typeName = '카페';
+
+INSERT INTO tripLocationType
+SET regDate = NOW(),
+updateDate = NOW(),
+typeName = '숙소';
 
 
 SELECT *
@@ -117,12 +170,18 @@ FROM article
 SELECT *
 FROM `member`
 
-		
+SELECT *
+FROM articleImage
+
 SELECT *
 FROM tripLocation
 
 SELECT *
-FROM tripLocationPicture
+FROM tripLocationType
+
+SELECT *
+FROM tripLocationPicture;
+
 
 SELECT *
 FROM `member`

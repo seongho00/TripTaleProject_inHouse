@@ -29,5 +29,6 @@ public class TripLocation {
 	private double mapY;
 
 	private String extra__pictureUrl;
+	private String extra__locationType;
 
 }

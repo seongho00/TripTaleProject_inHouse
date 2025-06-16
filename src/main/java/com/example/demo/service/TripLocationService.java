@@ -225,9 +225,9 @@ public class TripLocationService {
 
 	}
 
-	public List<TripLocation> getLocationInfo(int locationTypeId, int areaCode) {
+	public List<TripLocation> getLocationInfo(String locationType, int areaCode) {
 
-		List<TripLocation> tripLocations = tripLocationRepository.getLocationInfo(locationTypeId, areaCode);
+		List<TripLocation> tripLocations = tripLocationRepository.getLocationInfo(locationType, areaCode);
 		return tripLocations;
 	}
 

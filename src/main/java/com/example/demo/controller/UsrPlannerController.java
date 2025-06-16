@@ -83,8 +83,8 @@ public class UsrPlannerController {
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
-		int locationTypeId = 1;
-		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationTypeId, areaCode);
+		String locationType = "관광지";
+		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationType, areaCode);
 
 		// 날짜 jason으로 넘기기
 		ObjectMapper mapper = new ObjectMapper();
