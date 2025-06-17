@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.repository.TripLocationPictureRepository;
 import com.example.demo.repository.TripLocationRepository;
 import com.example.demo.vo.TripLocation;
+import com.example.demo.vo.TripLocationPicture;
 
 @Service
 public class TripLocationService {
@@ -229,6 +230,11 @@ public class TripLocationService {
 
 		List<TripLocation> tripLocations = tripLocationRepository.getLocationInfo(locationType, areaCode);
 		return tripLocations;
+	}
+
+	public List<TripLocationPicture> getTripLocationPictures(int tripLocationId) {
+
+		return tripLocationRepository.getTripLocationPictures(tripLocationId);
 	}
 
 }

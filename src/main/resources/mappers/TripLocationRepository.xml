@@ -20,7 +20,8 @@
 		star = #{star},
 		reviewCount = #{reviewCount},
 		mapX = #{mapX},
-		mapY = #{mapY}
+		mapY =
+		#{mapY}
 	</select>
 
 	<select id="getLastInsertId" parameterType="int">
@@ -30,17 +31,29 @@
 
 	<select id="getLocationInfo" parameterType="map"
 		resultType="com.example.demo.vo.TripLocation">
-		SELECT TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS extra__locationType
+		SELECT TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		extra__locationType
 		FROM tripLocation AS TL
-		LEFT JOIN tripLocationPicture AS TLP
+		LEFT JOIN
+		tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
-		INNER JOIN tripLocationType AS TLT
+		INNER JOIN
+		tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
-		WHERE TL.areaCode = #{areaCode}
+		WHERE TL.areaCode
+		= #{areaCode}
 		<if test="locationType != ''">
 			AND TLT.typeName = #{locationType}
 		</if>
 		GROUP BY TL.id
 		ORDER BY reviewCount DESC
+	</select>
+	
+	<select id="getTripLocationPictures" parameterType="map"
+		resultType="com.example.demo.vo.TripLocationPicture">
+		SELECT *
+		FROM tripLocationPicture
+		WHERE tripLocationId =
+		#{tripLocationId}
 	</select>
 </mapper>

@@ -20,10 +20,10 @@ import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
 import com.example.demo.vo.DailyPlan;
-import com.example.demo.vo.PlacePlan;
 import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripLocation;
+import com.example.demo.vo.TripLocationPicture;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -90,10 +90,6 @@ public class UsrPlannerController {
 		ObjectMapper mapper = new ObjectMapper();
 		String dateListJson = mapper.writeValueAsString(dateList); // ["2025-06-15", "2025-06-16", ...]
 
-		// tripLocationPicture 가져오기
-//		tripLocationService.getLocationPicuture();
-//		System.out.println(tripLocations);
-
 		model.addAttribute("startDate", dateFormattedStartDate);
 		model.addAttribute("endDate", dateFormattedEndDate);
 		model.addAttribute("dateList", dateList); // ✅ 날짜 리스트 전달
@@ -102,6 +98,15 @@ public class UsrPlannerController {
 		model.addAttribute("dateListJson", dateListJson);
 
 		return "usr/planner/selectTime";
+	}
+
+	@RequestMapping("usr/planner/getTripLocationPicture")
+	@ResponseBody
+	public List<String> getTripLocationPicture(Model model, int tripLocationId) {
+
+		List<TripLocationPicture> pictureList = tripLocationService.getTripLocationPictures(tripLocationId);
+		List<String> pictureUrls = pictureList.stream().map(TripLocationPicture::getPictureUrl).toList();
+		return pictureUrls;
 	}
 
 	@RequestMapping("usr/planner/region")
@@ -136,9 +141,6 @@ public class UsrPlannerController {
 			}
 
 			results.add(chatGptService.generateOptimizedSchedule(day, dailyPlan));
-			for (PlacePlan place : dailyPlan.getPlans()) {
-
-			}
 		}
 		return results.toString();
 	}

@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.vo.DailyPlan;
 import com.example.demo.vo.PlanRequest;
@@ -26,7 +27,7 @@ public class ChatGptService {
 
 	private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
-	public String askQuestion(List<String> moods) {
+	public String askQuestion(List<String> moods, List<MultipartFile> images) {
 
 		String question = "단어";
 

@@ -54,7 +54,7 @@ public class UsrArticleController {
 
 		int memberId = rq.getLoginedMemberId();
 		String title = "";
-		String body = chatGptService.askQuestion(moods);
+		String body = chatGptService.askQuestion(moods, images);
 
 		int articleId = articleService.doWrite(memberId, title, body);
 

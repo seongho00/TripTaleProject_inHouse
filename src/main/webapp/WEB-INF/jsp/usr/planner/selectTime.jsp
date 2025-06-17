@@ -6,7 +6,6 @@
 <%@ include file="../common/daisyUi.jspf"%>
 
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
 
@@ -222,6 +221,28 @@ $(document).ready(function() {
 		$('#pictureButton').toggleClass('btn-active');
 		$('.infoUI').toggleClass('ui-active');
 		$('.pictureUI').toggleClass('ui-active');
+		
+		const tripLocationId = $('#info-id').text();
+		
+		// 이미지 가져오기
+		 $.ajax({
+		      url: 'getTripLocationPicture', 
+		      method: 'GET',
+		      data: { tripLocationId : tripLocationId },
+		      success: function (data) {
+		    	    const $container = $('.pictureUI');
+		    	    $container.empty(); // 기존 이미지 제거
+		    	    data.forEach(url => {
+		    	      const $img = $(`
+		    	        <img src="\${url}" class="w-full mb-4 rounded-xl" />
+		    	      `);
+		    	      $container.append($img);
+		    	    });
+		    	  },
+		    	  error: function () {
+		    	    alert('이미지를 불러오지 못했습니다.');
+		    	  }
+		    });
 	}
 	
   // N일차 장바구니 toggle
@@ -244,6 +265,8 @@ $(document).ready(function() {
    $(function() {
 	   $('.trip-item').on('click', function() {
 		   // 선택한 데이터 넘겨받기
+		   
+		   const id = $(this).data('id');
 		   const name = $(this).data('name');
 		   const type = $(this).data('type');
 		   const address = $(this).data('address');
@@ -254,9 +277,10 @@ $(document).ready(function() {
 		   const reviewCount = $(this).data('reviewcount');
 		   const mapX = $(this).data('mapx');
 		   const mapY = $(this).data('mapy');
-
+		   
 		   
 		   // 넘겨받은 데이터 넣기
+		   $('#info-id').text(id);
 		   $('#info-locationName').text(name);
 	       $('#info-locationType').text(type);
 	       $('#info-address').text(address);
@@ -728,7 +752,7 @@ body {
 					<c:forEach var="tripLocation" items="${tripLocations}">
 						<div
 							class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
-							data-name="${tripLocation.locationName}" data-type="${tripLocation.locationTypeId}"
+							data-id="${tripLocation.id}" data-name="${tripLocation.locationName}" data-type="${tripLocation.locationTypeId}"
 							data-address="${tripLocation.address}" data-number="${tripLocation.number }"
 							data-profile="${tripLocation.profile }" data-schedule="${tripLocation.schedule }"
 							data-img="${tripLocation.extra__pictureUrl}" data-reviewCount="${tripLocation.reviewCount }"
@@ -843,7 +867,7 @@ body {
 		<div
 			class="flex justify-center items-start flex-grow-0 flex-shrink-0 w-[260px] relative overflow-hidden gap-[54px] px-4">
 			<p onClick="infoButton()" id="infoButton"
-				class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black">정보</p>
+				class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">정보</p>
 			<p onClick="pictureButton()" id="pictureButton"
 				class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
 		</div>
@@ -853,6 +877,7 @@ body {
 				<div class="pr-2 pl-3">
 					<i class="fa-solid fa-location-dot text-3xl"></i>
 				</div>
+				<p id="info-id" class="hidden"></p>
 				<p id="info-address"
 					class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] font-medium text-black text-sm"></p>
 			</div>
@@ -882,6 +907,7 @@ body {
 			</div>
 
 		</div>
+		<div class="pictureUI grid columns-2 gap-4 px-4 overflow-auto"></div>
 		<button onClick="closeInfoDiv();"
 			class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
 						hover:bg-gray-300 cursor-pointer">
