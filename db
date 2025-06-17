@@ -165,17 +165,6 @@ SET regDate = NOW(),
 updateDate = NOW(),
 typeName = '숙소';
 
-# 여행 테이블 생성
-CREATE TABLE trip (
-	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	regDate DATETIME NOT NULL,
-	updateDate DATETIME NOT NULL,
-	tripName VARCHAR(50) NOT NULL,
-	tripRegion VARCHAR(30) NOT NULL,
-	startDate DATETIME NOT NULL,
-	endDate DATETIME NOT NULL,
-	memberId INT(10) NOT NULL
-);
 
 # 여행 N일차 테이블 생성
 CREATE TABLE tripDay (
@@ -187,6 +176,24 @@ CREATE TABLE tripDay (
 	endTime TIME NOT NULL
 );
 
+INSERT INTO tripDay
+SET tripId = 1,
+dayIndex = 1,
+`date` = '2025-06-17',
+startTime = '10:00',
+endTime = '22:00';
+
+# 여행 장소 저장 DB
+CREATE TABLE tripPlace (
+	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	tripId INT(10) NOT NULL,
+	dayIndex INT(10) NOT NULL,
+	`date` DATETIME NOT NULL,
+	startTime TIME NOT NULL,
+	endTime TIME NOT NULL
+);
+
+
 SELECT *
 FROM article
 
@@ -196,6 +203,11 @@ FROM `member`
 SELECT *
 FROM articleImage
 
+SELECT *
+FROM tripInfo
+
+SELECT *
+FROM tripDay
 
 SELECT *
 FROM tripLocation

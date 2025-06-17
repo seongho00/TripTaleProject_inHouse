@@ -6,21 +6,24 @@
 <%@ include file="../common/daisyUi.jspf"%>
 
 <script>
-let isExpanded = false;
+	let isExpanded = false;
 
 	function viewAllSchedule(elem) {
 		const $sidebar = $('.sidebar');
-		
+		const $timelineItems = $('.colTimeLine').find('li');
+
 		if (!isExpanded) {
 			$sidebar.removeClass('w-[497px]').addClass('w-[1000px]');
+			$timelineItems.removeClass('w-[80px]').addClass('w-[150px]');
 			$(elem).find('p').text("축소하기");
 		} else {
+			$timelineItems.removeClass('w-[150px]').addClass('w-[80px]');
 			$sidebar.removeClass('w-[1000px]').addClass('w-[497px]');
 			$(elem).find('p').text("전체 보기");
 		}
-		
+
 		isExpanded = !isExpanded;
-	}	
+	}
 </script>
 
 
@@ -33,26 +36,29 @@ let isExpanded = false;
 				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#aedff7] border border-black">
 				<div
 					class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 h-[53px] relative overflow-hidden">
-					<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[77px] h-[53px] object-cover" />
-					<p class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl font-medium text-black">여행 이름</p>
+					<a href="../home/main">
+						<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[77px] h-[53px] object-cover" />
+					</a>
+					<p
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl font-medium text-black">${tripInfo.tripName }</p>
 					<div
 						class="mr-2 flex justify-center items-center flex-grow-0 flex-shrink-0 w-[84px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[20px] bg-black/[0.81]">
-						<p class="flex-grow w-[62px] text-[15px] font-medium text-center text-white">수정하기</p>
+						<p class="flex-grow w-[62px] text-[15px] font-medium text-center text-white cursor-pointer">수정하기</p>
 					</div>
 				</div>
 				<div class="flex justify-center items-end flex-grow-0 flex-shrink-0 relative overflow-hidden px-11 py-[13px]">
-					<p class="flex-grow-0 flex-shrink-0 w-[39px] text-xl font-medium text-center text-black">서울</p>
-					<p class="flex-grow-0 flex-shrink-0 w-[201px] h-6 text-[15px] font-medium text-center text-black">2024.05.24 ~
-						2024.05.25</p>
+					<p class="flex-grow-0 flex-shrink-0 max-w-[100px] text-xl font-medium text-center text-black">${tripInfo.tripRegion }</p>
+					<p class="flex-grow-0 flex-shrink-0 w-[201px] h-6 text-[15px] font-medium text-center text-black">${formattedStartDate} ~
+						${formattedEndDate }</p>
 				</div>
 				<div onClick="viewAllSchedule(this);"
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[90px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[20px] bg-black/[0.81] cursor-pointer">
 					<p class=" flex justify-center items-center w-[65px] text-[15px] font-medium text-white">전체 보기</p>
 				</div>
-				<!-- 세로 데이지 UI 시작 -->
-				<ul class="h-5 timeline">
-					<li>
-						<div class="timeline-end timeline-box">1일차</div>
+				<!-- 가로 데이지 UI 시작 -->
+				<ul class="h-5 colTimeLine timeline transition-all duration-500">
+					<li class="transition-all duration-500 w-[80px]">
+						<div class="timeline-end timeline-box cursor-pointer">1일차</div>
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
@@ -62,7 +68,7 @@ let isExpanded = false;
 						</div>
 						<hr class="bg-primary" />
 					</li>
-					<li>
+					<li class="transition-all duration-500 w-[80px]">
 						<hr class="bg-primary" />
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
@@ -71,12 +77,12 @@ let isExpanded = false;
 									clip-rule="evenodd" />
       </svg>
 						</div>
-						<div class="timeline-end timeline-box">2일차</div>
+						<div class="timeline-end timeline-box cursor-pointer">2일차</div>
 						<hr class="bg-primary" />
 					</li>
-					<li>
+					<li class="transition-all duration-500 w-[80px]">
 						<hr class="bg-primary" />
-						<div class="timeline-end timeline-box">3일차</div>
+						<div class="timeline-end timeline-box cursor-pointer">3일차</div>
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
@@ -86,7 +92,7 @@ let isExpanded = false;
 						</div>
 						<hr />
 					</li>
-					<li>
+					<li class="transition-all duration-500 w-[80px]">
 						<hr />
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
@@ -95,12 +101,12 @@ let isExpanded = false;
 									clip-rule="evenodd" />
       </svg>
 						</div>
-						<div class="timeline-end timeline-box">4일차</div>
+						<div class="timeline-end timeline-box cursor-pointer">4일차</div>
 						<hr />
 					</li>
-					<li>
+					<li class="transition-all duration-500 w-[80px]">
 						<hr />
-						<div class="timeline-end timeline-box">5일차</div>
+						<div class="timeline-end timeline-box cursor-pointer">5일차</div>
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
         <path fill-rule="evenodd"
@@ -110,15 +116,15 @@ let isExpanded = false;
 						</div>
 					</li>
 				</ul>
-				<!-- 세로 데이지 UI 끝 -->
+				<!-- 가로 데이지 UI 끝 -->
 			</div>
 			<div class="flex justify-start items-start self-stretch flex-grow relative overflow-auto gap-2.5 px-[5px] py-[23px]">
 
-				<!-- 가로 데이지UI 시작 -->
-				<ul class="timeline timeline-vertical  ">
+				<!-- 세로 데이지UI 시작 -->
+				<ul class="timeline timeline-vertical w-[50px]">
 					<li class="relative min-h-[120px]">
 
-						<div class="timeline-start timeline-box"></div>
+
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
@@ -137,12 +143,12 @@ let isExpanded = false;
 									clip-rule="evenodd" />
       </svg>
 						</div>
-						<div class="timeline-end timeline-box"></div>
+
 						<hr class="bg-primary" />
 					</li>
 					<li class="relative min-h-[150px]">
 						<hr class="bg-primary" />
-						<div class="timeline-start timeline-box"></div>
+
 						<div class="timeline-middle">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
@@ -161,7 +167,7 @@ let isExpanded = false;
 									clip-rule="evenodd" />
       </svg>
 						</div>
-						<div class="timeline-end timeline-box"></div>
+
 						<hr />
 					</li>
 					<li class="relative min-h-[150px]">
@@ -177,8 +183,8 @@ let isExpanded = false;
 					</li>
 				</ul>
 				<!-- 데이지UI 끝-->
-				<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 w-[407px] gap-3">
-					<div
+				<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[400px] flex-shrink-0  gap-3">
+					<div draggable="true"
 						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 						<div

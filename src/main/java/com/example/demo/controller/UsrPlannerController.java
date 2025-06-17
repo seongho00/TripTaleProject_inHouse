@@ -3,9 +3,7 @@ package com.example.demo.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,17 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.TripTaleProjectApplication;
-import com.example.demo.service.ChatGptService;
 import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
-import com.example.demo.vo.DailyPlan;
-import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripInfo;
 import com.example.demo.vo.TripLocation;
 import com.example.demo.vo.TripLocationPicture;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -124,7 +119,18 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/detail")
-	public String detail(Model model) {
+	public String detail(Model model, int id) {
+
+		TripInfo tripInfo = plannerService.getTripInfoById(id);
+		LocalDateTime startDate = tripInfo.getTripStartDate();
+		LocalDateTime endDate = tripInfo.getTripEndDate();
+
+		String formattedStartDate = plannerService.formatter(startDate);
+		String formattedEndDate = plannerService.formatter(endDate);
+
+		model.addAttribute("tripInfo", tripInfo);
+		model.addAttribute("formattedStartDate", formattedStartDate);
+		model.addAttribute("formattedEndDate", formattedEndDate);
 
 		return "usr/planner/detail";
 	}

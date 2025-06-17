@@ -54,7 +54,7 @@ $(document).ready(function() {
 		    });
 		  }
 
-		$('.dailyPlan').addClass('hidden');
+		$('.dailyPlan').addClass('hidden');	
 		$(`.dailyPlan[data-day="\${selectedDay}"]`).removeClass('hidden');	
 		
 	});
@@ -84,7 +84,6 @@ $(document).ready(function() {
 			    const $timeDiv = $('.timeInfoDiv').eq(dayIndex); // 날짜별 시간
 			    const start = $timeDiv.find('.start-time').text().trim();
 			    const end = $timeDiv.find('.end-time').text().trim();
-
 			    const plans = [];
 
 		    $dayDiv.find('.plan-item').each(function () {
@@ -103,8 +102,8 @@ $(document).ready(function() {
 		      availableTime: { start, end },
 		      plans: plans,
 		      tripRegion: ${param.region},
-		      tripStartDate: ${param.startDate},
-		      tripEndDate: ${param.endDate}
+		      tripStartDate: "${param.startDate}",
+		      tripEndDate: "${param.endDate}"
 		    };
 		  });
 

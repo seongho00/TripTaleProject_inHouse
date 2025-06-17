@@ -26,12 +26,21 @@
 
 	<select id="insertTripDay" parameterType="map">
 		INSERT INTO tripDay
-		SET tripId = #{tripId},
+		SET
+		tripId = #{tripId},
 		dayIndex = #{dayIndex},
 		`date` = #{date},
-		startTime = #{startTime},
+		startTime =
+		#{startTime},
 		endTime = #{endTime}
 	</select>
 
+
+	<select id="getTripInfoById" parameterType="map"
+		resultType="com.example.demo.vo.TripInfo">
+		SELECT *
+		FROM tripInfo
+		WHERE id = #{id}
+	</select>
 
 </mapper>

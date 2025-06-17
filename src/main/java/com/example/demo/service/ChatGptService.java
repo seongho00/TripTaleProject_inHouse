@@ -120,8 +120,6 @@ public class ChatGptService {
 					장소 정보:
 					""".formatted(day, startTime, endTime) + planJson;
 
-			System.out.println(prompt);
-
 			// 👇 ChatGPT 메시지 포맷
 			Map<String, Object> message = Map.of("role", "user", "content", prompt);
 

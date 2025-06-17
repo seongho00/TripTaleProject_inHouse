@@ -14,6 +14,7 @@ import com.example.demo.repository.PlannerRepository;
 import com.example.demo.vo.DailyPlan;
 import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,7 +37,7 @@ public class PlannerService {
 	public String formatter(LocalDateTime date) {
 
 		// yyyy-MM-dd형식 포맷터
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
 		return date.format(dateFormatter);
 	}
@@ -95,6 +96,11 @@ public class PlannerService {
 		}
 		return null;
 
+	}
+
+	public TripInfo getTripInfoById(int id) {
+		
+		return plannerRepository.getTripInfoById(id);
 	}
 
 }
