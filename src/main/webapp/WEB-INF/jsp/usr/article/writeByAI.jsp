@@ -23,47 +23,57 @@
 
 <script>
 	$(document).ready(
+
 			function() {
 				$('#imageInput').on('change', handleImagePreview);
 				const selectedContainer = $('#selectedMoodsContainer');
-				$('.mood-box .cursor-pointer').on('click', function () {
-					  const $target = $(this); // 클릭된 .cursor-pointer 요소
-					  const moodText = $target.text().trim();
-					  const isSelected = $target.hasClass('active');
-		
+				$('.mood-box .cursor-pointer')
+						.on(
+								'click',
+								function() {
+									const $target = $(this); // 클릭된 .cursor-pointer 요소
+									const moodText = $target.text().trim();
+									const isSelected = $target
+											.hasClass('active');
 
-					  if (isSelected) {
-					    $target.removeClass('active bg-black');
-					    $target.find('p').removeClass('text-white');
-					    selectedContainer.find('.' + moodText).remove();
-					  } else {
-					    $target.addClass('active bg-black');
-					    $target.find('p').addClass('text-white');
+									if (isSelected) {
+										$target.removeClass('active bg-black');
+										$target.find('p').removeClass(
+												'text-white');
+										selectedContainer.find('.' + moodText)
+												.remove();
+									} else {
+										$target.addClass('active bg-black');
+										$target.find('p')
+												.addClass('text-white');
 
-					    $('<input type="text">')
-					      .attr('name', 'selectedMoods[]')
-					      .attr('class', moodText)
-					      .val(moodText)
-					      .appendTo(selectedContainer);
-					  }
-					});
+										$('<input type="hidden">').attr('name',
+												'selectedMoods[]').attr(
+												'class', moodText)
+												.val(moodText).appendTo(
+														selectedContainer);
+									}
+								});
 
 			});
-
 
 	function handleImagePreview(e) {
 		const files = e.target.files;
 		const $container = $('#previewContainer');
 
-		$.each(iles,function(i, file) {
+		$
+				.each(
+						files,
+						function(i, file) {
 
-			if (!file.type.startsWith('image/')) return;
-			const reader = new FileReader();
+							if (!file.type.startsWith('image/'))
+								return;
+							const reader = new FileReader();
 
-			reader.onload = function(e) {
-				// 기존 글씨 지우기
-				$('.beforeDropFile').hide();
-				$('.pictureSelectBox').removeClass('pt-[50px]');
+							reader.onload = function(e) {
+								// 기존 글씨 지우기
+								$('.beforeDropFile').hide();
+								$('.pictureSelectBox').removeClass('pt-[50px]');
 
 								// wrapper div
 								const $wrapper = $('<div></div>').addClass(
@@ -98,6 +108,7 @@
 							};
 							reader.readAsDataURL(file);
 						});
+
 	}
 </script>
 

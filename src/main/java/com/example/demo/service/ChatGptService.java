@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.vo.DailyPlan;
-import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,29 +28,42 @@ public class ChatGptService {
 
 	private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
-	public String askQuestion(List<String> moods, List<MultipartFile> images) {
+	public String askQuestion(List<String> moods, List<MultipartFile> images) throws IOException {
 
-		String question = "단어";
 
-		String API_KEY = "Bearer " + rq.getChatGptClientId();
-
+		String apiKey = "Bearer " + rq.getChatGptClientId();
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", API_KEY);
+		headers.set("Authorization", apiKey);
 
-		Map<String, Object> message = new HashMap<>();
-		message.put("role", "user");
-		message.put("content", question);
+		// base64 인코딩 (이미지 1장 예시)
+		String base64Image = Base64.getEncoder().encodeToString(images.get(0).getBytes());
+		String imageUrl = "data:image/jpeg;base64," + base64Image;
 
+		// 감정 텍스트 만들기
+		String moodsText = String.join(", ", moods);
+		String prompt = "이 이미지를 보고 다음 감정들을 느꼈다고 가정하고 글을 써줘: " 
+                + moodsText + ". 글의 형식은 일기 또는 짧은 에세이처럼 해줘. "
+                + "감정 표현이 자연스럽게 드러나도록 이미지 분위기와 감정을 연결해줘.";
+
+		// messages 구성
+		Map<String, Object> textPart = Map.of("type", "text", "text", prompt);
+
+		Map<String, Object> imagePart = Map.of("type", "image_url", "image_url", Map.of("url", imageUrl));
+
+		Map<String, Object> userMessage = Map.of("role", "user", "content", List.of(textPart, imagePart));
+
+		// body 구성
 		Map<String, Object> body = new HashMap<>();
-		body.put("model", "gpt-3.5-turbo");
-		body.put("messages", List.of(message));
+		body.put("model", "gpt-4o");
+		body.put("messages", List.of(userMessage));
 
 		HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 		ResponseEntity<Map> response = restTemplate.exchange(OPENAI_API_URL, HttpMethod.POST, request, Map.class);
 
+		// 응답 파싱
 		List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
 		Map<String, Object> messageData = (Map<String, Object>) choices.get(0).get("message");
 

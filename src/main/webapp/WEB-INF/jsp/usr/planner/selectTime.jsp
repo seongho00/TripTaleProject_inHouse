@@ -89,13 +89,14 @@ $(document).ready(function() {
 
 		    $dayDiv.find('.plan-item').each(function () {
 		      const $item = $(this);
+		      const id = $item.data('id');
 			  const lat = $item.data('lat'); 
 			  const lng = $item.data('lng');
 		      const name = $item.find('.name').text().trim();
 		      const address = $item.data('address');
 		      const duration = $item.find('.duration-input').text().trim(); // "02:00"
 		      
-		      plans.push({ name, address, duration, lat, lng });
+		      plans.push({ id, name, address, duration, lat, lng });
 		    });
 
 		    plansByDay[day] = {
@@ -302,7 +303,6 @@ $(document).ready(function() {
  	       const $infoDiv = $('.infoDiv');
 	       
 
- 	       
  	       // infoDiv 열 때 애니메이션
  	       $infoDiv.removeClass('hidden');
  	       requestAnimationFrame(() => {
@@ -383,6 +383,7 @@ $(document).ready(function() {
 			toggleDailyPlan();
 		}
 		
+		const id = $(btn).parent().data('id')
 		const locationTypeId = $(btn).parent().data('locationtypeid');
 		const name = $(btn).parent().data('name');
 		const img = $(btn).parent().data('img')
@@ -443,7 +444,7 @@ $(document).ready(function() {
 		
 		const html = `
 			<div class="plan-item flex justify-between items-center flex-grow relative overflow-auto px-2.5 py-3.5 border w-full"
-				data-lat="\${lat}" data-lng="\${lng}" data-address="\${address}">
+				data-lat="\${lat}" data-lng="\${lng}" data-address="\${address}" data-id="\${id}">
 				<p class="index-num flex-grow-0 flex-shrink-0 w-8 text-[15px] font-medium text-center text-black">\${currentIndex}</p>
 				<img src="\${img}" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 				<div

@@ -4,6 +4,12 @@
 
 <c:set var="pageTitle" value="ARTICLE LIST"></c:set>
 <%@ include file="../common/head.jspf"%>
+<script>
+	function showDetail() {
+		window.location.href = "detail?articleId=1";
+	}
+</script>
+
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
@@ -40,8 +46,8 @@
 		</div>
 	</div>
 	<div class="flex flex-wrap justify-center items-start flex-grow w-[1084px] overflow-auto gap-[13px] py-2.5">
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
+		<div onClick="showDetail();"
+			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
 			<img src="image-24.png" class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
 			<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
 				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울 나들이</p>

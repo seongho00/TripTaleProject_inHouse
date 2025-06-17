@@ -37,6 +37,13 @@
 		fileName = #{fileName},
 		contentType = #{contentType},
 		`data` = #{data}
-
 	</select>
+
+	<select id="getArticlePictures" parameterType="map"
+		resultType="com.example.demo.vo.ArticleImage">
+		SELECT *
+		FROM articleImage
+		WHERE articleId = #{articleId}
+	</select>
+
 </mapper>

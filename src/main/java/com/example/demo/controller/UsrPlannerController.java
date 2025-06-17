@@ -128,7 +128,7 @@ public class UsrPlannerController {
 
 		PlanRequest planRequest = new PlanRequest();
 		planRequest.setPlansByDay(plansByDay);
-
+		
 		List<String> results = new ArrayList<>();
 		;
 		// 데이터 까보기
@@ -136,11 +136,12 @@ public class UsrPlannerController {
 
 			String day = entry.getKey();
 			DailyPlan dailyPlan = entry.getValue();
+			System.out.println(dailyPlan);
 			if (dailyPlan == null) {
 				continue;
 			}
 
-			results.add(chatGptService.generateOptimizedSchedule(day, dailyPlan));
+//			results.add(chatGptService.generateOptimizedSchedule(day, dailyPlan));
 		}
 		return results.toString();
 	}
