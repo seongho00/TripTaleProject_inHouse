@@ -51,11 +51,11 @@ public class UsrArticleController {
 	@ResponseBody
 	public List<String> doWrite(Model model, @RequestParam(defaultValue = "") List<String> moods,
 			List<MultipartFile> images) throws IOException {
-
+		System.out.println(moods);
 		int memberId = rq.getLoginedMemberId();
 		String title = "";
-		String body = chatGptService.askQuestion(moods, images);
-
+//		String body = chatGptService.askQuestion(moods, images);
+		String body = "test";
 		int articleId = articleService.doWrite(memberId, title, body);
 
 		for (MultipartFile image : images) {

@@ -22,6 +22,8 @@ const dayMarkersMap = {};   // 일정별 마커 저장용 배열
 let infoMarker = null;    // trip-item 클릭 시 마커
 let infoOverlay = null;   // trip-item 클릭 시 이름 오버레이
 
+let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
+
 /* 처음 활성화될 버튼 설정 */
 $(document).ready(function() {
 	function init() {
@@ -278,6 +280,12 @@ $(document).ready(function() {
 		   const mapX = $(this).data('mapx');
 		   const mapY = $(this).data('mapy');
 		   
+	 	   // 이미 열려 있고, 같은 id를 클릭했으면 닫음
+	 	   if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
+	 	   	   closeInfoDiv();
+	 	  	   lastInfoId = null;
+	 	       return;
+	 	   }
 		   
 		   // 넘겨받은 데이터 넣기
 		   $('#info-id').text(id);
@@ -293,10 +301,7 @@ $(document).ready(function() {
 	      
  	       const $infoDiv = $('.infoDiv');
 	       
- 	       if (!$infoDiv.hasClass('hidden')){
- 	    	 closeInfoDiv();
- 		  	 return;
- 	       }
+
  	       
  	       // infoDiv 열 때 애니메이션
  	       $infoDiv.removeClass('hidden');
@@ -336,7 +341,8 @@ $(document).ready(function() {
  		    infoOverlay.setMap(map);
  		    map.setCenter(newPosition);
  		   }
-
+ 		  // 현재 id를 저장
+ 		  lastInfoId = id;
  	       });
   });
 	

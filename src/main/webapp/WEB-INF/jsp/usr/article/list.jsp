@@ -6,20 +6,17 @@
 <%@ include file="../common/head.jspf"%>
 
 <div
-	class="flex flex-col justify-start items-center w-[1700px] h-[919px] overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
+	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
 	<div
-		class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] border border-black">
+		class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] border-b border-black">
 		<div class="self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden">
 			<div
 				class="flex justify-center items-center w-[1008px] h-[138px] absolute left-[346px] top-0 gap-2.5 border-0 border-[#f00]">
-				<img src="로고.png" class="flex-grow-0 flex-shrink-0 w-[138px] h-[138px] object-cover" />
+				<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[138px] h-[138px] object-cover" />
 				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5 p-2.5">
-					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">
-						숙박</p>
-					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">
-						맛집</p>
-					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">
-						명소</p>
+					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">숙박</p>
+					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">맛집</p>
+					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">명소</p>
 				</div>
 				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[428px] relative">
 					<p class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">내 여행</p>
@@ -30,31 +27,19 @@
 		</div>
 	</div>
 	<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 overflow-hidden gap-[19px] px-[17px]">
-		<div
-			class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-2 py-[9px] border border-black">
-			<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">여행 이름</p>
-			<img src="image-25.png" class="flex-grow-0 flex-shrink-0 w-[15px] h-[15px] object-cover" />
-		</div>
-		<div
-			class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-2 py-[9px] border border-black">
-			<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">지역</p>
-			<img src="image-25.png" class="flex-grow-0 flex-shrink-0 w-[15px] h-[15px] object-cover" />
-		</div>
-		<div
-			class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-2 py-[9px] border border-black">
-			<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">작성자</p>
-			<img src="image-25.png" class="flex-grow-0 flex-shrink-0 w-[15px] h-[15px] object-cover" />
-		</div>
+		<select class="px-2 py-[9px] border border-black text-[15px] font-medium text-black">
+			<option disabled selected>항목 선택</option>
+			<option value="tripName">여행 이름</option>
+			<option value="region">지역</option>
+			<option value="author">작성자</option>
+		</select>
 		<div
 			class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[290px] h-9 relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
-			<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"
-				class="flex-grow-0 flex-shrink-0 w-[21px] h-[21.5px]" preserveAspectRatio="none">
-        <circle cx="9" cy="9" r="8.5" transform="matrix(-1 0 0 1 18.5 0)" stroke="black"></circle>
-        <path d="M15.5 15.5L21.5 21.5" stroke="black" stroke-linecap="round"></path>
-      </svg>
+			<input type="text" class="w-full focus:outline-none focus:ring-0 focus:border-none" />
+			<i class="fa-solid fa-magnifying-glass cursor-pointer"></i>
 		</div>
 	</div>
-	<div class="flex justify-center items-start flex-grow w-[1084px] overflow-hidden gap-[13px] py-2.5">
+	<div class="flex flex-wrap justify-center items-start flex-grow w-[1084px] overflow-auto gap-[13px] py-2.5">
 		<div
 			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
 			<img src="image-24.png" class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
