@@ -145,5 +145,11 @@ public class UsrPlannerController {
 		}
 		return results.toString();
 	}
+	
+	@RequestMapping("usr/planner/detail")
+	public String detail(Model model) {
+
+		return "usr/planner/detail";
+	}
 
 }
