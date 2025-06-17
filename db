@@ -125,6 +125,8 @@ CREATE TABLE article (
 	delDate DATETIME
 );
 
+ALTER TABLE article
+MODIFY hitCount INT(10) NOT NULL DEFAULT 0;
 
 INSERT INTO article
 SET regDate = NOW(),
@@ -163,6 +165,27 @@ SET regDate = NOW(),
 updateDate = NOW(),
 typeName = '숙소';
 
+# 여행 테이블 생성
+CREATE TABLE trip (
+	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	regDate DATETIME NOT NULL,
+	updateDate DATETIME NOT NULL,
+	tripName VARCHAR(50) NOT NULL,
+	tripRegion VARCHAR(30) NOT NULL,
+	startDate DATETIME NOT NULL,
+	endDate DATETIME NOT NULL,
+	memberId INT(10) NOT NULL
+);
+
+# 여행 N일차 테이블 생성
+CREATE TABLE tripDay (
+	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	tripId INT(10) NOT NULL,
+	dayIndex INT(10) NOT NULL,
+	`date` DATETIME NOT NULL,
+	startTime TIME NOT NULL,
+	endTime TIME NOT NULL
+);
 
 SELECT *
 FROM article
@@ -172,6 +195,7 @@ FROM `member`
 
 SELECT *
 FROM articleImage
+
 
 SELECT *
 FROM tripLocation

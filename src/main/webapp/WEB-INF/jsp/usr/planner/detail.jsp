@@ -30,11 +30,11 @@ let isExpanded = false;
 		<div
 			class="sidebar transition-all duration-500 flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] absolute left-0 top-0 overflow-hidden gap-2.5 bg-white border border-black">
 			<div
-				class="flex flex-col justify-between items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#aedff7] border border-black">
+				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#aedff7] border border-black">
 				<div
 					class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 h-[53px] relative overflow-hidden">
 					<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[77px] h-[53px] object-cover" />
-					<p class="flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl font-medium text-center text-black">여행 이름</p>
+					<p class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl font-medium text-black">여행 이름</p>
 					<div
 						class="mr-2 flex justify-center items-center flex-grow-0 flex-shrink-0 w-[84px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[20px] bg-black/[0.81]">
 						<p class="flex-grow w-[62px] text-[15px] font-medium text-center text-white">수정하기</p>

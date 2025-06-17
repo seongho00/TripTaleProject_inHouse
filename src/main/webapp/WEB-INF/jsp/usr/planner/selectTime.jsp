@@ -101,7 +101,10 @@ $(document).ready(function() {
 
 		    plansByDay[day] = {
 		      availableTime: { start, end },
-		      plans: plans
+		      plans: plans,
+		      tripRegion: ${param.region},
+		      tripStartDate: ${param.startDate},
+		      tripEndDate: ${param.endDate}
 		    };
 		  });
 

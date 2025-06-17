@@ -41,8 +41,8 @@ public class UsrPlannerController {
 	private PlannerService plannerService;
 	@Autowired
 	private TripLocationService tripLocationService;
-	@Autowired
-	private ChatGptService chatGptService;
+	
+
 
 	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication, NaverOAuthService naverOAuthService) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -117,32 +117,10 @@ public class UsrPlannerController {
 
 	@RequestMapping("/usr/planner/createPlan")
 	@ResponseBody
-	public String generatePlan(@RequestParam("planData") String planDataJson, Model model) throws IOException {
+	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion, String tripStartDate, String tripEndDate) throws IOException {
 
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		// JSON → Map<String, DailyPlan>으로 파싱
-		Map<String, DailyPlan> plansByDay = objectMapper.readValue(planDataJson,
-				new TypeReference<Map<String, DailyPlan>>() {
-				});
-
-		PlanRequest planRequest = new PlanRequest();
-		planRequest.setPlansByDay(plansByDay);
+		List<String> results = plannerService.createPlan(planDataJson);
 		
-		List<String> results = new ArrayList<>();
-		;
-		// 데이터 까보기
-		for (Map.Entry<String, DailyPlan> entry : plansByDay.entrySet()) {
-
-			String day = entry.getKey();
-			DailyPlan dailyPlan = entry.getValue();
-			System.out.println(dailyPlan);
-			if (dailyPlan == null) {
-				continue;
-			}
-
-//			results.add(chatGptService.generateOptimizedSchedule(day, dailyPlan));
-		}
 		return results.toString();
 	}
 	
