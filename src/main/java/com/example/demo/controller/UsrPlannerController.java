@@ -41,8 +41,6 @@ public class UsrPlannerController {
 	private PlannerService plannerService;
 	@Autowired
 	private TripLocationService tripLocationService;
-	
-
 
 	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication, NaverOAuthService naverOAuthService) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -73,7 +71,7 @@ public class UsrPlannerController {
 			return rq.replace("지역을 선택해주세요.", "../planner/region");
 		}
 
-		// 시작날짜, 마지막날짜 formatting
+		// 시작날짜, 마지막날짜 yyyy-MM-DD 형식으로 formatting
 		String dateFormattedStartDate = plannerService.formatter(startDate);
 		String dateFormattedEndDate = plannerService.formatter(endDate);
 
@@ -117,13 +115,14 @@ public class UsrPlannerController {
 
 	@RequestMapping("/usr/planner/createPlan")
 	@ResponseBody
-	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion, String tripStartDate, String tripEndDate) throws IOException {
+	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion,
+			LocalDateTime tripStartDate, LocalDateTime tripEndDate) throws IOException {
 
-		List<String> results = plannerService.createPlan(planDataJson);
-		
+		List<String> results = plannerService.createPlan(planDataJson, tripRegion, tripStartDate, tripEndDate);
+
 		return results.toString();
 	}
-	
+
 	@RequestMapping("usr/planner/detail")
 	public String detail(Model model) {
 

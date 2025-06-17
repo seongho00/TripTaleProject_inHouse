@@ -157,6 +157,7 @@ $(document).ready(function() {
 					const endMeridiemStr = endIsAM ? 'AM' : 'PM';
 
 					if (!startIsAM) {
+						
 						startHour -= 12;
 						startHour = String(endHour).padStart(2, '0');
 					}

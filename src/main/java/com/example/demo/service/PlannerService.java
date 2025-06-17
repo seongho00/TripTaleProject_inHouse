@@ -13,15 +13,18 @@ import org.springframework.stereotype.Service;
 import com.example.demo.repository.PlannerRepository;
 import com.example.demo.vo.DailyPlan;
 import com.example.demo.vo.PlanRequest;
+import com.example.demo.vo.Rq;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PlannerService {
-	
+
 	@Autowired
 	private ChatGptService chatGptService;
-	
+	@Autowired
+	Rq rq;
+
 	@Autowired
 	private PlannerRepository plannerRepository;
 
@@ -29,6 +32,7 @@ public class PlannerService {
 		this.plannerRepository = plannerRepository;
 
 	}
+
 	public String formatter(LocalDateTime date) {
 
 		// yyyy-MM-dd형식 포맷터
@@ -49,7 +53,10 @@ public class PlannerService {
 		return dateList;
 	}
 
-	public List<String> createPlan(String planDataJson) throws IOException  {
+	public List<String> createPlan(String planDataJson, String tripRegion, LocalDateTime tripStartDate,
+			LocalDateTime tripEndDate) throws IOException {
+		int memberId = rq.getLoginedMemberId();
+
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		// JSON → Map<String, DailyPlan>으로 파싱
@@ -59,32 +66,35 @@ public class PlannerService {
 
 		PlanRequest planRequest = new PlanRequest();
 		planRequest.setPlansByDay(plansByDay);
-		
+
 		List<String> results = new ArrayList<>();
 		
-		// 데이터 까보기
+		plannerRepository.createPlan(tripRegion, tripStartDate, tripEndDate, memberId);
+		int tripId = plannerRepository.getLastInsertId();
+		
+		int dayIndex = 1;
+		// 데이터 까보기 & 데이터 넣기 & chatgpt에게 물어보기
 		for (Map.Entry<String, DailyPlan> entry : plansByDay.entrySet()) {
 
-			String day = entry.getKey();
+			String date = entry.getKey();
 			DailyPlan dailyPlan = entry.getValue();
-			System.out.println(day);
+			
+			
+			System.out.println(date);
 			System.out.println(dailyPlan);
-			
-//			 plannerRepository.createPlan(tripName, tripRegion, tripStartDate, tripEndDate, memberId);
-			 int tripId =plannerRepository.getLastInsertId();
-			
-
-
+			String startTime = "10:00";
+			String endTime = "22:00";
+			plannerRepository.insertTripDay(tripId,dayIndex, date, startTime, endTime);
+			dayIndex++;
 			if (dailyPlan == null) {
 				continue;
 			}
 
-//			results.add(chatGptService.generateOptimizedSchedule(day, dailyPlan));
-			
+//			results.add(chatGptService.generateOptimizedSchedule(date, dailyPlan));
+
 		}
 		return null;
-		
-	}
 
+	}
 
 }

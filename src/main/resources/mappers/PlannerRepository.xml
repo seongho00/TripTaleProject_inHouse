@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.repository.PlannerRepository">
+
+	<select id="createPlan" parameterType="map">
+		INSERT INTO TripInfo
+		SET
+		regDate = NOW(),
+		updateDate = NOW(),
+		tripName = '대전여행',
+		tripRegion =
+		#{tripRegion},
+		tripStartDate = #{tripStartDate},
+		tripEndDate =
+		#{tripEndDate},
+		memberId = #{memberId};
+	</select>
+
+	<select id="getLastInsertId" parameterType="int">
+		SELECT
+		LAST_INSERT_ID()
+	</select>
+
+	<select id="insertTripDay" parameterType="map">
+		INSERT INTO tripDay
+		SET tripId = #{tripId},
+		dayIndex = #{dayIndex},
+		`date` = #{date},
+		startTime = #{startTime},
+		endTime = #{endTime}
+	</select>
+
+
+</mapper>
