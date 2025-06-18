@@ -137,5 +137,10 @@ public class PlannerService {
 		return plannerRepository.getTripPlaceByClick(tripId, index);
 	}
 
+	public List<TripPlace> getAllTripPlace(int tripId) {
+		
+		return plannerRepository.getAllTripPlace(tripId);
+	}
+
 
 }

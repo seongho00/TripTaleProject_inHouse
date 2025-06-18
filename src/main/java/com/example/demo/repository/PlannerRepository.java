@@ -27,5 +27,7 @@ public interface PlannerRepository {
 
 	public List<TripPlace> getTripPlaceByClick(int tripId, int index);
 
+	public List<TripPlace> getAllTripPlace(int tripId);
+
 
 }

@@ -3,7 +3,10 @@ package com.example.demo.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -141,6 +144,8 @@ public class UsrPlannerController {
 
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
+		
+		System.out.println(todayTripPlaces);
 
 		model.addAttribute("tripInfo", tripInfo);
 		model.addAttribute("todayTripPlaces", todayTripPlaces);
@@ -155,10 +160,34 @@ public class UsrPlannerController {
 	@RequestMapping("usr/planner/getTripPlace")
 	@ResponseBody
 	public List<TripPlace> getTripPlace(Model model, int tripId, int index) {
-		
+
 		List<TripPlace> tripPlaces = plannerService.getTripPlaceByClick(tripId, index);
-		
+
 		return tripPlaces;
+	}
+
+	@RequestMapping("usr/planner/getAllTripPlace")
+	@ResponseBody
+	public Map<Integer, List<TripPlace>> getAllTripPlace(Model model, int tripId) {
+
+		List<TripPlace> tripPlaces = plannerService.getAllTripPlace(tripId);
+
+		// dayIndex 기준으로 그룹핑
+		Map<Integer, List<TripPlace>> grouped = new LinkedHashMap<>();
+
+		for (TripPlace tripPlace : tripPlaces) {
+			int dayIndex = tripPlace.getDayIndex();
+			grouped.computeIfAbsent(dayIndex, k -> new ArrayList<>()).add(tripPlace);
+		}
+
+		return grouped; // 자동으로 JSON 형태로 반환됨
+
+	}
+
+	@RequestMapping("usr/planner/modify")
+	public String modify(Model model) {
+
+		return "usr/planner/modify";
 	}
 
 }

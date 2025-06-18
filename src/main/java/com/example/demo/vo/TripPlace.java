@@ -31,6 +31,8 @@ public class TripPlace {
 	private double mapX; 
 	private double mapY;
 	
+	private int dayIndex;
+	
 	private String extra__pictureUrl;
     private String extra__locationType;
 

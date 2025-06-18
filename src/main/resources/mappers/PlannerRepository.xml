@@ -63,7 +63,7 @@
 		INNER JOIN tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
 		WHERE tripDayId = #{tripDayId}
-		GROUP BY TL.id
+		GROUP BY TP.id
 	</select>
 	
 
@@ -83,7 +83,29 @@
 			FROM tripDay
 			WHERE dayIndex = #{index} AND tripId = #{tripId}
 		)
-		GROUP BY TL.id
+		GROUP BY TP.id
+	</select>
+	
+	<select id="getAllTripPlace" parameterType="map"
+		resultType="com.example.demo.vo.TripPlace">
+		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		extra__locationType, TD.dayIndex
+		FROM tripPlace AS TP
+		INNER JOIN tripLocation AS TL
+		ON TP.tripLocationId = TL.id
+		LEFT JOIN tripLocationPicture AS TLP
+		ON TL.id = TLP.tripLocationId
+		INNER JOIN tripLocationType AS TLT
+		ON TL.locationTypeId = TLT.id
+		INNER JOIN tripDay AS TD
+		ON TP.tripDayId = TD.id
+		WHERE tripDayId IN (
+			SELECT id
+			FROM tripDay
+			WHERE tripId = #{tripId}
+		)
+		GROUP BY TP.id
+		ORDER BY TP.tripDayId, TP.startTime;
 	</select>
 	
 
