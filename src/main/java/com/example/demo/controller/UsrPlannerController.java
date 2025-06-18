@@ -131,10 +131,13 @@ public class UsrPlannerController {
 		LocalDateTime startDate = tripInfo.getTripStartDate();
 		LocalDateTime endDate = tripInfo.getTripEndDate();
 
+		// yyyy-MM-dd 날짜 포멧팅
 		String formattedStartDate = plannerService.formatter(startDate);
 		String formattedEndDate = plannerService.formatter(endDate);
-
 		List<TripDay> tripDays = plannerService.getTripDayById(tripId);
+		
+		// 날짜차이
+		long diffDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlace = plannerService.getTripPlace(tripDays);
@@ -145,6 +148,7 @@ public class UsrPlannerController {
 		model.addAttribute("formattedStartDate", formattedStartDate);
 		model.addAttribute("formattedEndDate", formattedEndDate);
 		model.addAttribute("todayTripLocations", todayTripLocations);
+		model.addAttribute("diffDays", diffDays);
 		
 
 		return "usr/planner/detail";

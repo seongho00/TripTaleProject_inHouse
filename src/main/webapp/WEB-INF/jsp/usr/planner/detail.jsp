@@ -24,6 +24,79 @@
 
 		isExpanded = !isExpanded;
 	}
+	
+	// 세로 게이지 오늘까지만 차게끔
+	$(document).ready(function () {
+		  const today = toDateOnly(new Date()); // 오늘 날짜만
+		
+		  const tripStartDate = new Date('${formattedStartDate}');;
+			
+		  function toDateOnly(date) {
+		    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+		  }
+
+		  $('.colTimeLine > li').each(function (index) {
+		    const currentDay = new Date(tripStartDate);
+		    currentDay.setDate(tripStartDate.getDate() + index);
+
+		    const currentDateOnly = toDateOnly(currentDay);
+
+		    const $hrs = $(this).find('hr');
+		    const $icon = $(this).find('svg');
+
+		    if (currentDateOnly < today) {
+		      $hrs.addClass('bg-primary');
+		      $icon.addClass('text-primary');
+		    } else if (currentDateOnly.getTime() === today.getTime()) {
+		      $hrs.addClass('bg-primary');
+		      $icon.addClass('text-primary');
+		      $(this).find('.timeline-box').next('hr').removeClass('bg-primary');
+		    } else {
+		      $hrs.removeClass('bg-primary');
+		      $icon.removeClass('text-primary');
+		    }
+		  });
+		});
+	
+	// 가로 타임라인 시간별로 색칠
+	$(document).ready(function () {
+		  const now = new Date();
+
+		  function parseTimeString(timeStr) {
+		    const [hours, minutes] = timeStr.split(":").map(Number);
+		    const d = new Date();
+		    d.setHours(hours, minutes, 0, 0);
+		    return d;
+		  }
+
+		  $('.colTimeLine > li').each(function () {
+		    const $li = $(this);
+		    const timeStr = $li.data('time'); // ex: "10:00"
+
+		    if (!timeStr) return; // time 없으면 skip
+
+		    const targetTime = parseTimeString(timeStr);
+		    const $hrs = $li.find('hr');
+		    const $icon = $li.find('svg');
+
+		    if (targetTime < now) {
+		      $hrs.addClass('bg-primary');
+		      $icon.addClass('text-primary');
+		    } else if (
+		      targetTime.getHours() === now.getHours() &&
+		      targetTime.getMinutes() === now.getMinutes()
+		    ) {
+		      $hrs.addClass('bg-primary');
+		      $icon.addClass('text-primary');
+
+		      // ➤ 지금 시간일 경우: 오른쪽 막대 (timeline-box 아래 hr)만 제거
+		      $li.find('.timeline-box').next('hr').removeClass('bg-primary');
+		    } else {
+		      $hrs.removeClass('bg-primary');
+		      $icon.removeClass('text-primary');
+		    }
+		  });
+		});
 </script>
 
 
@@ -58,70 +131,55 @@
 				<!-- 가로 데이지 UI 시작 -->
 				<ul class="h-5 colTimeLine timeline transition-all duration-500">
 					<li class="transition-all duration-500 w-[80px]">
+						<div class="timeline-middle">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+        <path fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+									clip-rule="evenodd" />
+      </svg>
+						</div>
 						<div class="timeline-end timeline-box cursor-pointer">1일차</div>
-						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
-        <path fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-									clip-rule="evenodd" />
-      </svg>
-						</div>
-						<hr class="bg-primary" />
-					</li>
-					<li class="transition-all duration-500 w-[80px]">
-						<hr class="bg-primary" />
-						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
-        <path fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-									clip-rule="evenodd" />
-      </svg>
-						</div>
-						<div class="timeline-end timeline-box cursor-pointer">2일차</div>
-						<hr class="bg-primary" />
-					</li>
-					<li class="transition-all duration-500 w-[80px]">
-						<hr class="bg-primary" />
-						<div class="timeline-end timeline-box cursor-pointer">3일차</div>
-						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
-        <path fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-									clip-rule="evenodd" />
-      </svg>
-						</div>
+
 						<hr />
 					</li>
-					<li class="transition-all duration-500 w-[80px]">
-						<hr />
-						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-        <path fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-									clip-rule="evenodd" />
-      </svg>
-						</div>
-						<div class="timeline-end timeline-box cursor-pointer">4일차</div>
-						<hr />
-					</li>
-					<li class="transition-all duration-500 w-[80px]">
-						<hr />
-						<div class="timeline-end timeline-box cursor-pointer">5일차</div>
-						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-        <path fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-									clip-rule="evenodd" />
-      </svg>
-						</div>
-					</li>
+
+					<!-- ✅ 반복 출력: 2일차 ~ diffDays-1일차 -->
+					<c:if test="${diffDays > 1}">
+						<c:forEach var="i" begin="2" end="${diffDays - 1}">
+							<li class="transition-all duration-500 w-[80px]">
+								<hr />
+								<div class="timeline-middle">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+            <path fill-rule="evenodd"
+											d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+											clip-rule="evenodd" />
+          </svg>
+								</div>
+								<div class="timeline-end timeline-box cursor-pointer">${i}일차</div>
+								<hr />
+							</li>
+						</c:forEach>
+
+						<!-- ✅ 마지막 li: diffDays일차 (오른쪽 hr 없는 경우) -->
+						<li class="transition-all duration-500 w-[80px]">
+							<hr />
+							<div class="timeline-middle">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+          <path fill-rule="evenodd"
+										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+										clip-rule="evenodd" />
+        </svg>
+							</div>
+							<div class="timeline-end timeline-box cursor-pointer">${diffDays}일차</div>
+						</li>
+					</c:if>
 				</ul>
 				<!-- 가로 데이지 UI 끝 -->
 			</div>
 			<div class="flex justify-start items-start self-stretch flex-grow relative overflow-auto gap-2.5 px-[5px] py-[23px]">
 
 				<!-- 세로 데이지UI 시작 -->
-				<ul class="timeline timeline-vertical w-[50px]">
+				<ul class="rowTimeLine timeline timeline-vertical w-[50px]">
 					<li class="relative min-h-[120px]">
 
 
@@ -184,10 +242,11 @@
 				</ul>
 				<!-- 데이지UI 끝-->
 				<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[400px] flex-shrink-0  gap-3">
-					<c:forEach var="tripLocation"  items="${todayTripLocations}">
+					<c:forEach var="tripLocation" items="${todayTripLocations}">
 						<div draggable="true"
 							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-							<img src="${tripLocation.extra__pictureUrl}" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+							<img src="${tripLocation.extra__pictureUrl}"
+								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div
 								class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>

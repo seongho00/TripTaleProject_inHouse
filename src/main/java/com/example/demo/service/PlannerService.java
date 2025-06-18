@@ -42,10 +42,12 @@ public class PlannerService {
 	public String formatter(LocalDateTime date) {
 
 		// yyyy-MM-dd형식 포맷터
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		return date.format(dateFormatter);
 	}
+	
+	
 
 	public List<String> getDateList(LocalDateTime startDate, long diffDays) {
 		// MM/dd형식 포맷터

@@ -25,7 +25,6 @@ public class TripLocation {
 	private int areaCode;
 	private double mapX; 
 	private double mapY;
-	private int tripDayId;
 	
 	private String extra__pictureUrl;
 	private String extra__locationType;
