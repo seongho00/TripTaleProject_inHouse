@@ -48,8 +48,8 @@
 				</div>
 				<div class="flex justify-center items-end flex-grow-0 flex-shrink-0 relative overflow-hidden px-11 py-[13px]">
 					<p class="flex-grow-0 flex-shrink-0 max-w-[100px] text-xl font-medium text-center text-black">${tripInfo.tripRegion }</p>
-					<p class="flex-grow-0 flex-shrink-0 w-[201px] h-6 text-[15px] font-medium text-center text-black">${formattedStartDate} ~
-						${formattedEndDate }</p>
+					<p class="flex-grow-0 flex-shrink-0 w-[201px] h-6 text-[15px] font-medium text-center text-black">${formattedStartDate}
+						~ ${formattedEndDate }</p>
 				</div>
 				<div onClick="viewAllSchedule(this);"
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[90px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[20px] bg-black/[0.81] cursor-pointer">
@@ -184,72 +184,22 @@
 				</ul>
 				<!-- 데이지UI 끝-->
 				<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[400px] flex-shrink-0  gap-3">
-					<div draggable="true"
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-						<div
-							class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
+					<c:forEach var="tripLocation"  items="${todayTripLocations}">
+						<div draggable="true"
+							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+							<img src="${tripLocation.extra__pictureUrl}" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+							<div
+								class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripLocation.extra__locationType}</p>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripLocation.locationName}</p>
+							</div>
 						</div>
-					</div>
-					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-						<i class="fa-solid fa-bus-simple"></i>
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-					</div>
-					<div
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-						<div
-							class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
+						<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
+							<i class="fa-solid fa-bus-simple"></i>
+							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
 						</div>
-					</div>
-					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-						<i class="fa-solid fa-bus-simple"></i>
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-					</div>
-					<div
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-						<div
-							class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-						</div>
-					</div>
-					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-						<i class="fa-solid fa-bus-simple"></i>
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-					</div>
-					<div
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-						<div
-							class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-						</div>
-					</div>
-					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-						<i class="fa-solid fa-bus-simple"></i>
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-					</div>
-					<div
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-						<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-						<div
-							class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-						</div>
-					</div>
+					</c:forEach>
 				</div>
 			</div>
 		</div>

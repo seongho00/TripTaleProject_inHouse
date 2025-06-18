@@ -59,9 +59,17 @@
 	
 	<select id="getTripLocationById" parameterType="map"
 		resultType="com.example.demo.vo.TripLocation">
-		SELECT *
-		FROM tripLocation
-		WHERE id = #{tripLocationId}
+		SELECT TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		extra__locationType
+		FROM tripLocation AS TL
+		LEFT JOIN
+		tripLocationPicture AS TLP
+		ON TL.id = TLP.tripLocationId
+		INNER JOIN
+		tripLocationType AS TLT
+		ON TL.locationTypeId = TLT.id
+		WHERE TL.id = #{tripLocationId}
+		GROUP BY TL.id
 	</select>
 
 	
