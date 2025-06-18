@@ -116,7 +116,10 @@
 		    const index = $(this).data('index');
 		    const tripId = ${tripId};
 		    const container = $('#timelineList');
+		    const timeLine = $('.rowTimeLine');
+		    
 		    container.empty(); // ✅ 기존 내용 제거
+		    timeLine.empty(); // 타임라인 내용 제거
 			$.ajax({
 				type: 'GET',
 				url: '/usr/planner/getTripPlace', // 컨트롤러 매핑 경로
@@ -124,7 +127,7 @@
 				success: function (tripPlaces) {
 					
 					$('.timelineList').innerHTML = '';
-					tripPlaces.forEach(tripPlace => {
+					tripPlaces.forEach((tripPlace, i) => {
 						const formatTime = (timeStr) => timeStr?.substring(0, 5);
 						
 					    const html = `
@@ -144,6 +147,28 @@
 							</div>
 							`;
 							container.append(html);
+							
+							const liHeight = i === 0 ? '120px' : i === tripPlaces.length - 1 ? '150px' : '180px';
+					        const hasStartBox = i === tripPlaces.length - 1;
+					        const hasTopHr = i !== 0;
+					        const hasBottomHr = !hasStartBox;
+
+					        const timeLineItem = `
+								<li data-startTime="\${formatTime(tripPlace.startTime)}" data-endTime="\${formatTime(tripPlace.endTime)}" class="relative min-h-[\${liHeight}]">
+									\${hasTopHr ? '<hr />' : ''}
+									\${hasStartBox ? '<div class="timeline-start timeline-box"></div>' : ''}
+								<div class="timeline-middle">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-primary">
+								<path fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+									clip-rule="evenodd" />
+									</svg>
+									</div>
+									\${hasBottomHr ? '<hr />' : ''}
+								</li>
+							`;
+							timeLine.append(timeLineItem);
+							
 						});
 					
 				},
@@ -292,7 +317,7 @@
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div
 								class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.startTime} ~
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.startTime}~
 									${tripPlace.endTime}</p>
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
