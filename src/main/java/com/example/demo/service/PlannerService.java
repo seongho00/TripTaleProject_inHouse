@@ -132,14 +132,10 @@ public class PlannerService {
 		return plannerRepository.getTripPlaceById(tripDays.get(0).getId());
 	}
 
-	public List<TripLocation> getTripLocationById(List<TripPlace> todayTripPlace) {
-
-		List<TripLocation> tripLocations = new ArrayList<>();
-		for (TripPlace tripPlace : todayTripPlace) {
-			tripLocations.add(plannerRepository.getTripLocationById(tripPlace.getTripLocationId()));
-		}
-
-		return tripLocations;
+	public List<TripPlace> getTripPlaceByClick(int tripId, int index) {
+		
+		return plannerRepository.getTripPlaceByClick(tripId, index);
 	}
+
 
 }

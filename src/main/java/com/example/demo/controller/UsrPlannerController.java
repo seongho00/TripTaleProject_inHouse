@@ -135,23 +135,30 @@ public class UsrPlannerController {
 		String formattedStartDate = plannerService.formatter(startDate);
 		String formattedEndDate = plannerService.formatter(endDate);
 		List<TripDay> tripDays = plannerService.getTripDayById(tripId);
-		
+
 		// 날짜차이
 		long diffDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 
 		// 오늘의 일정들
-		List<TripPlace> todayTripPlace = plannerService.getTripPlace(tripDays);
-
-		List<TripLocation> todayTripLocations = plannerService.getTripLocationById(todayTripPlace);
+		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
 
 		model.addAttribute("tripInfo", tripInfo);
+		model.addAttribute("todayTripPlaces", todayTripPlaces);
 		model.addAttribute("formattedStartDate", formattedStartDate);
 		model.addAttribute("formattedEndDate", formattedEndDate);
-		model.addAttribute("todayTripLocations", todayTripLocations);
 		model.addAttribute("diffDays", diffDays);
-		
+		model.addAttribute("tripId", tripId);
 
 		return "usr/planner/detail";
+	}
+
+	@RequestMapping("usr/planner/getTripPlace")
+	@ResponseBody
+	public List<TripPlace> getTripPlace(Model model, int tripId, int index) {
+		
+		List<TripPlace> tripPlaces = plannerService.getTripPlaceByClick(tripId, index);
+		
+		return tripPlaces;
 	}
 
 }

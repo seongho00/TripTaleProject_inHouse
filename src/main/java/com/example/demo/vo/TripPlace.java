@@ -1,6 +1,6 @@
 package com.example.demo.vo;
 
-import java.util.List;
+import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +16,22 @@ public class TripPlace {
 	private int id;
 	private int tripLocationId;
 	private int tripDayId;
-
+	private LocalTime startTime;
+	private LocalTime endTime;
+	
+	private String locationName;
+	private int locationTypeId;
+	private String address;
+	private String schedule;
+	private String number;
+	private String profile;
+	private String star;
+	private int reviewCount;
+	private int areaCode;
+	private double mapX; 
+	private double mapY;
+	
+	private String extra__pictureUrl;
+    private String extra__locationType;
 
 }

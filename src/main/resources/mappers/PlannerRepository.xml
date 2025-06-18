@@ -50,28 +50,41 @@
 		WHERE tripId = #{tripId}
 	</select>
 
+
 	<select id="getTripPlaceById" parameterType="map"
 		resultType="com.example.demo.vo.TripPlace">
-		SELECT *
-		FROM tripPlace
-		WHERE tripDayId = #{tripDayId}
-	</select>
-	
-	<select id="getTripLocationById" parameterType="map"
-		resultType="com.example.demo.vo.TripLocation">
-		SELECT TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
 		extra__locationType
-		FROM tripLocation AS TL
-		LEFT JOIN
-		tripLocationPicture AS TLP
+		FROM tripPlace AS TP
+		INNER JOIN tripLocation AS TL
+		ON TP.tripLocationId = TL.id
+		LEFT JOIN tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
-		INNER JOIN
-		tripLocationType AS TLT
+		INNER JOIN tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
-		WHERE TL.id = #{tripLocationId}
+		WHERE tripDayId = #{tripDayId}
 		GROUP BY TL.id
 	</select>
+	
 
+	<select id="getTripPlaceByClick" parameterType="map"
+		resultType="com.example.demo.vo.TripPlace">
+		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		extra__locationType
+		FROM tripPlace AS TP
+		INNER JOIN tripLocation AS TL
+		ON TP.tripLocationId = TL.id
+		LEFT JOIN tripLocationPicture AS TLP
+		ON TL.id = TLP.tripLocationId
+		INNER JOIN tripLocationType AS TLT
+		ON TL.locationTypeId = TLT.id
+		WHERE tripDayId = (
+			SELECT id
+			FROM tripDay
+			WHERE dayIndex = #{index} AND tripId = #{tripId}
+		)
+		GROUP BY TL.id
+	</select>
 	
 
 

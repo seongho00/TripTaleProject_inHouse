@@ -25,6 +25,7 @@ public interface PlannerRepository {
 
 	public List<TripPlace> getTripPlaceById(int tripDayId);
 
-	public TripLocation getTripLocationById(int tripLocationId);
+	public List<TripPlace> getTripPlaceByClick(int tripId, int index);
+
 
 }
