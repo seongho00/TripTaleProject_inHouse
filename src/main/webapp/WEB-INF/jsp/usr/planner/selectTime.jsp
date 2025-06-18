@@ -74,6 +74,7 @@ $(document).ready(function() {
 	
 	// 일정 생성 버튼
 	$('#planForm').on('submit', function (e) {
+		e.preventDefault(); // 🔴 전송 막기
 		  const plansByDay = {};
 		  const dateList = ${dateListJson};
 		  $('.dailyPlan').each(function () {
@@ -95,19 +96,20 @@ $(document).ready(function() {
 		      const address = $item.data('address');
 		      const duration = $item.find('.duration-input').text().trim(); // "02:00"
 		      
+
 		      plans.push({ id, name, address, duration, lat, lng });
 		    });
 
 		    plansByDay[day] = {
 		      availableTime: { start, end },
-		      plans: plans,
-		      tripRegion: ${param.region},
-		      tripStartDate: "${param.startDate}",
-		      tripEndDate: "${param.endDate}"
+		      plans: plans
 		    };
 		  });
 
 		  $('#planDataInput').val(JSON.stringify(plansByDay));
+		  
+		// 🔵 수동 전송
+		  this.submit();
 		});
 });
 
@@ -795,6 +797,9 @@ body {
 			</div>
 			<div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
 				<form id="planForm" action="createPlan" method="post">
+					<input type="hidden" name="tripRegion" id="tripRegionInput" value="${param.region}">
+					<input type="hidden" name="tripStartDate" id="tripStartDateInput" value="${param.startDate}">
+					<input type="hidden" name="tripEndDate" id="tripEndDateInput" value="${param.endDate}">
 					<input type="hidden" name="planData" id="planDataInput" />
 					<button type="submit" onclick="return confirm('일정을 생성하시겠습니까?')"
 						class="flex justify-center items-center  h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">

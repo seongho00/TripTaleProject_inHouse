@@ -112,6 +112,10 @@ public class UsrPlannerController {
 	@ResponseBody
 	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion,
 			LocalDateTime tripStartDate, LocalDateTime tripEndDate) throws IOException {
+		System.out.println("planDataJson = " + planDataJson);
+		System.out.println("tripRegion = " + tripRegion);
+		System.out.println("tripStartDate = " + tripStartDate);
+		System.out.println("tripStartDate = " + tripEndDate);
 
 		List<String> results = plannerService.createPlan(planDataJson, tripRegion, tripStartDate, tripEndDate);
 

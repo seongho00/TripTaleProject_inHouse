@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,23 +71,27 @@ public class PlannerService {
 		planRequest.setPlansByDay(plansByDay);
 
 		List<String> results = new ArrayList<>();
-		
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
+		int year = tripStartDate.getYear();
+
 		plannerRepository.createPlan(tripRegion, tripStartDate, tripEndDate, memberId);
 		int tripId = plannerRepository.getLastInsertId();
-		
+
 		int dayIndex = 1;
 		// 데이터 까보기 & 데이터 넣기 & chatgpt에게 물어보기
 		for (Map.Entry<String, DailyPlan> entry : plansByDay.entrySet()) {
 
-			String date = entry.getKey();
+			String rawDate = entry.getKey(); // "06/17"
+			MonthDay md = MonthDay.parse(rawDate, formatter);
+			LocalDate parsedDate = md.atYear(year); // → LocalDate 객체
+			String date = parsedDate.toString(); // → "2025-06-17"
+
 			DailyPlan dailyPlan = entry.getValue();
-			
-			
-			System.out.println(date);
-			System.out.println(dailyPlan);
+
 			String startTime = "10:00";
 			String endTime = "22:00";
-			plannerRepository.insertTripDay(tripId,dayIndex, date, startTime, endTime);
+			plannerRepository.insertTripDay(tripId, dayIndex, date, startTime, endTime);
 			dayIndex++;
 			if (dailyPlan == null) {
 				continue;
@@ -94,12 +100,12 @@ public class PlannerService {
 //			results.add(chatGptService.generateOptimizedSchedule(date, dailyPlan));
 
 		}
-		return null;
+		return results;
 
 	}
 
 	public TripInfo getTripInfoById(int id) {
-		
+
 		return plannerRepository.getTripInfoById(id);
 	}
 
