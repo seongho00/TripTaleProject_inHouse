@@ -114,25 +114,28 @@
 	$(document).ready(function () {
 		$('.day-tab').on('click', function () {
 		    const index = $(this).data('index');
-		    const tripId = ${tripId}
-
+		    const tripId = ${tripId};
+		    const container = $('#timelineList');
+		    container.empty(); // ✅ 기존 내용 제거
 			$.ajax({
 				type: 'GET',
 				url: '/usr/planner/getTripPlace', // 컨트롤러 매핑 경로
 				data: { tripId: tripId, index: index },
-				success: function (data) {
+				success: function (tripPlaces) {
 					
 					$('.timelineList').innerHTML = '';
 					tripPlaces.forEach(tripPlace => {
+						const formatTime = (timeStr) => timeStr?.substring(0, 5);
+						
 					    const html = `
 							<div draggable="true"
 								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-							<img src="${tripPlace.extra__pictureUrl}"
+							<img src="\${tripPlace.extra__pictureUrl}"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 					        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-								<p class="text-[15px] font-medium text-center text-black">${tripPlace.startTime} ~ ${tripPlace.endTime}</p>
-								<p class="text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
-								<p class="text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
+								<p class="text-[15px] font-medium text-center text-black">\${formatTime(tripPlace.startTime)} ~ \${formatTime(tripPlace.endTime)}</p>
+								<p class="text-[15px] font-medium text-center text-black">\${tripPlace.extra__locationType}</p>
+								<p class="text-[15px] font-medium text-center text-black">\${tripPlace.locationName}</p>
 							</div>
 							</div>
 							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
@@ -140,11 +143,8 @@
 							<p class="text-[15px] font-medium text-center text-black">50분</p>
 							</div>
 							`;
-							container.innerHTML += html;
+							container.append(html);
 						});
-					
-					console.log("성공");
-					console.log(data);
 					
 				},
 				error: function (xhr, status, error) {
@@ -248,14 +248,14 @@
 									clip-rule="evenodd" />
       </svg>
 						</div>
-						<hr class="bg-primary" />
+						<hr />
 					</li>
 					<!-- ✅ 반복 출력 -->
 					<c:if test="${todayTripPlaces.size() > 1}">
 						<c:forEach var="i" begin="1" end="${todayTripPlaces.size() - 2}">
 							<li data-startTime="${todayTripPlaces[i].startTime }" data-endTime="${todayTripPlaces[i].endTime }"
 								class="relative min-h-[180px]">
-								<hr class="bg-primary" />
+								<hr />
 								<div class="timeline-middle">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
@@ -264,7 +264,7 @@
       </svg>
 								</div>
 
-								<hr class="bg-primary" />
+								<hr />
 							</li>
 						</c:forEach>
 
@@ -292,7 +292,7 @@
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div
 								class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.startTime}~
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.startTime} ~
 									${tripPlace.endTime}</p>
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
