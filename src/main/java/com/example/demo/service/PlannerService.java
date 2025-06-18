@@ -16,7 +16,10 @@ import com.example.demo.repository.PlannerRepository;
 import com.example.demo.vo.DailyPlan;
 import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripDay;
 import com.example.demo.vo.TripInfo;
+import com.example.demo.vo.TripLocation;
+import com.example.demo.vo.TripPlace;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -104,9 +107,37 @@ public class PlannerService {
 
 	}
 
-	public TripInfo getTripInfoById(int id) {
+	public TripInfo getTripInfoById(int tripId) {
 
-		return plannerRepository.getTripInfoById(id);
+		return plannerRepository.getTripInfoById(tripId);
+	}
+
+	public List<TripDay> getTripDayById(int tripId) {
+		return plannerRepository.getTripDayById(tripId);
+	}
+
+	public List<TripPlace> getTripPlace(List<TripDay> tripDays) {
+		LocalDate today = LocalDate.now(); // 오늘 날짜
+
+		for (TripDay tripDay : tripDays) {
+			LocalDateTime dateTime = tripDay.getDate(); // DATETIME 타입이라고 가정
+			if (dateTime.toLocalDate().equals(today)) {
+				// 오늘 날짜와 일치하는 TripDay 발견 시 처리
+				return plannerRepository.getTripPlaceById(tripDay.getId()); // 예: 해당 TripDay에 연결된 TripPlace
+			}
+
+		}
+		return plannerRepository.getTripPlaceById(tripDays.get(0).getId());
+	}
+
+	public List<TripLocation> getTripLocationById(List<TripPlace> todayTripPlace) {
+
+		List<TripLocation> tripLocations = new ArrayList<>();
+		for (TripPlace tripPlace : todayTripPlace) {
+			tripLocations.add(plannerRepository.getTripLocationById(tripPlace.getTripLocationId()));
+		}
+
+		return tripLocations;
 	}
 
 }

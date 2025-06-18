@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 public class TripLocation {
 
 	private int id;
-	private String regDate;
-	private String updateDate;
 	private String locationName;
 	private int locationTypeId;
 	private String address;
@@ -27,7 +25,8 @@ public class TripLocation {
 	private int areaCode;
 	private double mapX; 
 	private double mapY;
-
+	private int tripDayId;
+	
 	private String extra__pictureUrl;
 	private String extra__locationType;
 

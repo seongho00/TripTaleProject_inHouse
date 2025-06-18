@@ -40,7 +40,31 @@
 		resultType="com.example.demo.vo.TripInfo">
 		SELECT *
 		FROM tripInfo
-		WHERE id = #{id}
+		WHERE id = #{tripId}
 	</select>
+
+	<select id="getTripDayById" parameterType="map"
+		resultType="com.example.demo.vo.TripDay">
+		SELECT *
+		FROM tripDay
+		WHERE tripId = #{tripId}
+	</select>
+
+	<select id="getTripPlaceById" parameterType="map"
+		resultType="com.example.demo.vo.TripPlace">
+		SELECT *
+		FROM tripPlace
+		WHERE tripDayId = #{tripDayId}
+	</select>
+	
+	<select id="getTripLocationById" parameterType="map"
+		resultType="com.example.demo.vo.TripLocation">
+		SELECT *
+		FROM tripLocation
+		WHERE id = #{tripLocationId}
+	</select>
+
+	
+
 
 </mapper>

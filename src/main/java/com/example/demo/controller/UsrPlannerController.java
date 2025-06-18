@@ -17,9 +17,11 @@ import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripDay;
 import com.example.demo.vo.TripInfo;
 import com.example.demo.vo.TripLocation;
 import com.example.demo.vo.TripLocationPicture;
+import com.example.demo.vo.TripPlace;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -123,18 +125,27 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/detail")
-	public String detail(Model model, int id) {
+	public String detail(Model model, int tripId) {
 
-		TripInfo tripInfo = plannerService.getTripInfoById(id);
+		TripInfo tripInfo = plannerService.getTripInfoById(tripId);
 		LocalDateTime startDate = tripInfo.getTripStartDate();
 		LocalDateTime endDate = tripInfo.getTripEndDate();
 
 		String formattedStartDate = plannerService.formatter(startDate);
 		String formattedEndDate = plannerService.formatter(endDate);
 
+		List<TripDay> tripDays = plannerService.getTripDayById(tripId);
+
+		// 오늘의 일정들
+		List<TripPlace> todayTripPlace = plannerService.getTripPlace(tripDays);
+
+		List<TripLocation> todayTripLocations = plannerService.getTripLocationById(todayTripPlace);
+
 		model.addAttribute("tripInfo", tripInfo);
 		model.addAttribute("formattedStartDate", formattedStartDate);
 		model.addAttribute("formattedEndDate", formattedEndDate);
+		model.addAttribute("todayTripLocations", todayTripLocations);
+		
 
 		return "usr/planner/detail";
 	}
