@@ -183,15 +183,66 @@ dayIndex = 1,
 startTime = '10:00',
 endTime = '22:00';
 
+
 # 여행 장소 저장 DB
 CREATE TABLE tripPlace (
-	id	INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	tripId INT(10) NOT NULL,
-	dayIndex INT(10) NOT NULL,
-	`date` DATETIME NOT NULL,
-	startTime TIME NOT NULL,
-	endTime TIME NOT NULL
+	id INT(10)	UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	tripDayId INT(10) NOT NULL
 );
+
+ALTER TABLE tripPlace
+ADD COLUMN tripLocationId INT(10) UNSIGNED NOT NULL AFTER id;
+
+ALTER TABLE tripPlace
+ADD COLUMN startTime TIME NOT NULL,
+ADD COLUMN endTime TIME NOT NULL;
+
+
+INSERT INTO tripPlace
+SET tripLocationId = 2,
+tripDayId = 3,
+startTime = '10:30',
+endTime = '13:30';
+
+
+INSERT INTO tripPlace
+SET tripLocationId = 3,
+tripDayId = 3,
+startTime = '14:00',
+endTime = '16:00';
+
+
+INSERT INTO tripPlace
+SET tripLocationId = 4,
+tripDayId = 3,
+startTime = '18:30',
+endTime = '19:30';
+
+
+INSERT INTO tripPlace
+SET tripLocationId = 3,
+tripDayId = 3,
+startTime = '20:00',
+endTime = '22:00';
+
+INSERT INTO tripPlace
+SET tripLocationId = 5,
+tripDayId = 2,
+startTime = '10:30',
+endTime = '13:30';
+
+
+INSERT INTO tripPlace
+SET tripLocationId = 6,
+tripDayId = 2,
+startTime = '14:00',
+endTime = '16:00';
+
+INSERT INTO tripPlace
+SET tripLocationId = 2,
+tripDayId = 2,
+startTime = '18:30',
+endTime = '19:30';
 
 
 SELECT *
@@ -210,6 +261,9 @@ SELECT *
 FROM tripDay
 
 SELECT *
+FROM tripPlace
+
+SELECT *
 FROM tripLocation
 
 SELECT *
@@ -218,7 +272,5 @@ FROM tripLocationType
 SELECT *
 FROM tripLocationPicture;
 
-
 SELECT *
 FROM `member`
-WHERE loginId ='test1'
