@@ -54,8 +54,8 @@
 	      const containerLeft = $modifyContent.offset().left;
 	      const newWidth = e.clientX - containerLeft;
 
-	      const minWidth = 300;
-	      const maxWidth = 1200;
+	      const minWidth = 50;
+	      const maxWidth = 1500;
 
 	      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
 
@@ -203,18 +203,18 @@
 
 
 		<div id="modifyContent"
-			class="modifyContent flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[977px] absolute left-[497px] top-0 overflow-hidden gap-2.5 pl-2.5 py-2.5 bg-white border-r border-black">
+			class="modifyContent flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[977px] absolute left-[497px] top-0 	overflow-hidden gap-2.5 pl-2.5 py-2.5 bg-white border-r border-black">
 			<div
 				class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[909px] relative overflow-hidden gap-2.5 py-[23px]">
 
 
 				<c:forEach var="entry" items="${groupedTripPlaces}">
-					<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
+					<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5 overflow-auto">
 						<div
 							class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-[310px] overflow-hidden gap-2.5 pb-[23px]">
 
 
-							<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3">
+							<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3 ">
 								<div
 									class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[57px] py-3 border border-black">
 									<p class="flex-grow-0 flex-shrink-0 w-[72px] font-medium text-center text-black">
@@ -255,7 +255,7 @@
 					</div>
 				</c:forEach>
 				<div id="dragPoint" 
-					class="dragPoint cursor-ew-resize flex justify-start items-center flex-grow-0 flex-shrink-0 absolute right-0 top-[130px] overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
+					class="dragPoint cursor-ew-resize flex justify-start items-center flex-grow-0 flex-shrink-0 absolute right-0 top-0 h-screen overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
 					<svg width="12" height="28" viewBox="0 0 12 28" fill="none" xmlns="http://www.w3.org/2000/svg"
 						class="flex-grow-0 flex-shrink-0" preserveAspectRatio="none">
             <path d="M1 0V28M11 0V28" stroke="black" stroke-width="2"></path>
