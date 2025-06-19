@@ -13,20 +13,6 @@
 	function viewAllSchedule(elem) {
 		const $sidebar = $('.sidebar');
 		const $timelineItems = $('.colTimeLine').find('li');
-
-		if (!isExpanded) {
-			$sidebar.removeClass('w-[497px]').addClass('w-[1000px]');
-			$timelineItems.removeClass('w-[80px]').addClass('w-[150px]');
-			$(elem).find('p').text("축소하기");
-		} else {
-			$timelineItems.removeClass('w-[150px]').addClass('w-[80px]');
-			$sidebar.removeClass('w-[1000px]').addClass('w-[497px]');
-			$(elem).find('p').text("전체 보기");
-		}
-
-		isExpanded = !isExpanded;
-		
-		
 		const tripId = ${tripId};
 		$.ajax({
 			type: 'GET',
@@ -41,9 +27,9 @@
 			    
 				
 				Object.entries(groupedTripPlaces).forEach(([dayIndex, tripPlaces]) => {
-					const $rowTimeLine = $('<ul class="rowTimeLine timeline timeline-vertical w-[50px]"></ul>');
+					let $rowTimeLine = $('<ul class="rowTimeLine timeline timeline-vertical w-[50px]"></ul>');
 				    $tripPlaceList.append($rowTimeLine);
-				    const $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
+				    let $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
 				    $tripPlaceList.append($timelineList);
 				    
 				    const getMinutesFromDuration = (durationStr) => {
@@ -126,12 +112,50 @@
 					
 				});
 				
+				// 1. 자식 전체 내용 너비 측정용 dummy span 만들기
+				const $clone = $sidebar.clone().css({
+					position: 'absolute',
+					visibility: 'hidden',
+					width: 'fit-content',
+					'max-width': 'none'
+				}).appendTo('body');
+
+				// 2. 실제 너비 측정
+				const contentWidth = $clone.outerWidth();
+
+				// 3. 클론 제거
+				$clone.remove();
+				console.log("실행됨");
+				if (!isExpanded) {
+					// 4. 측정된 너비로 max-width 적용
+					$sidebar.css('max-width', contentWidth + 'px');
+					$sidebar.removeClass('w-[497px]').addClass(`w-[\${contentWidth}px]`);
+					$timelineItems.removeClass('w-[80px]').addClass('w-[150px]');
+					$(elem).find('p').text("축소하기");
+				} else {
+					$timelineItems.removeClass('w-[150px]').addClass('w-[80px]');
+					$sidebar.removeClass(`w-[\${contentWidth}px]`).addClass('w-[497px]');
+					$(elem).find('p').text("전체 보기");
+					
+
+					$tripPlaceList.empty(); // ⛔ #timelineList 포함 전부 삭제됨
+					let $rowTimeLine = $('<ul class="rowTimeLine timeline timeline-vertical w-[50px]"></ul>');
+				    $tripPlaceList.append($rowTimeLine);
+				    let $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
+				    $tripPlaceList.append($timelineList);
+					// ✅ 오늘 일차 정보(index=0)를 다시 불러오기
+					$('.day-tab[data-index="2"]').trigger('click');
+				}
+
+				isExpanded = !isExpanded;
 			},
 			error: function (xhr, status, error) {
 				console.error('에러 발생:', error);
 		        alert('데이터를 불러오지 못했습니다.');
 			}
 		});
+		
+		
 		
 	}
 	
