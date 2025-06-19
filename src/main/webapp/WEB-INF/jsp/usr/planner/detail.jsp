@@ -34,46 +34,95 @@
 			data: { tripId: tripId},
 			success: function (groupedTripPlaces) {
 				const $rowTimeLine = $('.rowTimeLine');
+				const $timelineList = $('#timelineList');
 				const $tripPlaceList = $('.tripPlaceList'); // 고정된 외부 컨테이너
-				$tripPlaceList.empty();
+				$tripPlaceList.empty(); // ⛔ #timelineList 포함 전부 삭제됨
 				
-				console.log(groupedTripPlaces);
-				Object.entries(groupedTripPlaces).forEach(([dayIndex, tripList]) => {
-					console.log(`\${dayIndex}일차`, tripList);
-
+			    
+				
+				Object.entries(groupedTripPlaces).forEach(([dayIndex, tripPlaces]) => {
 					const $rowTimeLine = $('<ul class="rowTimeLine timeline timeline-vertical w-[50px]"></ul>');
 				    $tripPlaceList.append($rowTimeLine);
+				    const $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
+				    $tripPlaceList.append($timelineList);
 				    
-					tripList.forEach((tripPlace, idx) => {
-						const isFirst = idx === 0;
-						const isSecond = idx === 1;
-						const isLast = idx === tripList.length - 2;
-					    const formatTime = (t) => t?.substring(0, 5);
-					    
-					    const li = $(`
-					    		  <li data-startTime="\${formatTime(tripPlace.startTime)}" data-endTime="\${formatTime(tripPlace.endTime)}"
-					    		      class="relative \${isFirst ? 'min-h-[120px]' : isSecond ? 'min-h-[180px]' : 'min-h-[145px]'}">
-					    		    
-					    		    \${!isFirst ? '<hr />' : ''}
-
-					    		    \${isLast 
-					    		      ? '<div class="timeline-middle">'
-					    		        + '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">'
-					    		        + '<path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/>'
-					    		        + '</svg></div>'
-					    		      : '<div class="timeline-middle">'
-					    		        + '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">'
-					    		        + '<path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"/>'
-					    		        + '</svg></div>'}
-
-					    		    \${!isLast ? '<hr />' : ''}
-					    		  </li>
-					    		`);
-
-					    
-						$rowTimeLine.append(li);
+				    const getMinutesFromDuration = (durationStr) => {
+					    if (!durationStr) return 0;
+					    const parts = durationStr.split(':');
+					    const hours = parseInt(parts[0] || '0', 10);
+					    const minutes = parseInt(parts[1] || '0', 10);
+					    return hours * 60 + minutes;
+					};
+				    
+					tripPlaces.forEach((tripPlace, i) => {
 						
-					});
+						
+						const formatTime = (timeStr) => timeStr?.substring(0, 5);
+						const durationMinutes = getMinutesFromDuration(tripPlace.duration);
+						
+						let html = '';
+						
+						// =========================
+						// ✅ 장소 출력
+						// =========================
+						if(i == 0){
+							html += `
+								<div draggable="true"
+									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<img src="\${tripPlace.extra__pictureUrl}"
+									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+									<p class="text-[15px] font-medium text-center text-black">\${formatTime(tripPlace.startTime)} ~ \${formatTime(tripPlace.endTime)}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.extra__locationType}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.locationName}</p>
+								</div>
+								</div>
+								
+								`;
+						} else {
+							html += `
+								<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
+								<i class="fa-solid fa-bus-simple"></i>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${durationMinutes}분</p>
+								</div>
+								<div draggable="true"
+									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<img src="\${tripPlace.extra__pictureUrl}"
+									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+									<p class="text-[15px] font-medium text-center text-black">\${formatTime(tripPlace.startTime)} ~ \${formatTime(tripPlace.endTime)}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.extra__locationType}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.locationName}</p>
+								</div>
+								</div>
+								
+								`;
+						}
+					    
+						$timelineList.append(html);
+							
+							// =========================
+							// ✅ 타임라인 출력
+							// =========================
+							let liHeight = '145px';
+							if (i === 0) liHeight = '120px';
+							if (i === 1) liHeight = '180px';
+							if (i !== 0 && i !== 1) liHeight = '150px';
+							
+							const timeLineItem = `
+								<li data-startTime="\${formatTime(tripPlace.startTime)}" data-endTime="\${formatTime(tripPlace.endTime)}" class="relative min-h-[\${liHeight}]">
+									\${i !== 0 ? '<hr />' : ''}
+									<div class="timeline-middle">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+											<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+										</svg>
+									</div>
+									\${i !== tripPlaces.length - 1 ? '<hr />' : ''}
+								</li>
+							`;
+							$rowTimeLine.append(timeLineItem);
+							markTimelineByTime(); 
+						});
 					
 				});
 				
@@ -121,12 +170,16 @@
 	
 	// 가로 타임라인 시간별로 색칠
 	$(document).ready(function () {
+		markTimelineByTime(); // 최초 실행
+	});
+	
+	function markTimelineByTime() {
 		const now = new Date();
 		const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
 		const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
 		$('.rowTimeLine > li').each(function () {
-			const dateStr = "2025-06-18"; // "2025-06-18"
+			const dateStr = "2025-06-19"; // "2025-06-18"
  			const startTimeStr = $(this).data('starttime'); // "HH:mm"
  			const endTimeStr = $(this).data('endtime'); // "HH:mm"
 			
@@ -168,7 +221,7 @@
 				$icon.removeClass('text-primary');
 			}
 		});
-	});
+	}
 	
 	// N일차 클릭시 그 데이터 가져오기
 	$(document).ready(function () {
@@ -201,6 +254,10 @@
 						const durationMinutes = getMinutesFromDuration(tripPlace.duration);
 						
 						let html = '';
+						
+						// =========================
+						// ✅ 장소 출력
+						// =========================
 						if(i == 0){
 							html += `
 								<div draggable="true"
@@ -237,27 +294,27 @@
 					    
 							container.append(html);
 							
-							/* const liHeight = i === 0 ? '120px' : i === tripPlaces.length - 1 ? '150px' : '180px';
-					        const hasStartBox = i === tripPlaces.length - 1;
-					        const hasTopHr = i !== 0;
-					        const hasBottomHr = !hasStartBox;
-
-					        const timeLineItem = `
+							// =========================
+							// ✅ 타임라인 출력
+							// =========================
+							let liHeight = '145px';
+							if (i === 0) liHeight = '120px';
+							if (i === 1) liHeight = '180px';
+							if (i !== 0 && i !== 1) liHeight = '150px';
+							
+							const timeLineItem = `
 								<li data-startTime="\${formatTime(tripPlace.startTime)}" data-endTime="\${formatTime(tripPlace.endTime)}" class="relative min-h-[\${liHeight}]">
-									\${hasTopHr ? '<hr />' : ''}
-									\${hasStartBox ? '<div class="timeline-start timeline-box"></div>' : ''}
-								<div class="timeline-middle">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-primary">
-								<path fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-									clip-rule="evenodd" />
-									</svg>
+									\${i !== 0 ? '<hr />' : ''}
+									<div class="timeline-middle">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+											<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+										</svg>
 									</div>
-									\${hasBottomHr ? '<hr />' : ''}
+									\${i !== tripPlaces.length - 1 ? '<hr />' : ''}
 								</li>
 							`;
-							timeLine.append(timeLineItem); */
-							
+							timeLine.append(timeLineItem);
+							markTimelineByTime(); 
 						});
 					
 				},
@@ -365,7 +422,7 @@
 						</div>
 						<hr />
 					</li>
-					<c:if test="${todayTripPlaces.size() > 1}">
+					<c:if test="${todayTripPlaces.size() == 2}">
 
 						<li data-startTime="${todayTripPlaces[1].startTime }" data-endTime="${todayTripPlaces[1].endTime }"
 							class="relative min-h-[180px]">
@@ -378,7 +435,6 @@
       </svg>
 							</div>
 
-							<hr />
 						</li>
 					</c:if>
 					<!-- ✅ 반복 출력 -->
