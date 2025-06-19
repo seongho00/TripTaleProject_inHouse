@@ -33,6 +33,55 @@
 
 			}
 		}).disableSelection(); // 선택 방지
+		
+		
+		// 좌우로 넓이조절
+		const $modifyContent = $('#modifyContent');
+	    const $dragPoint = $('#dragPoint');
+	    let isDragging = false;
+
+	    // 드래그 시작
+	    $dragPoint.on('mousedown', function (e) {
+	      isDragging = true;
+	      $('body').css('cursor', 'ew-resize');
+	      e.preventDefault();
+	    });
+
+	    // 드래그 중
+	    $(document).on('mousemove', function (e) {
+	      if (!isDragging) return;
+
+	      const containerLeft = $modifyContent.offset().left;
+	      const newWidth = e.clientX - containerLeft;
+
+	      const minWidth = 300;
+	      const maxWidth = 1200;
+
+	      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
+
+	      $modifyContent.css('width', clampedWidth + 'px');
+	      
+	    });
+
+	    // 드래그 끝
+	    $(document).on('mouseup', function () {
+	      isDragging = false;
+	      $('body').css('cursor', 'default');
+	    });
+
+	    // 초기 위치 설정
+	    function updateDragPointPosition() {
+	      const left = $modifyContent.offset().left;
+	      const width = $modifyContent.outerWidth();
+	      
+	    }
+
+	    // 최초 위치 계산
+	    updateDragPointPosition();
+
+	    // 창 크기 바뀌면 dragPoint 위치 재계산
+	    $(window).on('resize', updateDragPointPosition);
+		
 	});
 
 	// 일정 삭제 버튼
@@ -59,8 +108,7 @@
 				tripPlaceIds : tripPlaceIds
 			});
 		});
-		
-		
+
 		// location.href = "/usr/planner/detail?tripId=" + ${param.tripId};
 	}
 </script>
@@ -154,8 +202,8 @@
 
 
 
-		<div
-			class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[977px] absolute left-[498px] top-0 overflow-hidden gap-2.5 pl-2.5 py-2.5 bg-white border border-black">
+		<div id="modifyContent"
+			class="modifyContent flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[977px] absolute left-[497px] top-0 overflow-hidden gap-2.5 pl-2.5 py-2.5 bg-white border-r border-black">
 			<div
 				class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[909px] relative overflow-hidden gap-2.5 py-[23px]">
 
@@ -195,19 +243,19 @@
 											</div>
 										</c:forEach>
 									</div>
-									<div class="fixed bottom-8 right-8 z-50">
-										<button onclick="submitUpdatedTripOrder()" class="btn btn-primary text-white text-lg px-6 py-2 shadow-md">
-											수정 완료</button>
-									</div>
+
 
 								</div>
 							</div>
-
+							<div class="fixed bottom-8 right-8 z-50">
+								<button onclick="submitUpdatedTripOrder()" class="btn btn-primary text-white text-lg px-6 py-2 shadow-md">
+									수정 완료</button>
+							</div>
 						</div>
 					</div>
 				</c:forEach>
-				<div
-					class="flex justify-start items-center flex-grow-0 flex-shrink-0 absolute left-[927px] top-[130px] overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
+				<div id="dragPoint" 
+					class="dragPoint cursor-ew-resize flex justify-start items-center flex-grow-0 flex-shrink-0 absolute right-0 top-[130px] overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
 					<svg width="12" height="28" viewBox="0 0 12 28" fill="none" xmlns="http://www.w3.org/2000/svg"
 						class="flex-grow-0 flex-shrink-0" preserveAspectRatio="none">
             <path d="M1 0V28M11 0V28" stroke="black" stroke-width="2"></path>
