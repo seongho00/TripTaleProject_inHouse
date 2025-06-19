@@ -3,9 +3,12 @@ package com.example.demo.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.MonthDay;
+import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,15 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.PlannerRepository;
+import com.example.demo.vo.ChatPlanPlace;
 import com.example.demo.vo.DailyPlan;
 import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripDay;
 import com.example.demo.vo.TripInfo;
-import com.example.demo.vo.TripLocation;
 import com.example.demo.vo.TripPlace;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Service
 public class PlannerService {
@@ -46,8 +51,6 @@ public class PlannerService {
 
 		return date.format(dateFormatter);
 	}
-	
-	
 
 	public List<String> getDateList(LocalDateTime startDate, long diffDays) {
 		// MM/dd형식 포맷터
@@ -63,6 +66,9 @@ public class PlannerService {
 
 	public List<String> createPlan(String planDataJson, String tripRegion, LocalDateTime tripStartDate,
 			LocalDateTime tripEndDate) throws IOException {
+
+		Gson gson = new Gson();
+
 		int memberId = rq.getLoginedMemberId();
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -93,16 +99,41 @@ public class PlannerService {
 			String date = parsedDate.toString(); // → "2025-06-17"
 
 			DailyPlan dailyPlan = entry.getValue();
+			String startTime = dailyPlan.getAvailableTime().getStart();
+			String endTime = dailyPlan.getAvailableTime().getEnd();
 
-			String startTime = "10:00";
-			String endTime = "22:00";
-			plannerRepository.insertTripDay(tripId, dayIndex, date, startTime, endTime);
-			dayIndex++;
-			if (dailyPlan == null) {
-				continue;
+			String gptResult = chatGptService.generateOptimizedSchedule(date, dailyPlan, dayIndex);
+
+			List<ChatPlanPlace> planList = gson.fromJson(gptResult, new TypeToken<List<ChatPlanPlace>>() {
+			}.getType());
+
+			Map<Integer, List<ChatPlanPlace>> groupedByDayIndex = new LinkedHashMap<>();
+
+			for (ChatPlanPlace place : planList) {
+
+				groupedByDayIndex.computeIfAbsent(place.getDayIndex(), k -> new ArrayList<>()).add(place);
+
 			}
 
-//			results.add(chatGptService.generateOptimizedSchedule(date, dailyPlan));
+			String fixedStartTime = startTime.replaceAll(":\\s+", ":").trim();
+			String fixedEndTime = endTime.replaceAll(":\\s+", ":").trim();
+
+			DateTimeFormatter amFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
+
+			LocalTime formattingStartTime = LocalTime.parse(fixedStartTime, amFormatter); // → 10:15
+			LocalTime formattingEndTime = LocalTime.parse(fixedEndTime, amFormatter); // → 14:30
+
+			plannerRepository.insertTripDay(tripId, dayIndex, date, formattingStartTime, formattingEndTime);
+			int tripDayId = plannerRepository.getLastInsertId();
+
+			groupedByDayIndex.forEach((day, places) -> {
+
+				
+				for (ChatPlanPlace p : places) {
+					plannerRepository.insertTripPlace(p.getId(), tripDayId, p.getStart(), p.getEnd(), p.getMoveDuration());
+				}
+			});
+			dayIndex++;
 
 		}
 		return results;
@@ -133,14 +164,13 @@ public class PlannerService {
 	}
 
 	public List<TripPlace> getTripPlaceByClick(int tripId, int index) {
-		
+
 		return plannerRepository.getTripPlaceByClick(tripId, index);
 	}
 
 	public List<TripPlace> getAllTripPlace(int tripId) {
-		
+
 		return plannerRepository.getAllTripPlace(tripId);
 	}
-
 
 }

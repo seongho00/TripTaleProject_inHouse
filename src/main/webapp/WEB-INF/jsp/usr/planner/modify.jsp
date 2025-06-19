@@ -4,6 +4,75 @@
 <c:set var="pageTitle" value="PLANNER DETAIL"></c:set>
 <%@ include file="../common/head.jspf"%>
 <%@ include file="../common/daisyUi.jspf"%>
+
+<!-- jQuery UI Sortable -->
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+	// 드래그 가능 함수
+	$(document).ready(function() {
+		$(".connected-sortable").sortable({
+			handle : ".fa-grip-vertical",
+			placeholder : "sortable-placeholder",
+			connectWith : ".connected-sortable", // 💡 핵심: 서로 연결
+			update : function(event, ui) {
+				const $this = $(this);
+				const dayIndex = $this.data('day-index');
+				const sortedIds = $this.children().map(function() {
+					return $(this).data('id');
+				}).get();
+
+				console.log(`변경된 ${dayIndex}일차 순서:`, sortedIds);
+
+				// 다른 일차로 이동된 경우
+				if (ui.sender) {
+					const fromDay = ui.sender.data('day-index');
+					console.log(`→ ${fromDay}일차에서 ${dayIndex}일차로 이동됨`);
+				}
+
+			}
+		}).disableSelection(); // 선택 방지
+	});
+
+	// 일정 삭제 버튼
+	function deleteDailyPlan(el) {
+		$(el).parent().parent().remove();
+	}
+
+	// 수정 완료 버튼
+	function submitUpdatedTripOrder() {
+		const confirmed = confirm("수정하시겠습니까?");
+		if (!confirmed)
+			return; // 취소 시 종료
+
+		const allDayData = [];
+
+		$(".connected-sortable").each(function() {
+			const dayIndex = $(this).data('day-index');
+			const tripPlaceIds = $(this).children().map(function() {
+				return $(this).data('id');
+			}).get();
+
+			allDayData.push({
+				dayIndex : dayIndex,
+				tripPlaceIds : tripPlaceIds
+			});
+		});
+		
+		
+		// location.href = "/usr/planner/detail?tripId=" + ${param.tripId};
+	}
+</script>
+
+<style>
+.sortable-placeholder {
+	height: 107px;
+	background: #e0f7ff;
+	border: 2px dashed #2196f3;
+}
+</style>
+
 <div class=" flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5">
 	<div class=" flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-2.5">
 		<div
@@ -79,12 +148,8 @@
 							</button>
 						</div>
 					</c:forEach>
-
-
 				</div>
-
 			</div>
-
 		</div>
 
 
@@ -93,324 +158,54 @@
 			class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[977px] absolute left-[498px] top-0 overflow-hidden gap-2.5 pl-2.5 py-2.5 bg-white border border-black">
 			<div
 				class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[909px] relative overflow-hidden gap-2.5 py-[23px]">
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
-					<div
-						class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-[300px] overflow-hidden gap-2.5 pb-[23px]">
-						<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3">
-							<div
-								class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[57px] py-3 border border-black">
-								<p class="flex-grow-0 flex-shrink-0 w-[72px] font-medium text-center text-black">
-									<span class="flex-grow-0 flex-shrink-0 w-[72px] text-xs font-medium text-center text-black">1일차</span>
-									<br />
-									<span class="flex-grow-0 flex-shrink-0 w-[72px] text-[15px] font-medium text-center text-black">5/24</span>
-								</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+
+
+				<c:forEach var="entry" items="${groupedTripPlaces}">
+					<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
+						<div
+							class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-[310px] overflow-hidden gap-2.5 pb-[23px]">
+
+
+							<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3">
 								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
+									class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[57px] py-3 border border-black">
+									<p class="flex-grow-0 flex-shrink-0 w-[72px] font-medium text-center text-black">
+										<span class="flex-grow-0 flex-shrink-0 w-[72px] text-xs font-medium text-center text-black">${entry.key}일차</span>
+										<br />
+										<span class="flex-grow-0 flex-shrink-0 w-[72px] text-[15px] font-medium text-center text-black">${dateList[entry.key - 1]}</span>
+									</p>
 								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<i class="fa-solid fa-grip-vertical p-2"></i>
-									<i onclick="deleteDailyPlan(this); " class=" fa-solid fa-trash-can cursor-pointer p-2"></i>
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="image-22.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-5 object-none" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
+								<div class="trip-day" data-day-index="${entry.key}">
+									<div class="sortable-day connected-sortable" data-day-index="${entry.key}">
+										<c:forEach var="tripPlace" items="${entry.value}">
+											<div data-id="${tripPlace.id}"
+												class="trip-place-card flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] w-[310px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+												<img src="${tripPlace.extra__pictureUrl}"
+													class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+												<div
+													class="flex flex-col justify-end items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+													<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
+													<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
+												</div>
+												<div
+													class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
+													<i class="cursor-grab fa-solid fa-grip-vertical p-2"></i>
+													<i onclick="deleteDailyPlan(this); " class=" fa-solid fa-trash-can cursor-pointer p-2"></i>
+												</div>
+											</div>
+										</c:forEach>
+									</div>
+									<div class="fixed bottom-8 right-8 z-50">
+										<button onclick="submitUpdatedTripOrder()" class="btn btn-primary text-white text-lg px-6 py-2 shadow-md">
+											수정 완료</button>
+									</div>
+
 								</div>
 							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
+
 						</div>
 					</div>
-				</div>
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
-					<div
-						class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-[300px] overflow-hidden gap-2.5 pb-[23px]">
-						<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3">
-							<div
-								class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[57px] py-3 border border-black">
-								<p class="flex-grow-0 flex-shrink-0 w-[72px] font-medium text-center text-black">
-									<span class="flex-grow-0 flex-shrink-0 w-[72px] text-xs font-medium text-center text-black">2일차</span>
-									<br />
-									<span class="flex-grow-0 flex-shrink-0 w-[72px] text-[15px] font-medium text-center text-black">5/25</span>
-								</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="image-22.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-5 object-none" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5">
-					<div
-						class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-[300px] overflow-hidden gap-2.5 pb-[23px]">
-						<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3">
-							<div
-								class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[57px] py-3 border border-black">
-								<p class="flex-grow-0 flex-shrink-0 w-[72px] font-medium text-center text-black">
-									<span class="flex-grow-0 flex-shrink-0 w-[72px] text-xs font-medium text-center text-black">3일차</span>
-									<br />
-									<span class="flex-grow-0 flex-shrink-0 w-[72px] text-[15px] font-medium text-center text-black">5/26</span>
-								</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">02:33 ~ 4:33</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울 롯데타워</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="image-22.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-5 object-none" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-								<img src="버스-이모티콘.png" class="flex-grow-0 flex-shrink-0 w-5 h-5 object-cover" />
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							<div
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-								<img src="image-9.png" class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-								<div
-									class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">머무는 시간</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">명소</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">장소 이름</p>
-								</div>
-								<div
-									class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
-									<img src="드래그.png" class="flex-grow-0 flex-shrink-0 w-[30px] h-[30px] object-cover" />
-									<img src="쓰레기통.png" class="flex-grow-0 flex-shrink-0 w-[27px] h-[27px] object-cover" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+				</c:forEach>
 				<div
 					class="flex justify-start items-center flex-grow-0 flex-shrink-0 absolute left-[927px] top-[130px] overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
 					<svg width="12" height="28" viewBox="0 0 12 28" fill="none" xmlns="http://www.w3.org/2000/svg"

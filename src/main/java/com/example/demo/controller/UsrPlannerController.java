@@ -183,7 +183,28 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/modify")
-	public String modify(Model model) {
+	public String modify(Model model, int tripId) {
+
+		TripInfo tripInfo = plannerService.getTripInfoById(tripId);
+		LocalDateTime startDate = tripInfo.getTripStartDate();
+		LocalDateTime endDate = tripInfo.getTripEndDate();
+
+		// 날짜 차이를 이용해 MM/dd 형식으로 formatting
+		long diffDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+		List<String> dateList = plannerService.getDateList(startDate, diffDays);
+		
+		List<TripPlace> tripPlaces = plannerService.getAllTripPlace(tripId);
+
+		// dayIndex 기준으로 그룹핑
+		Map<Integer, List<TripPlace>> grouped = new LinkedHashMap<>();
+
+		for (TripPlace tripPlace : tripPlaces) {
+			int dayIndex = tripPlace.getDayIndex();
+			grouped.computeIfAbsent(dayIndex, k -> new ArrayList<>()).add(tripPlace);
+		}
+
+		model.addAttribute("groupedTripPlaces", grouped);
+		model.addAttribute("dateList", dateList);
 
 		return "usr/planner/modify";
 	}

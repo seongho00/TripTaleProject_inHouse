@@ -53,61 +53,86 @@
 
 	<select id="getTripPlaceById" parameterType="map"
 		resultType="com.example.demo.vo.TripPlace">
-		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
+		TLT.typeName AS
 		extra__locationType
 		FROM tripPlace AS TP
-		INNER JOIN tripLocation AS TL
+		INNER JOIN
+		tripLocation AS TL
 		ON TP.tripLocationId = TL.id
-		LEFT JOIN tripLocationPicture AS TLP
+		LEFT JOIN
+		tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
-		INNER JOIN tripLocationType AS TLT
+		INNER JOIN
+		tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
-		WHERE tripDayId = #{tripDayId}
+		WHERE tripDayId =
+		#{tripDayId}
 		GROUP BY TP.id
 	</select>
-	
+
 
 	<select id="getTripPlaceByClick" parameterType="map"
 		resultType="com.example.demo.vo.TripPlace">
-		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
+		TLT.typeName AS
 		extra__locationType
 		FROM tripPlace AS TP
-		INNER JOIN tripLocation AS TL
+		INNER JOIN
+		tripLocation AS TL
 		ON TP.tripLocationId = TL.id
-		LEFT JOIN tripLocationPicture AS TLP
+		LEFT JOIN
+		tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
-		INNER JOIN tripLocationType AS TLT
+		INNER JOIN
+		tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
-		WHERE tripDayId = (
-			SELECT id
-			FROM tripDay
-			WHERE dayIndex = #{index} AND tripId = #{tripId}
+		WHERE tripDayId =
+		(
+		SELECT id
+		FROM tripDay
+		WHERE dayIndex = #{index} AND tripId = #{tripId}
 		)
 		GROUP BY TP.id
 	</select>
-	
+
 	<select id="getAllTripPlace" parameterType="map"
 		resultType="com.example.demo.vo.TripPlace">
-		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl, TLT.typeName AS
+		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
+		TLT.typeName AS
 		extra__locationType, TD.dayIndex
 		FROM tripPlace AS TP
 		INNER JOIN tripLocation AS TL
 		ON TP.tripLocationId = TL.id
-		LEFT JOIN tripLocationPicture AS TLP
+		LEFT JOIN
+		tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
-		INNER JOIN tripLocationType AS TLT
+		INNER JOIN
+		tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
-		INNER JOIN tripDay AS TD
+		INNER JOIN tripDay
+		AS TD
 		ON TP.tripDayId = TD.id
 		WHERE tripDayId IN (
-			SELECT id
-			FROM tripDay
-			WHERE tripId = #{tripId}
+		SELECT id
+		FROM tripDay
+		WHERE tripId = #{tripId}
 		)
 		GROUP BY TP.id
 		ORDER BY TP.tripDayId, TP.startTime;
 	</select>
-	
+
+
+	<select id="insertTripPlace" parameterType="map">
+		INSERT INTO tripPlace
+		SET tripLocationId = #{id},
+		tripDayid = #{tripDayId},
+		startTime = #{startTime},
+		endTime = #{endTime},
+		duration = #{moveDuration};
+	</select>
+
+
 
 
 </mapper>

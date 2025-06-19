@@ -18,6 +18,7 @@ public class TripPlace {
 	private int tripDayId;
 	private LocalTime startTime;
 	private LocalTime endTime;
+	private LocalTime duration;
 	
 	private String locationName;
 	private int locationTypeId;
