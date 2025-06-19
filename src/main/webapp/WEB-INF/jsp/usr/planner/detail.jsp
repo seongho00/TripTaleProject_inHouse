@@ -143,8 +143,9 @@
 				    $tripPlaceList.append($rowTimeLine);
 				    let $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
 				    $tripPlaceList.append($timelineList);
-					// ✅ 오늘 일차 정보(index=0)를 다시 불러오기
-					$('.day-tab[data-index="2"]').trigger('click');
+					
+					
+					$('.day-tab[data-index="${dayIndex}"]').trigger('click');
 				}
 
 				isExpanded = !isExpanded;

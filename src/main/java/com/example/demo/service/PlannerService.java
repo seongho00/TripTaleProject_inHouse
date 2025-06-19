@@ -173,4 +173,19 @@ public class PlannerService {
 		return plannerRepository.getAllTripPlace(tripId);
 	}
 
+	public int getDayIndexById(int tripId, List<TripDay> tripDays) {
+		LocalDate today = LocalDate.now(); // 오늘 날짜
+
+		for (TripDay tripDay : tripDays) {
+			LocalDateTime dateTime = tripDay.getDate(); // DATETIME 타입이라고 가정
+			if (dateTime.toLocalDate().equals(today)) {
+				// 오늘 날짜와 일치하는 TripDay 발견 시 처리
+				return tripDay.getDayIndex();
+				
+			}
+
+		}
+		return 1;
+	}
+
 }
