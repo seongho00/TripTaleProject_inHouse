@@ -144,7 +144,7 @@ public class UsrPlannerController {
 
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
-
+		
 		model.addAttribute("tripInfo", tripInfo);
 		model.addAttribute("todayTripPlaces", todayTripPlaces);
 		model.addAttribute("formattedStartDate", formattedStartDate);

@@ -185,27 +185,56 @@
 				url: '/usr/planner/getTripPlace', // 컨트롤러 매핑 경로
 				data: { tripId: tripId, index: index },
 				success: function (tripPlaces) {
+					const getMinutesFromDuration = (durationStr) => {
+					    if (!durationStr) return 0;
+					    const parts = durationStr.split(':');
+					    const hours = parseInt(parts[0] || '0', 10);
+					    const minutes = parseInt(parts[1] || '0', 10);
+					    return hours * 60 + minutes;
+					};
 					
 					$('.timelineList').innerHTML = '';
 					tripPlaces.forEach((tripPlace, i) => {
-						const formatTime = (timeStr) => timeStr?.substring(0, 5);
 						
-					    const html = `
-							<div draggable="true"
-								class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
-							<img src="\${tripPlace.extra__pictureUrl}"
-								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
-					        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-								<p class="text-[15px] font-medium text-center text-black">\${formatTime(tripPlace.startTime)} ~ \${formatTime(tripPlace.endTime)}</p>
-								<p class="text-[15px] font-medium text-center text-black">\${tripPlace.extra__locationType}</p>
-								<p class="text-[15px] font-medium text-center text-black">\${tripPlace.locationName}</p>
-							</div>
-							</div>
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-							<i class="fa-solid fa-bus-simple"></i>
-							<p class="text-[15px] font-medium text-center text-black">50분</p>
-							</div>
-							`;
+						
+						const formatTime = (timeStr) => timeStr?.substring(0, 5);
+						const durationMinutes = getMinutesFromDuration(tripPlace.duration);
+						
+						let html = '';
+						if(i == 0){
+							html += `
+								<div draggable="true"
+									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<img src="\${tripPlace.extra__pictureUrl}"
+									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+									<p class="text-[15px] font-medium text-center text-black">\${formatTime(tripPlace.startTime)} ~ \${formatTime(tripPlace.endTime)}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.extra__locationType}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.locationName}</p>
+								</div>
+								</div>
+								
+								`;
+						} else {
+							html += `
+								<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
+								<i class="fa-solid fa-bus-simple"></i>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${durationMinutes}분</p>
+								</div>
+								<div draggable="true"
+									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<img src="\${tripPlace.extra__pictureUrl}"
+									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+									<p class="text-[15px] font-medium text-center text-black">\${formatTime(tripPlace.startTime)} ~ \${formatTime(tripPlace.endTime)}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.extra__locationType}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripPlace.locationName}</p>
+								</div>
+								</div>
+								
+								`;
+						}
+					    
 							container.append(html);
 							
 							/* const liHeight = i === 0 ? '120px' : i === tripPlaces.length - 1 ? '150px' : '180px';
@@ -387,7 +416,14 @@
 				<!-- 데이지UI 끝-->
 
 				<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0  gap-3">
-					<c:forEach var="tripPlace" items="${todayTripPlaces}">
+					<c:forEach var="tripPlace" items="${todayTripPlaces}" varStatus="status">
+						<c:if test="${status.index != 0}">
+							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
+								<i class="fa-solid fa-bus-simple"></i>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.duration.minute }분</p>
+							</div>
+						</c:if>
+
 						<div draggable="true"
 							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 							<img src="${tripPlace.extra__pictureUrl}"
@@ -400,10 +436,7 @@
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
 							</div>
 						</div>
-						<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
-							<i class="fa-solid fa-bus-simple"></i>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">50분</p>
-						</div>
+
 					</c:forEach>
 				</div>
 
