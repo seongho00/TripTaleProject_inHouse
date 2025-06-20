@@ -143,24 +143,40 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		// location.href = "/usr/planner/detail?tripId=" + ${param.tripId};
 	}
 	
-	// 추천장소, 장소 찾기 버튼 눌렀을 때
+	// 추천장소, 장소 찾기, 장바구니 버튼 눌렀을 때
 	function recommendButton() {
 		if ($('#recommendButton').hasClass('btn-active')) {
 			return;
 		}
-		$('#recommendButton').toggleClass('btn-active');
-		$('#searchButton').toggleClass('btn-active');
-		$('.recommendUI').toggleClass('ui-active');
-		$('.searchUI').toggleClass('ui-active');
+		$('#recommendButton').addClass('btn-active');
+		$('#searchButton').removeClass('btn-active');
+		$('#bucketButton').removeClass('btn-active');
+		$('.recommendUI').addClass('ui-active');
+		$('.searchUI').removeClass('ui-active');
+		$('.bucketUI').removeClass('ui-active');
 	}
 	function searchButton() {
 		if ($('#searchButton').hasClass('btn-active')) {
 			return;
 		}
-		$('#recommendButton').toggleClass('btn-active');
-		$('#searchButton').toggleClass('btn-active');
-		$('.recommendUI').toggleClass('ui-active');
-		$('.searchUI').toggleClass('ui-active');
+		$('#recommendButton').removeClass('btn-active');
+		$('#searchButton').addClass('btn-active');
+		$('#bucketButton').removeClass('btn-active');
+		$('.recommendUI').removeClass('ui-active');
+		$('.searchUI').addClass('ui-active');
+		$('.bucketUI').removeClass('ui-active');
+	}
+	
+	function bucketButton() {
+		if ($('#bucketButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#recommendButton').removeClass('btn-active');
+		$('#searchButton').removeClass('btn-active');
+		$('#bucketButton').addClass('btn-active');
+		$('.recommendUI').removeClass('ui-active');
+		$('.searchUI').removeClass('ui-active');
+		$('.bucketUI').addClass('ui-active');
 	}
 	
 	// 사진, 정보 찾기 버튼 눌렀을 때
@@ -173,6 +189,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		$('.infoUI').toggleClass('ui-active');
 		$('.pictureUI').toggleClass('ui-active');
 	}
+	
 	function pictureButton() {
 		if ($('#pictureButton').hasClass('btn-active')) {
 			return;
@@ -232,15 +249,16 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 				const profile = $(this).data('profile');
 				const number = $(this).data('number');
 				const reviewCount = $(this).data('reviewcount');
+				const star = $(this).data('star');
 				const mapX = $(this).data('mapx');
 				const mapY = $(this).data('mapy');
 			   
-		 	   // 이미 열려 있고, 같은 id를 클릭했으면 닫음
-		 	   if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
-		 	   	   closeInfoDiv();
-		 	  	   lastInfoId = null;
-		 	       return;
-		 	   }
+		 		// 이미 열려 있고, 같은 id를 클릭했으면 닫음
+		 		if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
+		 			closeInfoDiv();
+					lastInfoId = null;
+		 			return;
+		 		}
 			   
 			   // 넘겨받은 데이터 넣기
 			   $('#info-id').text(id);
@@ -251,6 +269,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		       $('#info-profile').text(profile);
 		       $('#info-number').text(number);
 		       $('#info-reviewCount').text("리뷰 : " + reviewCount);
+		       $('#info-star').text("별점 : " + star);
 		       $('#info-img').attr('src', img);
 
 		      
@@ -302,26 +321,83 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		
 	   
 	   
-		  // 닫는 버튼 눌렀을 때 
-		  function closeInfoDiv() {
-				  const $infoDiv = $('.infoDiv');
-				  $infoDiv.removeClass('translate-x-0 opacity-100')
-			      .addClass('-translate-x-1/3 opacity-0');
-				  
-				  // 🔻 마커 및 오버레이 제거
-				    if (infoMarker) {
-				        infoMarker.setMap(null);
-				        infoMarker = null;
-				    }
-				    if (infoOverlay) {
-				        infoOverlay.setMap(null);
-				        infoOverlay = null;
-				    }
-			  	 // 300ms 후에 hidden 추가
-			      setTimeout(() => {
-			        $infoDiv.addClass('hidden');
-			      }, 300); // Tailwind의 duration-300과 일치
-			}
+	// 닫는 버튼 눌렀을 때 
+	function closeInfoDiv() {
+		const $infoDiv = $('.infoDiv');
+		$infoDiv.removeClass('translate-x-0 opacity-100').addClass('-translate-x-1/3 opacity-0');
+		// 🔻 마커 및 오버레이 제거
+		if (infoMarker) {
+			infoMarker.setMap(null);
+			infoMarker = null;
+		}
+		
+		if (infoOverlay) {
+			infoOverlay.setMap(null);
+			infoOverlay = null;
+		}
+		
+		// 300ms 후에 hidden 추가
+		setTimeout(() => {
+			$infoDiv.addClass('hidden');
+		}, 300); // Tailwind의 duration-300과 일치
+	}
+	
+	// + 버튼 누를 때 일정에 장소 추가하기
+	function addDailyPlanForPlus(btn) {
+		
+		const $origin = $(btn).closest('.trip-item');
+
+		// 데이터 추출
+		const tripData = {
+			id: $origin.data('id'),
+			name: $origin.data('name'),
+			type: $origin.data('type'),
+			address: $origin.data('address'),
+			number: $origin.data('number'),
+			profile: $origin.data('profile'),
+			schedule: $origin.data('schedule'),
+			img: $origin.data('img'),
+			reviewCount: $origin.data('reviewcount'),
+			mapX: $origin.data('mapx'),
+			mapY: $origin.data('mapy'),
+			star: $origin.data('star'),
+			locationType: $origin.find('p').eq(0).text()
+		};
+		
+		// bucketUI에 추가할 div 생성
+		const $newItem = $(`
+			<div
+				class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
+				data-id="\${tripData.id}" data-name="\${tripData.name}" data-type="\${tripData.type}"
+				data-address="\${tripData.address}" data-number="\${tripData.number}"
+				data-profile="\${tripData.profile}" data-schedule="\${tripData.schedule}"
+				data-img="\${tripData.img}" data-reviewCount="\${tripData.reviewCount}"
+				data-mapX="\${tripData.mapX}" data-mapY="\${tripData.mapY}" data-star="\${tripData.star}">
+
+				<img src="\${tripData.img}"
+					class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+
+				
+				<div
+					class="flex flex-col justify-end items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
+					<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${tripData.locationType}</p>
+					<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${tripData.name}</p>
+				</div>
+
+
+				<div
+				class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
+					<i class="cursor-grab fa-solid fa-grip-vertical p-2"></i>
+					<i onclick="deleteDailyPlan(this); " class=" fa-solid fa-trash-can cursor-pointer p-2"></i>
+				</div>
+			</div>
+		`);
+
+		// bucketUI에 추가
+		$('.bucketUI').append($newItem);
+
+
+	}
 </script>
 
 <style>
@@ -333,18 +409,19 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 }
 
 /* 추천장소, 장소 찾기 클릭시 색깔, 밑줄 코드 */
-#recommendButton.btn-active, #searchButton.btn-active {
+#recommendButton.btn-active, #searchButton.btn-active, #bucketButton.btn-active
+	{
 	opacity: 1;
 	color: black;
 }
 
-#recommendButton, #searchButton {
+#recommendButton, #searchButton, #bucketButton {
 	position: relative;
 	display: inline-block;
 	border-bottom: 2px solid transparent; /* 기본은 안 보임 */
 }
 
-#recommendButton::after, #searchButton::after {
+#recommendButton::after, #searchButton::after, #bucketButton::after {
 	content: "";
 	position: absolute;
 	bottom: 0;
@@ -356,17 +433,18 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	transform-origin: left; /* 왼쪽에서 시작 */
 }
 
-#recommendButton.btn-active::after, #searchButton.btn-active::after {
+#recommendButton.btn-active::after, #searchButton.btn-active::after,
+	#bucketButton.btn-active::after {
 	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
 	transition: transform 0.3s;
 }
 
 /* 추천장소, 장소 찾기 UI css  */
-.recommendUI, .searchUI {
+.recommendUI, .searchUI, .bucketUI {
 	display: none;
 }
 
-.recommendUI.ui-active, .searchUI.ui-active {
+.recommendUI.ui-active, .searchUI.ui-active, .bucketUI.ui-active {
 	display: block;
 }
 
@@ -431,13 +509,15 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 				class="selectLocationDiv flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 pt-4">
 				<p class="flex-grow-0 flex-shrink-0 w-[184px] h-[27px] text-3xl font-medium text-center text-black">장소 선택</p>
 				<div
-					class="flex justify-start items-start flex-grow-0 flex-shrink-0 w-[244px] relative overflow-hidden gap-2.5 px-[22px] py-[9px]">
+					class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[22px] py-[9px]">
 					<button onClick="recommendButton()" id="recommendButton"
 						class="flex-grow-0 flex-shrink-0 w-[91px] h-[39px] text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">추천
 						장소</button>
 					<button onClick="searchButton()" id="searchButton"
 						class="flex-grow-0 flex-shrink-0 w-[99px] h-[37px] text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">장소
 						찾기</button>
+					<button onClick="bucketButton()" id="bucketButton"
+						class="flex-grow-0 flex-shrink-0 w-[99px] h-[37px] text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">장바구니</button>
 
 				</div>
 				<div
@@ -463,7 +543,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 							data-address="${tripLocation.address}" data-number="${tripLocation.number }"
 							data-profile="${tripLocation.profile }" data-schedule="${tripLocation.schedule }"
 							data-img="${tripLocation.extra__pictureUrl}" data-reviewCount="${tripLocation.reviewCount }"
-							data-mapX="${tripLocation.mapX }" data-mapY="${tripLocation.mapY }">
+							data-mapX="${tripLocation.mapX }" data-mapY="${tripLocation.mapY }" data-star="${tripLocation.star }">
 
 							<img src="${tripLocation.extra__pictureUrl }"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
@@ -488,6 +568,11 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 
 				</div>
+				<div
+					class="bucketUI connected-sortable flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-hidden gap-3">
+					<!-- 추가하기를 통해 추가될 공간 -->
+
+				</div>
 
 			</div>
 		</div>
@@ -509,7 +594,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
 						<p id="info-reviewCount"
 							class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
-						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
+						<p id="info-star" class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
 					</div>
 				</div>
 				<div onClick="addDailyPlan();"
@@ -597,7 +682,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 									<div class="sortable-day connected-sortable" data-day-index="${entry.key}">
 										<c:forEach var="tripPlace" items="${entry.value}">
 											<div data-id="${tripPlace.id}"
-												class="trip-place-card flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] w-[310px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+												class="trip-place-card flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 												<img src="${tripPlace.extra__pictureUrl}"
 													class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 												<div
