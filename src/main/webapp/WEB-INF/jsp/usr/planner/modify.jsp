@@ -5,6 +5,12 @@
 <%@ include file="../common/head.jspf"%>
 <%@ include file="../common/daisyUi.jspf"%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<!-- 시간선택 UI -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+
 <!-- jQuery UI Sortable -->
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -469,6 +475,70 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
  		$input[0].focus(); // 입력 포커스
 	});
+	
+	let instance;
+
+	$(function() {
+		// 시작 시간 TimePicker 인스턴스 생성
+
+		const startTimeInstance = new tui.TimePicker('#startTimePicker', {
+			initialHour : 10,
+			inputType : 'spinbox',
+			format : 'HH:mm',
+			showMeridiem : true
+		});
+
+		// 종료 시간 TimePicker 인스턴스 생성
+
+		const endTimeInstance = new tui.TimePicker('#endTimePicker', {
+			initialHour : 22,
+			inputType : 'spinbox',
+			format : 'HH:mm',
+			showMeridiem : true
+		});
+
+		// 시간 클릭 시 팝업 열고 index 기억
+		$('.time-range').on('click', function() {
+			selectedIndex = $(this).data('index');
+			$('.timepicker').removeClass('hidden');
+		});
+
+		$('#submitBtn').on('click',function() {
+
+			let startHour = String(startTimeInstance.getHour()).padStart(2, '0');
+			const startMin = String(startTimeInstance.getMinute()).padStart(2, '0');
+			let endHour = String(endTimeInstance.getHour()).padStart(2,'0');
+			const endMin = String(endTimeInstance.getMinute()).padStart(2, '0');
+
+			const startIsAM = startHour < 12;
+			const startMeridiemStr = startIsAM ? 'AM' : 'PM';
+
+			const endIsAM = endHour < 12;
+			const endMeridiemStr = endIsAM ? 'AM' : 'PM';
+
+			if (!startIsAM) {
+						
+				startHour -= 12;
+				startHour = String(endHour).padStart(2, '0');
+			}
+
+			if (!endIsAM) {
+				endHour -= 12;
+				endHour = String(endHour).padStart(2, '0');
+			}
+
+			const startTimeStr = startHour + ':' + startMin + ' ' + startMeridiemStr;
+			const endTimeStr = endHour + ':' + endMin + ' ' + endMeridiemStr;
+
+			$('.start-time[data-index=' + selectedIndex + ']').text(startTimeStr);
+			$('.end-time[data-index=' + selectedIndex + ']').text(endTimeStr);
+					
+					
+					
+			$('.timepicker').addClass('hidden');
+		});
+	});
+
 </script>
 
 <style>
@@ -740,7 +810,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 				class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[909px] relative overflow-hidden gap-2.5 py-[23px]">
 
 
-				<c:forEach var="entry" items="${groupedTripPlaces}">
+				<c:forEach var="entry" items="${groupedTripPlaces}" varStatus="status">
 					<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5 overflow-auto">
 						<div
 							class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-2.5 pb-[23px]">
@@ -748,12 +818,42 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 							<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3 ">
 								<div
-									class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[57px] py-3 border border-black">
+									class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden px-[57px] py-3 border border-black">
 									<p class="flex-grow-0 flex-shrink-0 w-[72px] font-medium text-center text-black">
 										<span class="flex-grow-0 flex-shrink-0 w-[72px] text-xs font-medium text-center text-black">${entry.key}일차</span>
 										<br />
 										<span class="flex-grow-0 flex-shrink-0 w-[72px] text-[15px] font-medium text-center text-black">${dateList[entry.key - 1]}</span>
 									</p>
+
+									<div
+										class="time-range flex justify-center items-center flex-grow-0 flex-shrink-0  relative overflow-hidden px-2.5 cursor-pointer"
+										data-index="${status.index}">
+										<div
+											class="relative flex justify-start items-center flex-grow-0 flex-shrink-0  relative overflow-hidden gap-2.5 ">
+											<c:set var="startHour" value="${fn:substring(tripDays[status.index].startTime, 0, 2)}" />
+											<c:set var="startMinute" value="${fn:substring(tripDays[status.index].startTime, 3, 5)}" />
+											<c:set var="startHourInt" value="${startHour + 0}" />
+											<c:set var="ampm" value="${endHourInt lt 12 ? 'AM' : 'PM'}" />
+											<c:set var="formattedStartHour" value="${startHourInt lt 13 ? startHourInt : startHourInt - 12}" />
+											<div
+												class="start-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[13px] font-medium text-center text-black"
+												data-index="${status.index}">${formattedStartHour}:${startMinute}&nbsp;${ampm}</div>
+										</div>
+										<p>~</p>
+
+										<div class="flex justify-start items-center flex-grow-0 flex-shrink-0  relative overflow-hidden gap-2.5 ">
+											<c:set var="endHour" value="${fn:substring(tripDays[status.index].endTime, 0, 2)}" />
+											<c:set var="endMinute" value="${fn:substring(tripDays[status.index].endTime, 3, 5)}" />
+											<c:set var="endHourInt" value="${endHour + 0}" />
+											<c:set var="ampm" value="${endHourInt lt 12 ? 'AM' : 'PM'}" />
+											<c:set var="formattedEndHour" value="${endHourInt lt 13 ? endHourInt : endHourInt - 12}" />
+											<div
+												class="end-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[13px] font-medium text-center text-black"
+												data-index="${status.index}">${formattedEndHour}:${endMinute}&nbsp;${ampm}</div>
+										</div>
+									</div>
+
+
 								</div>
 								<div class="trip-day" data-day-index="${entry.key}">
 									<div class="sortable-day connected-sortable" data-day-index="${entry.key}">
@@ -807,6 +907,28 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		</div>
 	</div>
 
+</div>
+
+<div class="timepicker fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
+	<div
+		class="bg-white flex-col flex-grow-0 flex-shrink-0 w-[500px] h-[350px] relative overflow-hidden flex items-center justify-center rounded">
+
+		<div class="flex gap-10 mb-5">
+			<div>
+				<label class="block mb-2">시작 시간</label>
+				<div id="startTimePicker"></div>
+			</div>
+			<div>
+				<label class="block mb-2">종료 시간</label>
+				<div id="endTimePicker"></div>
+			</div>
+		</div>
+
+		<div class="flex justify-end">
+			<button class="cursor-pointer" type="submit" id="submitBtn">확인</button>
+		</div>
+
+	</div>
 </div>
 
 <%@ include file="../common/foot.jspf"%>

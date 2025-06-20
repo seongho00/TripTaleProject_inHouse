@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.TripTaleProjectApplication;
+import com.example.demo.service.ChatGptService;
 import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
@@ -33,8 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class UsrPlannerController {
 
-	private final NaverOAuthService naverOAuthService;
-
 	private final TripTaleProjectApplication tripTaleProjectApplication;
 
 	@Autowired
@@ -42,11 +41,15 @@ public class UsrPlannerController {
 	@Autowired
 	private PlannerService plannerService;
 	@Autowired
+	private ChatGptService chatGptService;
+	@Autowired
+	private NaverOAuthService naverOAuthService;
+
+	@Autowired
 	private TripLocationService tripLocationService;
 
-	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication, NaverOAuthService naverOAuthService) {
+	UsrPlannerController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
-		this.naverOAuthService = naverOAuthService;
 
 	}
 
@@ -190,6 +193,8 @@ public class UsrPlannerController {
 		LocalDateTime startDate = tripInfo.getTripStartDate();
 		LocalDateTime endDate = tripInfo.getTripEndDate();
 
+		List<TripDay> tripDays = plannerService.getTripDayById(tripId);
+
 		// 시작날짜, 마지막날짜 yyyy-MM-DD 형식으로 formatting
 		String dateFormattedStartDate = plannerService.formatter(startDate);
 		String dateFormattedEndDate = plannerService.formatter(endDate);
@@ -219,6 +224,7 @@ public class UsrPlannerController {
 		model.addAttribute("endDate", dateFormattedEndDate);
 		model.addAttribute("groupedTripPlaces", grouped);
 		model.addAttribute("dateList", dateList);
+		model.addAttribute("tripDays", tripDays);
 
 		return "usr/planner/modify";
 	}
@@ -240,7 +246,6 @@ public class UsrPlannerController {
 
 			for (Map<String, Object> dayData : dayDataList) {
 				Object dayIndexObj = dayData.get("dayIndex");
-				System.out.println(dayIndexObj);
 				int dayIndex = (dayIndexObj != null) ? Integer.parseInt(dayIndexObj.toString()) : -1;
 
 				List<Map<String, Object>> tripPlaceList = (List<Map<String, Object>>) dayData.get("tripPlaceIds");
@@ -251,11 +256,6 @@ public class UsrPlannerController {
 					Object idObj = place.get("id");
 					Object durationObj = place.get("duration");
 
-					if (idObj == null || durationObj == null) {
-						System.out.println("⚠️ 누락된 데이터 있음: " + place);
-						continue;
-					}
-
 					Long placeId = Long.parseLong(idObj.toString());
 					String duration = durationObj.toString();
 
@@ -263,6 +263,8 @@ public class UsrPlannerController {
 					System.out.printf("✔️ tripId=%d, dayIndex=%d, placeId=%d, duration=%s%n", tripId, dayIndex, placeId,
 							duration);
 				}
+
+//				chatGptService.generateOptimizedSchedule(duration, null, dayIndex);
 			}
 
 			return ResponseEntity.ok("수정 완료");
