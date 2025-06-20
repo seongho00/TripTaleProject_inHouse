@@ -141,12 +141,11 @@ public class NaverOAuthService {
 
 	}
 
-	public Map<String, Object> searchLocal() {
-		String query = "대전 대덕구 관광지";
+	public Map<String, Object> searchLocal(String query) {
 		String clientId = rq.getNaverClientId();
 		String clientSecret = rq.getNaverClientSecret();
 		RestTemplate restTemplate = new RestTemplate();
-		int start = 10;
+		int start = 1;
 		String url = "https://openapi.naver.com/v1/search/local.json?display=5&sort=comment&start=" + start + "&query="
 				+ query;
 
@@ -188,7 +187,7 @@ public class NaverOAuthService {
 
 				tripLocationService.process(title, 3, mapx, mapy);
 				try {
-					Thread.sleep(5000); // 15초 대기
+					Thread.sleep(5000); // 5초 대기
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt(); // ← 권장 방식
 				}

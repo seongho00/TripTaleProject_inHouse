@@ -74,7 +74,7 @@ public class UsrHomeController {
 	@RequestMapping("usr/test/naverAPI")
 	public String naverAPI(Model model) {
 		// 각 도시의 "시"마다 5개씩 데이터를 받고 DB에 넣기 + 별점 데이터 종합
-		naverOAuthService.searchLocal();
+		naverOAuthService.searchLocal("대전 대덕구 관광지");
 		return "usr/test/naverAPI";
 	}
 

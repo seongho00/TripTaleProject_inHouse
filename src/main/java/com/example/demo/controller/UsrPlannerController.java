@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -214,18 +213,17 @@ public class UsrPlannerController {
 			int dayIndex = tripPlace.getDayIndex();
 			grouped.computeIfAbsent(dayIndex, k -> new ArrayList<>()).add(tripPlace);
 		}
-		
+
 		// LocalTime으로 담기
 		List<LocalTime> durations = new ArrayList<>();
 
 		for (TripPlace tp : tripPlaces) {
-		    if (tp.getStartTime() != null && tp.getEndTime() != null) {
-		        Duration duration = Duration.between(tp.getStartTime(), tp.getEndTime());
-		        LocalTime durTime = LocalTime.MIDNIGHT.plus(duration); // 00:00 기준으로 더해서 LocalTime으로 만들기
-		        durations.add(durTime);
-		    }
+			if (tp.getStartTime() != null && tp.getEndTime() != null) {
+				Duration duration = Duration.between(tp.getStartTime(), tp.getEndTime());
+				LocalTime durTime = LocalTime.MIDNIGHT.plus(duration); // 00:00 기준으로 더해서 LocalTime으로 만들기
+				durations.add(durTime);
+			}
 		}
-		
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
@@ -245,12 +243,28 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/updateTripPlaces")
-	@ResponseBody
-	public ResponseEntity<String> updateTripPlaces(Model model, @RequestBody Map<String, Object> requestBody) {
+	public void updateTripPlaces(Model model, @RequestBody Map<String, Object> requestBody) {
 
 		plannerService.updateTripPlaces(requestBody);
+	}
 
-		return null;
+	@RequestMapping("usr/planner/search")
+	@ResponseBody
+	public String search(Model model, int tripId, String keyword, String source) {
+		System.out.println(tripId);
+		System.out.println(keyword);
+		System.out.println(source);
+
+		if (source.equals("추천")) {
+
+		} else if (source.equals("검색")) {
+
+			naverOAuthService.searchLocal(keyword);
+		} else if (source.equals("장바구니")) {
+
+		}
+
+		return "";
 	}
 
 }

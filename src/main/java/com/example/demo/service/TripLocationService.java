@@ -42,6 +42,10 @@ public class TripLocationService {
 		System.setProperty("webdriver.chrome.driver", "C:\\LSH_spring_work\\chromedriver-win64\\chromedriver.exe");
 
 		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless"); // ✅ 브라우저 창 안 뜨게
+		options.addArguments("--disable-gpu"); // ✅ 가속화 오류 방지
+		options.addArguments("--window-size=1920,1080"); // ✅ 필요한 경우
+		
 		options.addArguments("--remote-allow-origins=*");
 
 		// 브라우저 선택

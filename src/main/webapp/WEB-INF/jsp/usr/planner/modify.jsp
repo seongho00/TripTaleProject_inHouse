@@ -295,51 +295,50 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 			const mapX = $(this).data('mapx');
 			const mapY = $(this).data('mapy');
 			   
-		 		// 이미 열려 있고, 같은 id를 클릭했으면 닫음
-		 		if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
-		 			closeInfoDiv();
-					lastInfoId = null;
-		 			return;
-		 		}
+		 	// 이미 열려 있고, 같은 id를 클릭했으면 닫음
+		 	if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
+		 		closeInfoDiv();
+				lastInfoId = null;
+		 		return;
+		 	}
 			   
-			   // 넘겨받은 데이터 넣기
-			   $('#info-id').text(id);
-			   $('#info-locationName').text(name);
-		       $('#info-locationType').text(type);
-		       $('#info-address').text(address);
-		       $('#info-schedule').text(schedule);
-		       $('#info-profile').text(profile);
-		       $('#info-number').text(number);
-		       $('#info-reviewCount').text("리뷰 : " + reviewCount);
-		       $('#info-star').text("별점 : " + star);
-		       $('#info-img').attr('src', img);
+			// 넘겨받은 데이터 넣기
+			$('#info-id').text(id);
+			$('#info-locationName').text(name);
+			$('#info-locationType').text(type);
+			$('#info-address').text(address);
+			$('#info-schedule').text(schedule);
+			$('#info-profile').text(profile);
+			$('#info-number').text(number);
+			$('#info-reviewCount').text("리뷰 : " + reviewCount);
+			$('#info-star').text("별점 : " + star);
+			$('#info-img').attr('src', img);
 
 		      
-	 	       const $infoDiv = $('.infoDiv');
+	 		const $infoDiv = $('.infoDiv');
 		       
 
-	 	       // infoDiv 열 때 애니메이션
-	 	       $infoDiv.removeClass('hidden');
-	 	       requestAnimationFrame(() => {
-		         $infoDiv.removeClass('-translate-x-1/3 opacity-0')
-		                 .addClass('translate-x-0 opacity-100');
-		      	});
+	 		// infoDiv 열 때 애니메이션
+	 		$infoDiv.removeClass('hidden');
+	 		requestAnimationFrame(() => {
+				$infoDiv.removeClass('-translate-x-1/3 opacity-0').addClass('translate-x-0 opacity-100');
+		    });
 	 	       
-	 	 	  // 지도에 마커 찍기
-	 		   const lat = parseFloat(mapY);
-	 		   const lng = parseFloat(mapX);
+	 	 	// 지도에 마커 찍기
+	 		const lat = parseFloat(mapY);
+	 		const lng = parseFloat(mapX);
 
-	 		   if (!isNaN(lat) && !isNaN(lng)) {
-	 		     const newPosition = new kakao.maps.LatLng(lat, lng);
+	 		if (!isNaN(lat) && !isNaN(lng)) {
+	 			const newPosition = new kakao.maps.LatLng(lat, lng);
 
-	 		 // 이전 마커/오버레이 제거
+	 			// 이전 마커/오버레이 제거
 	 		    if (infoMarker) infoMarker.setMap(null);
 	 		    if (infoOverlay) infoOverlay.setMap(null);
 
 	 		    // 마커 생성
 	 		    infoMarker = new kakao.maps.Marker({
-	 		      position: newPosition,
-	 		      map: map
+	 				position: newPosition,
+	 				map: map
 	 		    });
 
 	 		    // 이름 오버레이 생성
@@ -348,18 +347,19 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	 		                     </div>`;
 
 	 		    infoOverlay = new kakao.maps.CustomOverlay({
-	 		      content: content,
-	 		      position: newPosition,
-	 		      yAnchor: 2.5
+	 				content: content,
+	 				position: newPosition,
+	 				yAnchor: 2.5
 	 		    });
 
-	 		    infoOverlay.setMap(map);
+	 			infoOverlay.setMap(map);
 	 		    map.setCenter(newPosition);
-	 		   }
-	 		  // 현재 id를 저장
-	 		  lastInfoId = id;
-	 	      });
-	  });
+	 		}
+	 		
+	 		// 현재 id를 저장
+	 		lastInfoId = id;
+	 	});
+	});
 		
 	   
 	   
@@ -617,13 +617,49 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	// 장바구니 div 개수세기
 	function updateBucketCount() {
 		const count = $('.bucketUI .trip-item').length;
-		  const $badge = $('#bucketCount');
+		const $badge = $('#bucketCount');
 
-		  if (count === 0) {
-		    $badge.addClass('!hidden');
-		  } else {
-		    $badge.removeClass('!hidden').text(count);
-		  }
+		if (count === 0) {
+			$badge.addClass('!hidden');
+		} else {
+			$badge.removeClass('!hidden').text(count);
+		}
+	}
+	
+	
+	
+	function getUIBysearchKeyword(icon) {
+		// 부모 중 recommendUI, searchUI, bucketUI 중 하나를 기준으로 input 찾기
+		const $container = $(icon).closest('.recommendUI, .searchUI, .bucketUI');
+		const keyword = $container.find('input').val().trim();
+		const tripId = ${param.tripId};
+
+		if ($container.hasClass('recommendUI')) source = '추천';
+		else if ($container.hasClass('searchUI')) source = '검색';
+		else if ($container.hasClass('bucketUI')) source = '장바구니';
+		sendKeywordToServer(tripId, keyword, source);
+	}
+	
+	// 키워드 & 종류를 통해 ajax 보내기
+	function sendKeywordToServer(tripId, keyword, source) {
+		if (!keyword || keyword.trim() === '') {
+		    alert('검색어를 입력해주세요.');
+		    return;
+		}
+
+		$.ajax({
+		    url: 'search', // ✅ 서버에 맞게 경로 조정
+		    method: 'POST',
+		    data:{ tripId :tripId, keyword: keyword, source : source },
+		    success: function (response) {
+		      console.log(`✅ [${source}] 검색 성공:`, response);
+		      // TODO: 결과 UI 업데이트 (source에 따라 다르게 처리 가능)
+		    },
+		    error: function (xhr, status, error) {
+				console.error(`❌ [${source}] 검색 실패:`, error);
+				alert('검색 중 오류가 발생했습니다.');
+		    }
+		});
 	}
 </script>
 
@@ -756,11 +792,27 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 					</div>
 				</div>
 				<div
-					class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
-					<input
+					class="recommendUI flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
+					<input id="searchInput"
 						class="flex-grow-0 flex-shrink-0 w-[260px]  text-xl font-medium  outline-none border-none focus:outline-none focus:border-none"
-						placeholder="장소를 입력해주세요"></input>
-					<i class="fa-solid fa-magnifying-glass text-lg"></i>
+						placeholder="장소를 입력해주세요" autocomplete="off"></input>
+					<i onClick="getUIBysearchKeyword(this);" class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>
+				</div>
+
+				<div
+					class="searchUI flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
+					<input id="searchInput"
+						class="flex-grow-0 flex-shrink-0 w-[260px]  text-xl font-medium  outline-none border-none focus:outline-none focus:border-none"
+						placeholder="장소를 입력해주세요" autocomplete="off"></input>
+					<i onClick="getUIBysearchKeyword(this);" class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>
+				</div>
+
+				<div
+					class="bucketUI flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
+					<input id="searchInput"
+						class="flex-grow-0 flex-shrink-0 w-[260px]  text-xl font-medium  outline-none border-none focus:outline-none focus:border-none"
+						placeholder="장소를 입력해주세요" autocomplete="off"></input>
+					<i onClick="getUIBysearchKeyword(this);" class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>
 				</div>
 
 
