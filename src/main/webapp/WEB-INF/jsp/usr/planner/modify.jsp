@@ -125,6 +125,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	// 일정 삭제 버튼
 	function deleteDailyPlan(el) {
 		$(el).parent().parent().remove();
+		updateBucketCount();
 	}
 
 	// 수정 완료 버튼
@@ -450,7 +451,12 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 		// bucketUI에 추가
 		$('.bucketUI').append($newItem);
-
+		
+		// 숫자 계산
+		updateBucketCount();
+		
+		// ✅ 알림 메시지 띄우기
+		showToast("장바구니에 추가되었습니다.");
 
 	}
 	
@@ -598,6 +604,27 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		});
 	});
 
+	// 장바구니 추가 시 알림 메세지
+	function showToast(message) {
+		const $toast = $('#toast');
+		$toast.text(message).removeClass('opacity-0');
+
+		setTimeout(() => {
+			$toast.addClass('opacity-0');
+		}, 2000); // 2초 후 사라짐
+	}
+	
+	// 장바구니 div 개수세기
+	function updateBucketCount() {
+		const count = $('.bucketUI .trip-item').length;
+		  const $badge = $('#bucketCount');
+
+		  if (count === 0) {
+		    $badge.addClass('!hidden');
+		  } else {
+		    $badge.removeClass('!hidden').text(count);
+		  }
+	}
 </script>
 
 <style>
@@ -722,9 +749,11 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 					<button onClick="searchButton()" id="searchButton"
 						class="flex-grow-0 flex-shrink-0 w-[99px] h-[37px] text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">장소
 						찾기</button>
-					<button onClick="bucketButton()" id="bucketButton"
-						class="flex-grow-0 flex-shrink-0 w-[99px] h-[37px] text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">장바구니</button>
-
+					<div class="indicator">
+						<span id="bucketCount" class="indicator-item badge badge-secondary badge-sm !hidden"></span>
+						<button onClick="bucketButton()" id="bucketButton"
+							class="flex-grow-0 flex-shrink-0 w-[99px] h-[37px] text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">장바구니</button>
+					</div>
 				</div>
 				<div
 					class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
@@ -990,5 +1019,9 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 	</div>
 </div>
+
+<div id="toast"
+	class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-md shadow-lg opacity-0 transition-opacity duration-500 z-50">
+	장바구니에 추가되었습니다.</div>
 
 <%@ include file="../common/foot.jspf"%>

@@ -122,7 +122,7 @@
 
 				// 2. 실제 너비 측정
 				const contentWidth = $clone.outerWidth();
-				const targetWidth = contentWidth * 0.95;
+				const targetWidth = contentWidth * 0.9;
 				const eachBoxWidth = targetWidth / 3; 
 				
 				// 3. 클론 제거

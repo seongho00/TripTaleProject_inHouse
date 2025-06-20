@@ -30,7 +30,6 @@ public class UsrFullCalendarController {
 
 	UsrFullCalendarController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
-
 	}
 
 	@RequestMapping("/fullCalendar/showScheduleList")
