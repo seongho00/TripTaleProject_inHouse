@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -212,6 +214,18 @@ public class UsrPlannerController {
 			int dayIndex = tripPlace.getDayIndex();
 			grouped.computeIfAbsent(dayIndex, k -> new ArrayList<>()).add(tripPlace);
 		}
+		
+		// LocalTime으로 담기
+		List<LocalTime> durations = new ArrayList<>();
+
+		for (TripPlace tp : tripPlaces) {
+		    if (tp.getStartTime() != null && tp.getEndTime() != null) {
+		        Duration duration = Duration.between(tp.getStartTime(), tp.getEndTime());
+		        LocalTime durTime = LocalTime.MIDNIGHT.plus(duration); // 00:00 기준으로 더해서 LocalTime으로 만들기
+		        durations.add(durTime);
+		    }
+		}
+		
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
@@ -225,6 +239,7 @@ public class UsrPlannerController {
 		model.addAttribute("groupedTripPlaces", grouped);
 		model.addAttribute("dateList", dateList);
 		model.addAttribute("tripDays", tripDays);
+		model.addAttribute("durations", durations);
 
 		return "usr/planner/modify";
 	}

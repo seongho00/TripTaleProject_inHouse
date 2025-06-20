@@ -7,6 +7,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <!-- 시간선택 UI -->
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
@@ -486,7 +487,6 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		// 시작 시간 TimePicker 인스턴스 생성
 
 		const startTimeInstance = new tui.TimePicker('#startTimePicker', {
-			initialHour : 10,
 			inputType : 'spinbox',
 			format : 'HH:mm',
 			showMeridiem : true
@@ -495,7 +495,6 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		// 종료 시간 TimePicker 인스턴스 생성
 
 		const endTimeInstance = new tui.TimePicker('#endTimePicker', {
-			initialHour : 22,
 			inputType : 'spinbox',
 			format : 'HH:mm',
 			showMeridiem : true
@@ -504,6 +503,62 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		// 시간 클릭 시 팝업 열고 index 기억
 		$('.time-range').on('click', function() {
 			selectedIndex = $(this).data('index');
+			
+			const startText = $('.start-time[data-index=' + selectedIndex + ']').text();
+			const endText = $('.end-time[data-index=' + selectedIndex + ']').text();
+
+			// 🕒 시간 설정 함수
+			function applyTime(instance, timeText) {
+				if (!timeText || !timeText.includes(':')) return false;
+
+				const [time, meridiem] = timeText.trim().split(' ');
+				let [hour, minute] = time.split(':').map(Number);
+				if (meridiem === 'PM' && hour < 12) hour += 12;
+				if (meridiem === 'AM' && hour === 12) hour = 0;
+
+				instance.setHour(hour);
+				instance.setMinute(minute);
+				return true;
+			}
+
+			const hasStart = applyTime(startTimeInstance, startText);
+			const hasEnd = applyTime(endTimeInstance, endText);
+
+			// 값이 없으면 기본값 설정 (10:00 AM, 10:00 PM)
+			if (!hasStart) {
+				startTimeInstance.setHour(10);
+				startTimeInstance.setMinute(0);
+			}
+			if (!hasEnd) {
+				endTimeInstance.setHour(22);
+				endTimeInstance.setMinute(0);
+			}
+
+			$('.timepicker').removeClass('hidden');
+		});
+
+		// 제출 시 텍스트로 표시
+		$('#submitBtn').on('click', function () {
+			let sh = startTimeInstance.getHour();
+			let sm = startTimeInstance.getMinute();
+			let eh = endTimeInstance.getHour();
+			let em = endTimeInstance.getMinute();
+
+			const startMeridiem = sh >= 12 ? 'PM' : 'AM';
+			const endMeridiem = eh >= 12 ? 'PM' : 'AM';
+
+			if (sh === 0) sh = 12;
+			if (sh > 12) sh -= 12;
+			if (eh === 0) eh = 12;
+			if (eh > 12) eh -= 12;
+
+			const startStr = `\${String(sh).padStart(2, '0')}:\${String(sm).padStart(2, '0')} \${startMeridiem}`;
+			const endStr = `\${String(eh).padStart(2, '0')}:\${String(em).padStart(2, '0')} \${endMeridiem}`;
+
+			$('.start-time[data-index=' + selectedIndex + ']').text(startStr);
+			$('.end-time[data-index=' + selectedIndex + ']').text(endStr);
+			
+			
 			$('.timepicker').removeClass('hidden');
 		});
 
@@ -861,7 +916,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 								</div>
 								<div class="trip-day" data-day-index="${entry.key}">
 									<div class="sortable-day connected-sortable" data-day-index="${entry.key}">
-										<c:forEach var="tripPlace" items="${entry.value}">
+										<c:forEach var="tripPlace" items="${entry.value}" varStatus="status">
 											<div data-id="${tripPlace.tripLocationId}"
 												class="trip-place-card flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 												<img src="${tripPlace.extra__pictureUrl}"
@@ -878,7 +933,8 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 															시간</span>
 														<br />
 														<span
-															class="duration-input flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center text-[#4abef8]">02:00</span>
+															class="duration-input flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center text-[#4abef8]">${durations.get(status.index)}
+														</span>
 													</p>
 												</div>
 												<div
