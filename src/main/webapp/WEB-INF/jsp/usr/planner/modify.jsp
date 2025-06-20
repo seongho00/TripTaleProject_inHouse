@@ -9,6 +9,9 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
+<!-- 머무는 시간 UI -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 
 /* 카카오맵 관련 전역번수 */
@@ -127,20 +130,47 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 			return; // 취소 시 종료
 
 		const allDayData = [];
-
-		$(".connected-sortable").each(function() {
+		
+		$(".modifyContent .connected-sortable").each(function() {
 			const dayIndex = $(this).data('day-index');
 			const tripPlaceIds = $(this).children().map(function() {
-				return $(this).data('id');
+				const $place = $(this);
+				const id = $place.data('id');
+				const duration = $place.find('.duration-input').text().trim(); // ⬅️ duration 추출
+
+				return {
+					id: id,
+					duration: duration
+				};
 			}).get();
+			
 
 			allDayData.push({
 				dayIndex : dayIndex,
 				tripPlaceIds : tripPlaceIds
 			});
 		});
+		
+		console.log(JSON.stringify(allDayData, null, 2));
+		
 
-		// location.href = "/usr/planner/detail?tripId=" + ${param.tripId};
+		// Ajax로 데이터 전송
+		$.ajax({
+			type: "POST",
+			url: "/usr/planner/updateTripPlaces",
+			contentType: "application/json",
+			data: JSON.stringify({
+				tripId: ${param.tripId},
+				dayDataList: allDayData
+			}),
+			success: function (response) {
+				alert("수정이 완료되었습니다.");
+				// location.href = "/usr/planner/detail?tripId=" + tripId;
+			},
+			error: function (xhr) {
+				console.log("수정 실패: " + xhr.responseText);
+			}
+		});
 	}
 	
 	// 추천장소, 장소 찾기, 장바구니 버튼 눌렀을 때
@@ -227,7 +257,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	    const container = document.getElementById('map'); // 지도 담을 영역
 	    const options = {
 			center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청 좌표
-			level: 3 // 확대 레벨 (작을수록 확대)
+			level: 5 // 확대 레벨 (작을수록 확대)
 	    };
 
 	    map = new kakao.maps.Map(container, options); // 전역 map 설정
@@ -236,22 +266,22 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	}
 	
 	// infoDiv 열고 닫기 & 정보 추가하기
-		$(function() {
-			$('.trip-item').on('click', function() {
-				// 선택한 데이터 넘겨받기
+	$(function() {
+		$('.trip-item').on('click', function() {
+			// 선택한 데이터 넘겨받기
 			   
-				const id = $(this).data('id');
-				const name = $(this).data('name');
-				const type = $(this).data('type');
-				const address = $(this).data('address');
-				const img = $(this).data('img');
-				const schedule = $(this).data('schedule');
-				const profile = $(this).data('profile');
-				const number = $(this).data('number');
-				const reviewCount = $(this).data('reviewcount');
-				const star = $(this).data('star');
-				const mapX = $(this).data('mapx');
-				const mapY = $(this).data('mapy');
+			const id = $(this).data('id');
+			const name = $(this).data('name');
+			const type = $(this).data('type');
+			const address = $(this).data('address');
+			const img = $(this).data('img');
+			const schedule = $(this).data('schedule');
+			const profile = $(this).data('profile');
+			const number = $(this).data('number');
+			const reviewCount = $(this).data('reviewcount');
+			const star = $(this).data('star');
+			const mapX = $(this).data('mapx');
+			const mapY = $(this).data('mapy');
 			   
 		 		// 이미 열려 있고, 같은 id를 클릭했으면 닫음
 		 		if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
@@ -316,7 +346,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	 		   }
 	 		  // 현재 id를 저장
 	 		  lastInfoId = id;
-	 	       });
+	 	      });
 	  });
 		
 	   
@@ -342,7 +372,12 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		}, 300); // Tailwind의 duration-300과 일치
 	}
 	
-	// + 버튼 누를 때 일정에 장소 추가하기
+	// "추가하기 버튼 누를 때 바구니에 장소 추가하기"
+	function addDailyPlan(btn) {
+		addDailyPlanForPlus(btn);
+	}
+	
+	// + 버튼 누를 때 바구니에 장소 추가하기
 	function addDailyPlanForPlus(btn) {
 		
 		const $origin = $(btn).closest('.trip-item');
@@ -383,7 +418,16 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 					<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${tripData.locationType}</p>
 					<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${tripData.name}</p>
 				</div>
-
+				<div
+				class="durationDiv flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6 cursor-pointer">
+					<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center">
+						<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center text-black">머무는
+							시간</span>
+						<br />
+						<span
+						class="duration-input flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center text-[#4abef8]">02:00</span>
+					</p>
+				</div>
 
 				<div
 				class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">
@@ -398,6 +442,33 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 
 	}
+	
+	// 머무는 시간 클릭 시
+	$(document).on('click', '.durationDiv', function () {
+  		const $div = $(this);
+  		const $span = $div.find('.duration-input');
+  		const currentValue = $span.text().trim();
+		
+ 		// input 생성 후 span 대체
+ 		const $input = $('<input type="text" class="temp-duration-input w-[60px] text-center border text-sm" />');
+ 		$input.val(currentValue);
+ 		$span.replaceWith($input);
+	
+ 		// Flatpickr 바인딩
+		flatpickr($input[0], {
+  			enableTime: true,
+  			noCalendar: true,
+ 			dateFormat: "H:i",
+  			time_24hr: true,
+  			defaultDate: currentValue,
+  			onClose: function (selectedDates, dateStr) {
+  		    const $newSpan = $('<span class="duration-input flex-grow-0 flex-shrink-0 w-[60px] h-[35px] text-[15px] font-medium text-center text-[#4abef8]"></span>').text(dateStr);
+  			$input.replaceWith($newSpan);
+ 			}
+  		});
+
+ 		$input[0].focus(); // 입력 포커스
+	});
 </script>
 
 <style>
@@ -484,6 +555,12 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 .infoUI.ui-active, .pictureUI.ui-active {
 	display: block;
+}
+
+/* 머무는 시간 ui 크기 설정 코드 */
+.flatpickr-calendar {
+	width: 90px !important;
+	font-size: 13px;
 }
 </style>
 
@@ -597,7 +674,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 						<p id="info-star" class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
 					</div>
 				</div>
-				<div onClick="addDailyPlan();"
+				<div onClick="addDailyPlan(this);"
 					class="top-[50px] left-[230px] flex justify-center items-center flex-grow-0 flex-shrink-0 absolute overflow-hidden gap-2.5 rounded-[10px] bg-black cursor-pointer">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[104px] h-[50px] text-xl font-medium text-white">
@@ -666,7 +743,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 				<c:forEach var="entry" items="${groupedTripPlaces}">
 					<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5 overflow-auto">
 						<div
-							class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 w-[310px] overflow-hidden gap-2.5 pb-[23px]">
+							class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-2.5 pb-[23px]">
 
 
 							<div class="flex flex-col justify-start items-start self-stretch flex-grow gap-3 ">
@@ -689,6 +766,16 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 													class="flex flex-col justify-end items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
 													<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
 													<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
+												</div>
+												<div
+													class="durationDiv flex justify-end items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 py-6 cursor-pointer">
+													<p class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center">
+														<span class="flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center text-black">머무는
+															시간</span>
+														<br />
+														<span
+															class="duration-input flex-grow-0 flex-shrink-0 w-[98px] h-[35px] text-[13px] font-medium text-center text-[#4abef8]">02:00</span>
+													</p>
 												</div>
 												<div
 													class="flex flex-col justify-end items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[18px] py-2">

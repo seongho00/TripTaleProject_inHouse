@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
-
+<!-- 머무는 시간 UI -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>

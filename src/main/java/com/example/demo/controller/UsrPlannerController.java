@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -187,8 +189,6 @@ public class UsrPlannerController {
 		TripInfo tripInfo = plannerService.getTripInfoById(tripId);
 		LocalDateTime startDate = tripInfo.getTripStartDate();
 		LocalDateTime endDate = tripInfo.getTripEndDate();
-		
-		
 
 		// 시작날짜, 마지막날짜 yyyy-MM-DD 형식으로 formatting
 		String dateFormattedStartDate = plannerService.formatter(startDate);
@@ -212,8 +212,7 @@ public class UsrPlannerController {
 		int areaCode = 3;
 		String locationType = "관광지";
 		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationType, areaCode);
-		
-		
+
 		model.addAttribute("tripInfo", tripInfo);
 		model.addAttribute("tripLocations", tripLocations);
 		model.addAttribute("startDate", dateFormattedStartDate);
@@ -222,6 +221,55 @@ public class UsrPlannerController {
 		model.addAttribute("dateList", dateList);
 
 		return "usr/planner/modify";
+	}
+
+	@RequestMapping("usr/planner/updateTripPlaces")
+	@ResponseBody
+	public ResponseEntity<String> updateTripPlaces(Model model, @RequestBody Map<String, Object> requestBody) {
+
+		try {
+			// tripId 파싱
+			Object tripIdObj = requestBody.get("tripId");
+			if (tripIdObj == null) {
+				return ResponseEntity.badRequest().body("tripId가 누락되었습니다.");
+			}
+			Long tripId = Long.parseLong(tripIdObj.toString());
+
+			// dayDataList 가져오기
+			List<Map<String, Object>> dayDataList = (List<Map<String, Object>>) requestBody.get("dayDataList");
+
+			for (Map<String, Object> dayData : dayDataList) {
+				Object dayIndexObj = dayData.get("dayIndex");
+				System.out.println(dayIndexObj);
+				int dayIndex = (dayIndexObj != null) ? Integer.parseInt(dayIndexObj.toString()) : -1;
+
+				List<Map<String, Object>> tripPlaceList = (List<Map<String, Object>>) dayData.get("tripPlaceIds");
+				if (tripPlaceList == null)
+					continue;
+
+				for (Map<String, Object> place : tripPlaceList) {
+					Object idObj = place.get("id");
+					Object durationObj = place.get("duration");
+
+					if (idObj == null || durationObj == null) {
+						System.out.println("⚠️ 누락된 데이터 있음: " + place);
+						continue;
+					}
+
+					Long placeId = Long.parseLong(idObj.toString());
+					String duration = durationObj.toString();
+
+					// TODO: 이 데이터를 DB에 저장하거나 로직 처리
+					System.out.printf("✔️ tripId=%d, dayIndex=%d, placeId=%d, duration=%s%n", tripId, dayIndex, placeId,
+							duration);
+				}
+			}
+
+			return ResponseEntity.ok("수정 완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.internalServerError().body("서버 오류 발생: " + e.getMessage());
+		}
 	}
 
 }
