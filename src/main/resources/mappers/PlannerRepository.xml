@@ -142,7 +142,7 @@
 		FROM tripLocation
 		WHERE id = #{tripLocationId};
 	</select>
-	
+
 	<select id="getTripPlaceByTripPlaceId" parameterType="map"
 		resultType="com.example.demo.vo.TripPlace">
 		SELECT *
@@ -150,6 +150,32 @@
 		WHERE id = #{tripPlaceId};
 	</select>
 
+
+
+	<select id="getTripDayByTripIdAndDayIndex" parameterType="map"
+		resultType="com.example.demo.vo.TripDay">
+		SELECT *
+		FROM tripDay
+		WHERE dayIndex = #{dayIndex} AND tripId
+		= #{tripId};
+	</select>
+
+
+
+	<select id="updateTripDay" parameterType="map">
+		UPDATE tripDay
+		SET
+		startTime = #{startTime},
+		endTime = #{endTime}
+		WHERE tripId = #{tripId}
+		AND dayIndex = #{dayIndex}
+	</select>
+
+
+	<select id="deleteTripPlace" parameterType="map">
+		DELETE FROM tripPlace
+		WHERE tripDayId = #{tripDayId}
+	</select>
 
 
 

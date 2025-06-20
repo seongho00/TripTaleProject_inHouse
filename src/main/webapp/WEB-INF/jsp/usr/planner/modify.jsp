@@ -136,7 +136,6 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		
 		$(".modifyContent .connected-sortable").each(function() {
 			const dayIndex = $(this).data('day-index');
-			console.log(dayIndex);
 			const tripPlaceIds = $(this).children().map(function() {
 				const $place = $(this);
 				const id = $place.data('id');
@@ -162,7 +161,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 			});
 		});
 		
-		console.log(JSON.stringify(allDayData, null, 2));
+
 		
 
 		// Ajax로 데이터 전송
@@ -863,7 +862,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 								<div class="trip-day" data-day-index="${entry.key}">
 									<div class="sortable-day connected-sortable" data-day-index="${entry.key}">
 										<c:forEach var="tripPlace" items="${entry.value}">
-											<div data-id="${tripPlace.id}"
+											<div data-id="${tripPlace.tripLocationId}"
 												class="trip-place-card flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 h-[107px] relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 												<img src="${tripPlace.extra__pictureUrl}"
 													class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />

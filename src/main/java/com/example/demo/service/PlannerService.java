@@ -15,7 +15,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.example.demo.controller.UsrArticleController;
 import com.example.demo.repository.PlannerRepository;
 import com.example.demo.vo.AvailableTime;
 import com.example.demo.vo.ChatPlanPlace;
@@ -35,6 +35,8 @@ import com.google.gson.reflect.TypeToken;
 @Service
 public class PlannerService {
 
+	private final UsrArticleController usrArticleController;
+
 	@Autowired
 	private ChatGptService chatGptService;
 	@Autowired
@@ -43,8 +45,9 @@ public class PlannerService {
 	@Autowired
 	private PlannerRepository plannerRepository;
 
-	public PlannerService(PlannerRepository plannerRepository) {
+	public PlannerService(PlannerRepository plannerRepository, UsrArticleController usrArticleController) {
 		this.plannerRepository = plannerRepository;
+		this.usrArticleController = usrArticleController;
 
 	}
 
@@ -195,9 +198,6 @@ public class PlannerService {
 	public ResponseEntity<String> updateTripPlaces(Map<String, Object> requestBody) {
 		Gson gson = new Gson();
 
-		// 기존 일정 삭제
-
-		// 일정 다시 생성
 		try {
 			// tripId 파싱
 			Object tripIdObj = requestBody.get("tripId");
@@ -206,9 +206,23 @@ public class PlannerService {
 			}
 			int tripId = Integer.parseInt(tripIdObj.toString());
 
+			// 기존 일정 삭제
+
+			// tripId를 통해 tripDay 다 가져오기
+			List<TripDay> tripDays = plannerRepository.getTripDayById(tripId);
+
+			// 순회 시켜서 원래 일정 다 삭제
+			for (TripDay tripDay : tripDays) {
+				int tripDayId = tripDay.getId();
+				plannerRepository.deleteTripPlace(tripDayId);
+			}
+
+			// 일정 다시 생성
+
 			// dayDataList 가져오기
 			List<Map<String, Object>> dayDataList = (List<Map<String, Object>>) requestBody.get("dayDataList");
 
+			// N일차만큼 반복
 			for (Map<String, Object> dayData : dayDataList) {
 				Object dayIndexObj = dayData.get("dayIndex");
 				int dayIndex = (dayIndexObj != null) ? Integer.parseInt(dayIndexObj.toString()) : -1;
@@ -222,16 +236,14 @@ public class PlannerService {
 				if (tripPlaceList == null)
 					continue;
 				List<PlacePlan> plans = new ArrayList<>();
+
+				// N일차 장소 개수만큼 반복
 				for (Map<String, Object> place : tripPlaceList) {
 
 					Object idObj = place.get("id");
 					Object durationObj = place.get("duration");
 
-					int tripPlaceId = Integer.parseInt(idObj.toString());
-
-					TripPlace tripPlace = plannerRepository.getTripPlaceByTripPlaceId(tripPlaceId);
-
-					int tripLocationId = tripPlace.getTripLocationId();
+					int tripLocationId = Integer.parseInt(idObj.toString());
 
 					TripLocation tripLocation = plannerRepository.getTripLocationById(tripLocationId);
 
@@ -244,6 +256,7 @@ public class PlannerService {
 
 				}
 
+				// 데이터 객체에 다 담아서 chatGpt API에게 물어보기
 				DailyPlan dailyPlan = new DailyPlan(availableTime, plans);
 				String gptResult = chatGptService.generateOptimizedSchedule(dailyPlan, dayIndex);
 
@@ -257,10 +270,30 @@ public class PlannerService {
 
 				}
 
+				// TripDay 업데이트
+				String fixedStartTime = startTime.replace('\u00A0', ' ').trim();
+				String fixedEndTime = endTime.replace('\u00A0', ' ').trim();
+
 				DateTimeFormatter amFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
 
-				LocalTime formattingStartTime = LocalTime.parse(startTime, amFormatter); // → 10:15
-				LocalTime formattingEndTime = LocalTime.parse(endTime, amFormatter); // → 14:30
+				LocalTime formattingStartTime = LocalTime.parse(fixedStartTime, amFormatter); // → 10:15
+				LocalTime formattingEndTime = LocalTime.parse(fixedEndTime, amFormatter); // → 14:30
+
+				LocalDateTime date = null;
+
+				plannerRepository.updateTripDay(tripId, dayIndex, date, formattingStartTime, formattingEndTime);
+
+				// chatGpt API에게 얻은 데이터를 통해 TripPlace insert
+				groupedByDayIndex.forEach((day, places) -> {
+					TripDay tripDay = plannerRepository.getTripDayByTripIdAndDayIndex(tripId, day);
+
+					int tripDayId = tripDay.getId();
+
+					for (ChatPlanPlace p : places) {
+						plannerRepository.insertTripPlace(p.getId(), tripDayId, p.getStart(), p.getEnd(),
+								p.getMoveDuration());
+					}
+				});
 
 			}
 

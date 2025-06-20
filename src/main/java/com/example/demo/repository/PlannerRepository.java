@@ -36,5 +36,12 @@ public interface PlannerRepository {
 
 	public TripPlace getTripPlaceByTripPlaceId(int tripPlaceId);
 
+	public TripDay getTripDayByTripIdAndDayIndex(int tripId, int dayIndex);
+
+	public void updateTripDay(int tripId, int dayIndex, LocalDateTime date, LocalTime startTime,
+			LocalTime endTime);
+
+	public void deleteTripPlace(int tripDayId);
+
 
 }
