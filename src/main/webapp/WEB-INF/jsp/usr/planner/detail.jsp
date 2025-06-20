@@ -122,18 +122,19 @@
 
 				// 2. 실제 너비 측정
 				const contentWidth = $clone.outerWidth();
-
+				const targetWidth = contentWidth * 0.95;
+				const eachBoxWidth = targetWidth / 3; 
+				
 				// 3. 클론 제거
 				$clone.remove();
-				console.log("실행됨");
 				if (!isExpanded) {
 					// 4. 측정된 너비로 max-width 적용
 					$sidebar.css('max-width', contentWidth + 'px');
 					$sidebar.removeClass('w-[497px]').addClass(`w-[\${contentWidth}px]`);
-					$timelineItems.removeClass('w-[80px]').addClass('w-[150px]');
+					$timelineItems.removeClass('w-[80px]').addClass(`w-[\${eachBoxWidth}px]`);
 					$(elem).find('p').text("축소하기");
 				} else {
-					$timelineItems.removeClass('w-[150px]').addClass('w-[80px]');
+					$timelineItems.removeClass(`w-[\${eachBoxWidth}px]`).addClass('w-[80px]');
 					$sidebar.removeClass(`w-[\${contentWidth}px]`).addClass('w-[497px]');
 					$(elem).find('p').text("전체 보기");
 					
@@ -447,7 +448,7 @@
 						</div>
 						<hr />
 					</li>
-					<c:if test="${todayTripPlaces.size() == 2}">
+					<c:if test="${todayTripPlaces.size() >= 2}">
 
 						<li data-startTime="${todayTripPlaces[1].startTime }" data-endTime="${todayTripPlaces[1].endTime }"
 							class="relative min-h-[180px]">
@@ -459,14 +460,14 @@
 										clip-rule="evenodd" />
       </svg>
 							</div>
-
+							<hr />
 						</li>
 					</c:if>
-					<!-- ✅ 반복 출력 -->
+					<!-- ✅ 반복 	 -->
 					<c:if test="${todayTripPlaces.size() > 2}">
 						<c:forEach var="i" begin="2" end="${todayTripPlaces.size() - 2}">
 							<li data-startTime="${todayTripPlaces[i].startTime }" data-endTime="${todayTripPlaces[i].endTime }"
-								class="relative min-h-[145px]">
+								class="relative min-h-[150px]">
 								<hr />
 								<div class="timeline-middle">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
@@ -482,7 +483,7 @@
 
 						<!-- ✅ 마지막 li -->
 						<li data-startTime="${todayTripPlaces[size].startTime }" data-endTime="${todayTripPlaces[size].endTime }"
-							class="relative min-h-[145px]">
+							class="relative min-h-[150px]">
 							<hr />
 							<div class="timeline-middle">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
