@@ -192,6 +192,7 @@ $(document).ready(function() {
 		$('.selectLocationDiv').removeClass('hidden');
 	}
 
+	// 추천장소, 장소 찾기 버튼 눌렀을 때
 	function recommendButton() {
 		if ($('#recommendButton').hasClass('btn-active')) {
 			return;
@@ -211,7 +212,7 @@ $(document).ready(function() {
 		$('.searchUI').toggleClass('ui-active');
 	}
 	
-	// 추천장소, 장소 찾기 버튼 눌렀을 때
+	// 정보, 사진 버튼 눌렀을 때
 	function infoButton() {
 		if ($('#infoButton').hasClass('btn-active')) {
 			return;
@@ -643,7 +644,7 @@ body {
 	transition: transform 0.3s;
 }
 
-/* 아이디 찾기, 비밀번호 찾기 Ui 코드 */
+/* 정보, 사진 Ui 코드 */
 .infoUI, .pictureUI {
 	display: none;
 }

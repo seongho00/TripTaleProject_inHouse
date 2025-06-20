@@ -117,10 +117,6 @@ public class UsrPlannerController {
 	@ResponseBody
 	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion,
 			LocalDateTime tripStartDate, LocalDateTime tripEndDate) throws IOException {
-		System.out.println("planDataJson = " + planDataJson);
-		System.out.println("tripRegion = " + tripRegion);
-		System.out.println("tripStartDate = " + tripStartDate);
-		System.out.println("tripStartDate = " + tripEndDate);
 
 		List<String> results = plannerService.createPlan(planDataJson, tripRegion, tripStartDate, tripEndDate);
 
@@ -144,9 +140,9 @@ public class UsrPlannerController {
 
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
-		
+
 		int dayIndex = plannerService.getDayIndexById(tripId, tripDays);
-		
+
 		model.addAttribute("tripInfo", tripInfo);
 		model.addAttribute("todayTripPlaces", todayTripPlaces);
 		model.addAttribute("formattedStartDate", formattedStartDate);
@@ -191,11 +187,17 @@ public class UsrPlannerController {
 		TripInfo tripInfo = plannerService.getTripInfoById(tripId);
 		LocalDateTime startDate = tripInfo.getTripStartDate();
 		LocalDateTime endDate = tripInfo.getTripEndDate();
+		
+		
+
+		// 시작날짜, 마지막날짜 yyyy-MM-DD 형식으로 formatting
+		String dateFormattedStartDate = plannerService.formatter(startDate);
+		String dateFormattedEndDate = plannerService.formatter(endDate);
 
 		// 날짜 차이를 이용해 MM/dd 형식으로 formatting
 		long diffDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 		List<String> dateList = plannerService.getDateList(startDate, diffDays);
-		
+
 		List<TripPlace> tripPlaces = plannerService.getAllTripPlace(tripId);
 
 		// dayIndex 기준으로 그룹핑
@@ -206,6 +208,16 @@ public class UsrPlannerController {
 			grouped.computeIfAbsent(dayIndex, k -> new ArrayList<>()).add(tripPlace);
 		}
 
+		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
+		int areaCode = 3;
+		String locationType = "관광지";
+		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationType, areaCode);
+		
+		
+		model.addAttribute("tripInfo", tripInfo);
+		model.addAttribute("tripLocations", tripLocations);
+		model.addAttribute("startDate", dateFormattedStartDate);
+		model.addAttribute("endDate", dateFormattedEndDate);
 		model.addAttribute("groupedTripPlaces", grouped);
 		model.addAttribute("dateList", dateList);
 

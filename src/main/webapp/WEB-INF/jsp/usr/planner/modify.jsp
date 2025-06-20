@@ -10,79 +10,110 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
 <script>
-	// 드래그 가능 함수
+
+/* 카카오맵 관련 전역번수 */
+let map;       // 전역 지도 객체
+let marker;    // 전역 마커 객체
+
+let infoMarker = null;    // trip-item 클릭 시 마커
+let infoOverlay = null;   // trip-item 클릭 시 이름 오버레이
+
+let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
+
+
+	// 처음 활성화 될 버튼
 	$(document).ready(function() {
-		$(".connected-sortable").sortable({
-			handle : ".fa-grip-vertical",
-			placeholder : "sortable-placeholder",
-			connectWith : ".connected-sortable", // 💡 핵심: 서로 연결
-			update : function(event, ui) {
-				const $this = $(this);
-				const dayIndex = $this.data('day-index');
-				const sortedIds = $this.children().map(function() {
-					return $(this).data('id');
-				}).get();
+		function init() {
+			$('#recommendButton').addClass('btn-active');
+			$('.recommendUI').addClass('ui-active');
+			$('#infoButton').addClass('btn-active');
+			$('.infoUI').addClass('ui-active');
+		}
+		init();
+		
+		kakao.maps.load(function () {
+			initMap(); // API가 완전히 로드된 후 실행해야 함
+		});
+	});
 
-				console.log(`변경된 ${dayIndex}일차 순서:`, sortedIds);
 
-				// 다른 일차로 이동된 경우
-				if (ui.sender) {
-					const fromDay = ui.sender.data('day-index');
-					console.log(`→ ${fromDay}일차에서 ${dayIndex}일차로 이동됨`);
+	// 드래그 가능 함수
+	$(document).ready(
+			function() {
+				$(".connected-sortable").sortable({
+					handle : ".fa-grip-vertical",
+					placeholder : "sortable-placeholder",
+					connectWith : ".connected-sortable", // 💡 핵심: 서로 연결
+					update : function(event, ui) {
+						const $this = $(this);
+						const dayIndex = $this.data('day-index');
+						const sortedIds = $this.children().map(function() {
+							return $(this).data('id');
+						}).get();
+
+						console.log(`변경된 ${dayIndex}일차 순서:`, sortedIds);
+
+						// 다른 일차로 이동된 경우
+						if (ui.sender) {
+							const fromDay = ui.sender.data('day-index');
+							console.log(`→ ${fromDay}일차에서 ${dayIndex}일차로 이동됨`);
+						}
+
+					}
+				}).disableSelection(); // 선택 방지
+
+				// 좌우로 넓이조절
+				const $modifyContent = $('#modifyContent');
+				const $dragPoint = $('#dragPoint');
+				let isDragging = false;
+
+				// 드래그 시작
+				$dragPoint.on('mousedown', function(e) {
+					isDragging = true;
+					$('body').css('cursor', 'ew-resize');
+					e.preventDefault();
+				});
+
+				// 드래그 중
+				$(document).on(
+						'mousemove',
+						function(e) {
+							if (!isDragging)
+								return;
+
+							const containerLeft = $modifyContent.offset().left;
+							const newWidth = e.clientX - containerLeft;
+
+							const minWidth = 50;
+							const maxWidth = 1500;
+
+							const clampedWidth = Math.max(minWidth, Math.min(
+									maxWidth, newWidth));
+
+							$modifyContent.css('width', clampedWidth + 'px');
+
+						});
+
+				// 드래그 끝
+				$(document).on('mouseup', function() {
+					isDragging = false;
+					$('body').css('cursor', 'default');
+				});
+
+				// 초기 위치 설정
+				function updateDragPointPosition() {
+					const left = $modifyContent.offset().left;
+					const width = $modifyContent.outerWidth();
+
 				}
 
-			}
-		}).disableSelection(); // 선택 방지
-		
-		
-		// 좌우로 넓이조절
-		const $modifyContent = $('#modifyContent');
-	    const $dragPoint = $('#dragPoint');
-	    let isDragging = false;
+				// 최초 위치 계산
+				updateDragPointPosition();
 
-	    // 드래그 시작
-	    $dragPoint.on('mousedown', function (e) {
-	      isDragging = true;
-	      $('body').css('cursor', 'ew-resize');
-	      e.preventDefault();
-	    });
+				// 창 크기 바뀌면 dragPoint 위치 재계산
+				$(window).on('resize', updateDragPointPosition);
 
-	    // 드래그 중
-	    $(document).on('mousemove', function (e) {
-	      if (!isDragging) return;
-
-	      const containerLeft = $modifyContent.offset().left;
-	      const newWidth = e.clientX - containerLeft;
-
-	      const minWidth = 50;
-	      const maxWidth = 1500;
-
-	      const clampedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
-
-	      $modifyContent.css('width', clampedWidth + 'px');
-	      
-	    });
-
-	    // 드래그 끝
-	    $(document).on('mouseup', function () {
-	      isDragging = false;
-	      $('body').css('cursor', 'default');
-	    });
-
-	    // 초기 위치 설정
-	    function updateDragPointPosition() {
-	      const left = $modifyContent.offset().left;
-	      const width = $modifyContent.outerWidth();
-	      
-	    }
-
-	    // 최초 위치 계산
-	    updateDragPointPosition();
-
-	    // 창 크기 바뀌면 dragPoint 위치 재계산
-	    $(window).on('resize', updateDragPointPosition);
-		
-	});
+			});
 
 	// 일정 삭제 버튼
 	function deleteDailyPlan(el) {
@@ -111,18 +142,276 @@
 
 		// location.href = "/usr/planner/detail?tripId=" + ${param.tripId};
 	}
+	
+	// 추천장소, 장소 찾기 버튼 눌렀을 때
+	function recommendButton() {
+		if ($('#recommendButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#recommendButton').toggleClass('btn-active');
+		$('#searchButton').toggleClass('btn-active');
+		$('.recommendUI').toggleClass('ui-active');
+		$('.searchUI').toggleClass('ui-active');
+	}
+	function searchButton() {
+		if ($('#searchButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#recommendButton').toggleClass('btn-active');
+		$('#searchButton').toggleClass('btn-active');
+		$('.recommendUI').toggleClass('ui-active');
+		$('.searchUI').toggleClass('ui-active');
+	}
+	
+	// 사진, 정보 찾기 버튼 눌렀을 때
+	function infoButton() {
+		if ($('#infoButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#infoButton').toggleClass('btn-active');
+		$('#pictureButton').toggleClass('btn-active');
+		$('.infoUI').toggleClass('ui-active');
+		$('.pictureUI').toggleClass('ui-active');
+	}
+	function pictureButton() {
+		if ($('#pictureButton').hasClass('btn-active')) {
+			return;
+		}
+		$('#infoButton').toggleClass('btn-active');
+		$('#pictureButton').toggleClass('btn-active');
+		$('.infoUI').toggleClass('ui-active');
+		$('.pictureUI').toggleClass('ui-active');
+		
+		const tripLocationId = $('#info-id').text();
+		
+		// 이미지 가져오기
+		$.ajax({
+				url: 'getTripLocationPicture', 
+				method: 'GET',
+				data: { tripLocationId : tripLocationId },
+				success: function (data) {
+					const $container = $('.pictureUI');
+		    	    $container.empty(); // 기존 이미지 제거
+		    	    data.forEach(url => {
+		    			const $img = $(`
+		    	        <img src="\${url}" class="w-full mb-4 rounded-xl" />
+		    		`);
+		    		$container.append($img);
+		    	});
+		    },
+			error: function () {
+		    	alert('이미지를 불러오지 못했습니다.');
+		    }
+		});
+	}
+	
+	// 카카오톡 맵 설정
+	function initMap() {
+	    const container = document.getElementById('map'); // 지도 담을 영역
+	    const options = {
+			center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청 좌표
+			level: 3 // 확대 레벨 (작을수록 확대)
+	    };
+
+	    map = new kakao.maps.Map(container, options); // 전역 map 설정
+
+	    marker = new kakao.maps.Marker({ map: map });
+	}
+	
+	// infoDiv 열고 닫기 & 정보 추가하기
+		$(function() {
+			$('.trip-item').on('click', function() {
+				// 선택한 데이터 넘겨받기
+			   
+				const id = $(this).data('id');
+				const name = $(this).data('name');
+				const type = $(this).data('type');
+				const address = $(this).data('address');
+				const img = $(this).data('img');
+				const schedule = $(this).data('schedule');
+				const profile = $(this).data('profile');
+				const number = $(this).data('number');
+				const reviewCount = $(this).data('reviewcount');
+				const mapX = $(this).data('mapx');
+				const mapY = $(this).data('mapy');
+			   
+		 	   // 이미 열려 있고, 같은 id를 클릭했으면 닫음
+		 	   if (!$('.infoDiv').hasClass('hidden') && lastInfoId === id) {
+		 	   	   closeInfoDiv();
+		 	  	   lastInfoId = null;
+		 	       return;
+		 	   }
+			   
+			   // 넘겨받은 데이터 넣기
+			   $('#info-id').text(id);
+			   $('#info-locationName').text(name);
+		       $('#info-locationType').text(type);
+		       $('#info-address').text(address);
+		       $('#info-schedule').text(schedule);
+		       $('#info-profile').text(profile);
+		       $('#info-number').text(number);
+		       $('#info-reviewCount').text("리뷰 : " + reviewCount);
+		       $('#info-img').attr('src', img);
+
+		      
+	 	       const $infoDiv = $('.infoDiv');
+		       
+
+	 	       // infoDiv 열 때 애니메이션
+	 	       $infoDiv.removeClass('hidden');
+	 	       requestAnimationFrame(() => {
+		         $infoDiv.removeClass('-translate-x-1/3 opacity-0')
+		                 .addClass('translate-x-0 opacity-100');
+		      	});
+	 	       
+	 	 	  // 지도에 마커 찍기
+	 		   const lat = parseFloat(mapY);
+	 		   const lng = parseFloat(mapX);
+
+	 		   if (!isNaN(lat) && !isNaN(lng)) {
+	 		     const newPosition = new kakao.maps.LatLng(lat, lng);
+
+	 		 // 이전 마커/오버레이 제거
+	 		    if (infoMarker) infoMarker.setMap(null);
+	 		    if (infoOverlay) infoOverlay.setMap(null);
+
+	 		    // 마커 생성
+	 		    infoMarker = new kakao.maps.Marker({
+	 		      position: newPosition,
+	 		      map: map
+	 		    });
+
+	 		    // 이름 오버레이 생성
+	 		    const content = `<div style="padding:4px 10px; background:white; border:1px solid #333; border-radius:4px; font-size:13px;">
+	 		                       \${name}
+	 		                     </div>`;
+
+	 		    infoOverlay = new kakao.maps.CustomOverlay({
+	 		      content: content,
+	 		      position: newPosition,
+	 		      yAnchor: 2.5
+	 		    });
+
+	 		    infoOverlay.setMap(map);
+	 		    map.setCenter(newPosition);
+	 		   }
+	 		  // 현재 id를 저장
+	 		  lastInfoId = id;
+	 	       });
+	  });
+		
+	   
+	   
+		  // 닫는 버튼 눌렀을 때 
+		  function closeInfoDiv() {
+				  const $infoDiv = $('.infoDiv');
+				  $infoDiv.removeClass('translate-x-0 opacity-100')
+			      .addClass('-translate-x-1/3 opacity-0');
+				  
+				  // 🔻 마커 및 오버레이 제거
+				    if (infoMarker) {
+				        infoMarker.setMap(null);
+				        infoMarker = null;
+				    }
+				    if (infoOverlay) {
+				        infoOverlay.setMap(null);
+				        infoOverlay = null;
+				    }
+			  	 // 300ms 후에 hidden 추가
+			      setTimeout(() => {
+			        $infoDiv.addClass('hidden');
+			      }, 300); // Tailwind의 duration-300과 일치
+			}
 </script>
 
 <style>
+/* 드래그 시 영역 나오게끔 */
 .sortable-placeholder {
 	height: 107px;
 	background: #e0f7ff;
 	border: 2px dashed #2196f3;
 }
+
+/* 추천장소, 장소 찾기 클릭시 색깔, 밑줄 코드 */
+#recommendButton.btn-active, #searchButton.btn-active {
+	opacity: 1;
+	color: black;
+}
+
+#recommendButton, #searchButton {
+	position: relative;
+	display: inline-block;
+	border-bottom: 2px solid transparent; /* 기본은 안 보임 */
+}
+
+#recommendButton::after, #searchButton::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 2px;
+	width: 100%;
+	background-color: black;
+	transform: scaleX(0); /* 처음엔 안 보이게 */
+	transform-origin: left; /* 왼쪽에서 시작 */
+}
+
+#recommendButton.btn-active::after, #searchButton.btn-active::after {
+	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
+	transition: transform 0.3s;
+}
+
+/* 추천장소, 장소 찾기 UI css  */
+.recommendUI, .searchUI {
+	display: none;
+}
+
+.recommendUI.ui-active, .searchUI.ui-active {
+	display: block;
+}
+
+/* 정보, 사진 클릭시 색깔, 밑줄 코드 */
+#infoButton.btn-active, #pictureButton.btn-active {
+	opacity: 1;
+	color: black;
+}
+
+#infoButton, #pictureButton {
+	position: relative;
+	display: inline-block;
+	border-bottom: 2px solid transparent; /* 기본은 안 보임 */
+}
+
+#infoButton::after, #pictureButton::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 2px;
+	width: 100%;
+	background-color: black;
+	transform: scaleX(0); /* 처음엔 안 보이게 */
+	transform-origin: left; /* 왼쪽에서 시작 */
+}
+
+#infoButton.btn-active::after, #pictureButton.btn-active::after {
+	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
+	transition: transform 0.3s;
+}
+
+/* 정보, 사진 Ui 코드 */
+.infoUI, .pictureUI {
+	display: none;
+}
+
+.infoUI.ui-active, .pictureUI.ui-active {
+	display: block;
+}
 </style>
 
 <div class=" flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5">
 	<div class=" flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-2.5">
+		<div class="fixed left-[500px] h-screen w-screen" id="map"></div>
 		<div
 			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
 			<div
@@ -132,7 +421,7 @@
 				</a>
 				<div class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
 					<p
-						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[85px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[85px] h-[38px] text-xl font-medium text-center text-black">${tripInfo.tripRegion}</p>
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
@@ -196,8 +485,89 @@
 							</button>
 						</div>
 					</c:forEach>
+
+
+				</div>
+
+			</div>
+		</div>
+
+		<div
+			class="infoDiv z-1 left-[520px] transform -translate-x-1/3 opacity-0 transition-all duration-300 hidden flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[898px] w-[377px] absolute gap-2.5 rounded-[20px] bg-white border border-black">
+			<img id="info-img"
+				class="flex-grow-0 flex-shrink-0 w-[377px] h-[209px] rounded-tl-[20px] rounded-tr-[20px] object-cover" />
+			<div
+				class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[343px] relative overflow-hidden px-0.5 py-[7px]">
+				<div class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 overflow-hidden py-px">
+					<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
+						<p id='info-locationName'
+							class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
+						<p id='info-locationTypeId'
+							class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
+					</div>
+					<div
+						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
+						<p id="info-reviewCount"
+							class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
+						<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
+					</div>
+				</div>
+				<div onClick="addDailyPlan();"
+					class="top-[50px] left-[230px] flex justify-center items-center flex-grow-0 flex-shrink-0 absolute overflow-hidden gap-2.5 rounded-[10px] bg-black cursor-pointer">
+					<p
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[104px] h-[50px] text-xl font-medium text-white">
+						추가하기</p>
 				</div>
 			</div>
+			<div
+				class="flex justify-center items-start flex-grow-0 flex-shrink-0 w-[260px] relative overflow-hidden gap-[54px] px-4">
+				<p onClick="infoButton()" id="infoButton"
+					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">정보</p>
+				<p onClick="pictureButton()" id="pictureButton"
+					class="cursor-pointer flex-grow-0 flex-shrink-0 w-10 h-[30px] text-xl font-medium text-center text-black/40">사진</p>
+			</div>
+			<div class="infoUI flex flex-col justify-start items-start flex-grow overflow-hidden px-[17px]">
+				<div
+					class=" flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
+					<div class="pr-2 pl-3">
+						<i class="fa-solid fa-location-dot text-3xl"></i>
+					</div>
+					<p id="info-id" class="hidden"></p>
+					<p id="info-address"
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] font-medium text-black text-sm"></p>
+				</div>
+				<div
+					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[11px] px-2">
+
+					<div class="">
+						<i class="fa-solid fa-clock text-3xl"></i>
+					</div>
+
+					<p id="info-schedule"
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
+				</div>
+				<div
+					class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[5px]">
+					<div class="pr-2 pl-2">
+						<i class="fa-solid fa-phone text-3xl"></i>
+					</div>
+					<p id="info-number"
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[257px] h-[53px] text-xl font-medium text-black"></p>
+				</div>
+				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5">
+					<div class="pl-2">
+						<i class="fa-solid fa-pen-to-square text-3xl"></i>
+					</div>
+					<p id="info-profile" class="flex-grow-0 flex-shrink-0 w-[303px] h-[173px] text-xl font-medium text-black"></p>
+				</div>
+
+			</div>
+			<div class="pictureUI grid columns-2 gap-4 px-4 overflow-auto"></div>
+			<button onClick="closeInfoDiv();"
+				class="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200
+						hover:bg-gray-300 cursor-pointer">
+				<i class="fa-solid fa-xmark text-lg text-black"></i>
+			</button>
 		</div>
 
 
@@ -254,7 +624,7 @@
 						</div>
 					</div>
 				</c:forEach>
-				<div id="dragPoint" 
+				<div id="dragPoint"
 					class="dragPoint cursor-ew-resize flex justify-start items-center flex-grow-0 flex-shrink-0 absolute right-0 top-0 h-screen overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
 					<svg width="12" height="28" viewBox="0 0 12 28" fill="none" xmlns="http://www.w3.org/2000/svg"
 						class="flex-grow-0 flex-shrink-0" preserveAspectRatio="none">
@@ -264,6 +634,7 @@
 			</div>
 		</div>
 	</div>
+
 </div>
 
 <%@ include file="../common/foot.jspf"%>
