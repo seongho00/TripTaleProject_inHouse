@@ -60,12 +60,9 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 							return $(this).data('id');
 						}).get();
 
-						console.log(`변경된 ${dayIndex}일차 순서:`, sortedIds);
-
 						// 다른 일차로 이동된 경우
 						if (ui.sender) {
 							const fromDay = ui.sender.data('day-index');
-							console.log(`→ ${fromDay}일차에서 ${dayIndex}일차로 이동됨`);
 						}
 
 					}
@@ -139,20 +136,28 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		
 		$(".modifyContent .connected-sortable").each(function() {
 			const dayIndex = $(this).data('day-index');
+			console.log(dayIndex);
 			const tripPlaceIds = $(this).children().map(function() {
 				const $place = $(this);
 				const id = $place.data('id');
 				const duration = $place.find('.duration-input').text().trim(); // ⬅️ duration 추출
-
+				
 				return {
 					id: id,
 					duration: duration
 				};
 			}).get();
 			
+			// ⬇️ start-time / end-time 추출 (같은 dayIndex에 해당하는 div에서)
+			const $timeRange = $(`.time-range[data-index="\${dayIndex - 1}"]`);
+			const startTime = $timeRange.find(".start-time").text().trim(); // ex) "10:00 AM"
+			const endTime = $timeRange.find(".end-time").text().trim();     // ex) "01:20 PM"
+			
 
 			allDayData.push({
 				dayIndex : dayIndex,
+				startTime: startTime,
+				endTime: endTime,
 				tripPlaceIds : tripPlaceIds
 			});
 		});
@@ -833,11 +838,11 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 											<c:set var="startHour" value="${fn:substring(tripDays[status.index].startTime, 0, 2)}" />
 											<c:set var="startMinute" value="${fn:substring(tripDays[status.index].startTime, 3, 5)}" />
 											<c:set var="startHourInt" value="${startHour + 0}" />
-											<c:set var="ampm" value="${endHourInt lt 12 ? 'AM' : 'PM'}" />
+											<c:set var="ampm" value="${startHourInt lt 12 ? 'AM' : 'PM'}" />
 											<c:set var="formattedStartHour" value="${startHourInt lt 13 ? startHourInt : startHourInt - 12}" />
 											<div
 												class="start-time flex-grow-0 flex-shrink-0 w-[87px] h-[17px] text-[13px] font-medium text-center text-black"
-												data-index="${status.index}">${formattedStartHour}:${startMinute}&nbsp;${ampm}</div>
+												data-index="${status.index}" data-start="">${formattedStartHour}:${startMinute}&nbsp;${ampm}</div>
 										</div>
 										<p>~</p>
 

@@ -68,7 +68,7 @@ public class ChatGptService {
 		return messageData.get("content").toString();
 	}
 
-	public String generateOptimizedSchedule(String day, DailyPlan dailyPlan, int dayIndex) {
+	public String generateOptimizedSchedule(DailyPlan dailyPlan, int dayIndex) {
 		String OPENAI_API_KEY = rq.getChatGptClientId();
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -79,13 +79,12 @@ public class ChatGptService {
 
 			// 👇 여행 계획 JSON 문자열
 			String planJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dailyPlan);
-			
+
 			// ✅ 사용자 프롬프트 구성
 			String prompt = """
 					너는 여행 일정을 계획해주는 도우미야.
 
 					다음은 사용자의 하루 일정 정보와 방문 후보 장소들이야:
-					- 날짜: %s
 					- 사용 가능한 시간: %s ~ %s
 					- 현재 이 계획은 dayIndex: %d
 					- 각 장소는 고유한 id, 위도(lat), 경도(lng), 머무는 시간(duration)을 포함하고 있어
@@ -119,7 +118,7 @@ public class ChatGptService {
 					]
 
 					장소 정보:
-					""".formatted(day, startTime, endTime, dayIndex, dayIndex) + planJson;
+					""".formatted(startTime, endTime, dayIndex, dayIndex) + planJson;
 
 			// 👇 ChatGPT 메시지 포맷
 			Map<String, Object> message = Map.of("role", "user", "content", prompt);

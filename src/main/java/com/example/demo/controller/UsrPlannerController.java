@@ -233,45 +233,9 @@ public class UsrPlannerController {
 	@ResponseBody
 	public ResponseEntity<String> updateTripPlaces(Model model, @RequestBody Map<String, Object> requestBody) {
 
-		try {
-			// tripId 파싱
-			Object tripIdObj = requestBody.get("tripId");
-			if (tripIdObj == null) {
-				return ResponseEntity.badRequest().body("tripId가 누락되었습니다.");
-			}
-			Long tripId = Long.parseLong(tripIdObj.toString());
+		plannerService.updateTripPlaces(requestBody);
 
-			// dayDataList 가져오기
-			List<Map<String, Object>> dayDataList = (List<Map<String, Object>>) requestBody.get("dayDataList");
-
-			for (Map<String, Object> dayData : dayDataList) {
-				Object dayIndexObj = dayData.get("dayIndex");
-				int dayIndex = (dayIndexObj != null) ? Integer.parseInt(dayIndexObj.toString()) : -1;
-
-				List<Map<String, Object>> tripPlaceList = (List<Map<String, Object>>) dayData.get("tripPlaceIds");
-				if (tripPlaceList == null)
-					continue;
-
-				for (Map<String, Object> place : tripPlaceList) {
-					Object idObj = place.get("id");
-					Object durationObj = place.get("duration");
-
-					Long placeId = Long.parseLong(idObj.toString());
-					String duration = durationObj.toString();
-
-					// TODO: 이 데이터를 DB에 저장하거나 로직 처리
-					System.out.printf("✔️ tripId=%d, dayIndex=%d, placeId=%d, duration=%s%n", tripId, dayIndex, placeId,
-							duration);
-				}
-
-//				chatGptService.generateOptimizedSchedule(duration, null, dayIndex);
-			}
-
-			return ResponseEntity.ok("수정 완료");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.internalServerError().body("서버 오류 발생: " + e.getMessage());
-		}
+		return null;
 	}
 
 }

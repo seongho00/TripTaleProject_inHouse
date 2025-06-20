@@ -119,7 +119,8 @@
 		WHERE tripId = #{tripId}
 		)
 		GROUP BY TP.id
-		ORDER BY TP.tripDayId, TP.startTime;
+		ORDER BY TP.tripDayId,
+		TP.startTime;
 	</select>
 
 
@@ -127,9 +128,26 @@
 		INSERT INTO tripPlace
 		SET tripLocationId = #{id},
 		tripDayid = #{tripDayId},
-		startTime = #{startTime},
+		startTime =
+		#{startTime},
 		endTime = #{endTime},
 		duration = #{moveDuration};
+	</select>
+
+
+
+	<select id="getTripLocationById" parameterType="map"
+		resultType="com.example.demo.vo.TripLocation">
+		SELECT *
+		FROM tripLocation
+		WHERE id = #{tripLocationId};
+	</select>
+	
+	<select id="getTripPlaceByTripPlaceId" parameterType="map"
+		resultType="com.example.demo.vo.TripPlace">
+		SELECT *
+		FROM tripPlace
+		WHERE id = #{tripPlaceId};
 	</select>
 
 

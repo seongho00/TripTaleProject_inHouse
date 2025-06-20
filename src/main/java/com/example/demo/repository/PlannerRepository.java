@@ -32,5 +32,9 @@ public interface PlannerRepository {
 
 	public void insertTripPlace(Long id, int tripDayId, String startTime, String endTime, String moveDuration);
 
+	public TripLocation getTripLocationById(int tripLocationId);
+
+	public TripPlace getTripPlaceByTripPlaceId(int tripPlaceId);
+
 
 }

@@ -5,23 +5,27 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
-import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.PlannerRepository;
+import com.example.demo.vo.AvailableTime;
 import com.example.demo.vo.ChatPlanPlace;
 import com.example.demo.vo.DailyPlan;
+import com.example.demo.vo.PlacePlan;
 import com.example.demo.vo.PlanRequest;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripDay;
 import com.example.demo.vo.TripInfo;
+import com.example.demo.vo.TripLocation;
 import com.example.demo.vo.TripPlace;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -102,7 +106,7 @@ public class PlannerService {
 			String startTime = dailyPlan.getAvailableTime().getStart();
 			String endTime = dailyPlan.getAvailableTime().getEnd();
 
-			String gptResult = chatGptService.generateOptimizedSchedule(date, dailyPlan, dayIndex);
+			String gptResult = chatGptService.generateOptimizedSchedule(dailyPlan, dayIndex);
 
 			List<ChatPlanPlace> planList = gson.fromJson(gptResult, new TypeToken<List<ChatPlanPlace>>() {
 			}.getType());
@@ -128,9 +132,9 @@ public class PlannerService {
 
 			groupedByDayIndex.forEach((day, places) -> {
 
-				
 				for (ChatPlanPlace p : places) {
-					plannerRepository.insertTripPlace(p.getId(), tripDayId, p.getStart(), p.getEnd(), p.getMoveDuration());
+					plannerRepository.insertTripPlace(p.getId(), tripDayId, p.getStart(), p.getEnd(),
+							p.getMoveDuration());
 				}
 			});
 			dayIndex++;
@@ -181,11 +185,91 @@ public class PlannerService {
 			if (dateTime.toLocalDate().equals(today)) {
 				// 오늘 날짜와 일치하는 TripDay 발견 시 처리
 				return tripDay.getDayIndex();
-				
+
 			}
 
 		}
 		return 1;
+	}
+
+	public ResponseEntity<String> updateTripPlaces(Map<String, Object> requestBody) {
+		Gson gson = new Gson();
+
+		// 기존 일정 삭제
+
+		// 일정 다시 생성
+		try {
+			// tripId 파싱
+			Object tripIdObj = requestBody.get("tripId");
+			if (tripIdObj == null) {
+				return ResponseEntity.badRequest().body("tripId가 누락되었습니다.");
+			}
+			int tripId = Integer.parseInt(tripIdObj.toString());
+
+			// dayDataList 가져오기
+			List<Map<String, Object>> dayDataList = (List<Map<String, Object>>) requestBody.get("dayDataList");
+
+			for (Map<String, Object> dayData : dayDataList) {
+				Object dayIndexObj = dayData.get("dayIndex");
+				int dayIndex = (dayIndexObj != null) ? Integer.parseInt(dayIndexObj.toString()) : -1;
+
+				String startTime = (String) dayData.get("startTime");
+				String endTime = (String) dayData.get("endTime");
+
+				AvailableTime availableTime = new AvailableTime(startTime, endTime);
+
+				List<Map<String, Object>> tripPlaceList = (List<Map<String, Object>>) dayData.get("tripPlaceIds");
+				if (tripPlaceList == null)
+					continue;
+				List<PlacePlan> plans = new ArrayList<>();
+				for (Map<String, Object> place : tripPlaceList) {
+
+					Object idObj = place.get("id");
+					Object durationObj = place.get("duration");
+
+					int tripPlaceId = Integer.parseInt(idObj.toString());
+
+					TripPlace tripPlace = plannerRepository.getTripPlaceByTripPlaceId(tripPlaceId);
+
+					int tripLocationId = tripPlace.getTripLocationId();
+
+					TripLocation tripLocation = plannerRepository.getTripLocationById(tripLocationId);
+
+					String duration = durationObj.toString();
+
+					PlacePlan placePlan = new PlacePlan(tripLocation.getId(), tripLocation.getLocationName(),
+							tripLocation.getAddress(), duration, tripLocation.getMapY(), tripLocation.getMapX());
+
+					plans.add(placePlan);
+
+				}
+
+				DailyPlan dailyPlan = new DailyPlan(availableTime, plans);
+				String gptResult = chatGptService.generateOptimizedSchedule(dailyPlan, dayIndex);
+
+				List<ChatPlanPlace> planList = gson.fromJson(gptResult, new TypeToken<List<ChatPlanPlace>>() {
+				}.getType());
+
+				Map<Integer, List<ChatPlanPlace>> groupedByDayIndex = new LinkedHashMap<>();
+				for (ChatPlanPlace place : planList) {
+
+					groupedByDayIndex.computeIfAbsent(place.getDayIndex(), k -> new ArrayList<>()).add(place);
+
+				}
+
+				DateTimeFormatter amFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
+
+				LocalTime formattingStartTime = LocalTime.parse(startTime, amFormatter); // → 10:15
+				LocalTime formattingEndTime = LocalTime.parse(endTime, amFormatter); // → 14:30
+
+			}
+
+			return ResponseEntity.ok("수정 완료");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.internalServerError().body("서버 오류 발생: " + e.getMessage());
+		}
+
 	}
 
 }
