@@ -14,7 +14,7 @@ public interface ArticleRepository {
 
 	public void addArticleImage(int articleId, String fileName, String contentType, byte[] data);
 
-	public void doWrite(int memberId, String title, String body, String tripRegion);
+	public void doWrite(int memberId, String title, String body, int tripId);
 
 	public int getLastInsertId();
 

@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -81,13 +83,13 @@ public class UsrArticleController {
 
 	@RequestMapping("usr/article/doWriteByAI")
 	public String doWrite(Model model, @RequestParam("selectedMoods[]") List<String> moods, List<MultipartFile> images,
-			String tripRegion, String title) throws IOException {
+			String tripRegion, String title, int tripId) throws IOException {
 
 		int memberId = rq.getLoginedMemberId();
 
 		String body = chatGptService.askQuestion(moods, images, tripRegion);
 
-		int articleId = articleService.doWrite(memberId, title, body, tripRegion);
+		int articleId = articleService.doWrite(memberId, title, body, tripId);
 
 		for (MultipartFile image : images) {
 			if (!image.isEmpty()) {
@@ -134,6 +136,11 @@ public class UsrArticleController {
 		// 게시글 제목, 내용 등 가져오기
 		Article article = articleService.getArticleById(articleId);
 
+		TripInfo tripInfo = plannerService.getTripInfoById(articleId);
+
+		String dateFormattedStartDate = plannerService.formatter(tripInfo.getTripStartDate());
+		String dateFormattedEndDate = plannerService.formatter(tripInfo.getTripEndDate());
+
 		// 게시글 사진 가져오기
 		List<ArticleImage> articleImages = articleService.getArticlePictures(articleId);
 
@@ -147,6 +154,8 @@ public class UsrArticleController {
 
 		model.addAttribute("article", article);
 		model.addAttribute("articleImages", base64Images);
+		model.addAttribute("startDate", dateFormattedStartDate);
+		model.addAttribute("endDate", dateFormattedEndDate);
 
 		return "usr/article/detail";
 	}
@@ -169,6 +178,12 @@ public class UsrArticleController {
 		response.put("articleImages", articleImages);
 
 		return response;
+	}
+
+	@RequestMapping("usr/article/modify")
+	public String modify(Model model, int articleId) {
+
+		return "usr/article/modify";
 	}
 
 }

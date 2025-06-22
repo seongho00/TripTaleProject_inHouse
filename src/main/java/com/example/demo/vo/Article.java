@@ -17,10 +17,11 @@ public class Article {
 	private String updateDate;
 	private String title;
 	private String body;
-	private String tripRegion;
+	private String tripId;
 
 	private String extra__name;
 	private String extra__contentType;
+	private String extra__tripRegion;
 
 	@Lob
 	private byte[] extra__thumbnailImg;

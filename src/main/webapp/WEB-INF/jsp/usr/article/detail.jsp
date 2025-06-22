@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<c:set var="pageTitle" value="관광사진" />
+<c:set var="pageTitle" value="ARTICLE DETAIL" />
 <%@ include file="../common/head.jspf"%>
 <script
 	src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -150,16 +150,19 @@ document.addEventListener("DOMContentLoaded", function () {
 			<div
 				class="flex justify-start items-end self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-10">
 				<p
-					class="flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl text-center text-black">
+					class="flex-grow-0 flex-shrink-0  h-[52px] text-3xl text-center text-black">
 					여행 이름</p>
 				<p
-					class="flex-grow-0 flex-shrink-0 w-[84px] h-[38px] text-xl text-center text-black">
-					여행 장소</p>
+					class="flex-grow-0 flex-shrink-0 h-[38px] text-xl text-center text-black">
+					${article.extra__tripRegion }</p>
 				<p
-					class="flex-grow-0 flex-shrink-0 w-[201px] h-6 text-[15px] font-medium text-center text-black">
-					2024.05.24 ~ 2024.05.25</p>
+					class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">
+					${startDate } ~ ${endDate }</p>
 				<div class="flex-grow flex justify-end items-center">
-					<i class="fa-solid fa-pen-to-square text-3xl cursor-pointer"></i>
+					<a href="modify?articleId=${param.articleId }">
+						<i class="fa-solid fa-pen-to-square text-3xl cursor-pointer"></i>
+					</a>
+
 				</div>
 
 			</div>
@@ -215,19 +218,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			</div>
 
 			<div
-				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[306px] w-[718px] relative overflow-hidden gap-2.5">
+				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[306px] w-[1000px] relative overflow-hidden gap-2.5">
 				<p
-					class="flex-grow-0 flex-shrink-0 w-[420px] h-[161px] text-xl font-medium text-center text-black">
-					본문 글 내용</p>
-				<div
-					class="flex justify-center items-end flex-grow-0 flex-shrink-0 w-[534px] h-[77px] relative overflow-hidden gap-2.5 px-[13px]">
-					<p
-						class="flex-grow-0 flex-shrink-0 w-[420px] h-[85px] text-xl text-center text-black">
-						조회수 하트 태그?</p>
-
-				</div>
-
+					class="flex-grow-0 flex-shrink-0 w-[1000px] h-[161px] text-xl font-medium text-start text-black">
+					${article.body}</p>
 			</div>
+
 		</div>
 	</div>
 </div>

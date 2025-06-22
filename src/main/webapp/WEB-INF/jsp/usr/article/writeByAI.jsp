@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<c:set var="pageTitle" value="관광사진" />
+<c:set var="pageTitle" value="ARTICLE WRITE_BY_AI" />
 <%@ include file="../common/head.jspf"%>
 <%@ include file="../common/daisyUi.jspf"%>
 
@@ -193,6 +193,7 @@
 							accept="image/*" class="hidden" />
 					</label>
 					<input type="hidden" name="tripRegion" value="${tripInfo.tripRegion }"/>
+					<input type="hidden" name="tripId" value="${tripInfo.id }"/>
 					<input type="hidden" name="title" value="${tripInfo.tripName }"/>
 				</form>
 			</div>

@@ -146,7 +146,7 @@
 					<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
 						나들이</p>
 					<p
-						class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">${article.tripRegion}</p>
+						class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">${article.extra__tripRegion}</p>
 				</div>
 				<p
 					class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
@@ -162,6 +162,9 @@
 					<i class="fa-solid fa-heart text-red-500"></i>
 					<img src="image-28.png"
 						class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
+					<p
+						class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">작성자:
+						${article.extra__name }</p>
 				</div>
 			</div>
 		</c:forEach>

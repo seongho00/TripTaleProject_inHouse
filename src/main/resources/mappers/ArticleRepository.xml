@@ -8,9 +8,14 @@
 
 	<select id="getArticleById" parameterType="int"
 		resultType="com.example.demo.vo.Article">
-		SELECT *
-		FROM article
-		WHERE id = #{articleId}
+		SELECT A.*, M.name AS extra__name, T.tripRegion AS extra__tripRegion
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON A.memberId = M.id
+		INNER JOIN tripInfo AS T
+		ON A.tripId = T.id
+		WHERE A.id = #{articldId}
+		GROUP BY A.id
 	</select>
 
 
@@ -20,7 +25,7 @@
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		memberId = #{memberId},
-		region = #{tripRegion},
+		tripId = #{tripId},
 		title = #{title},
 		`body`
 		= #{body};
@@ -50,12 +55,14 @@
 
 	<select id="getArticleByFilterAndKeyword" parameterType="map"
 		resultType="com.example.demo.vo.Article">
-		SELECT A.*, M.name AS extra__name, AI.data AS extra__thumbnailImg, AI.contentType AS extra__contentType
+		SELECT A.*, M.name AS extra__name, AI.data AS extra__thumbnailImg, AI.contentType AS extra__contentType, T.tripRegion AS extra__tripRegion
 		FROM article AS A
 		INNER JOIN `member` AS M
 		ON A.memberId = M.id
 		INNER JOIN articleImage AS AI
 		ON A.id = AI.articleId
+		INNER JOIN tripInfo AS T
+		ON A.tripId = T.id
 		WHERE 1
 		<if test="filter =='title'">
 			AND A.title LIKE CONCAT('%', #{keyword}, '%')
@@ -64,7 +71,7 @@
 			AND A.body LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 		<if test="filter == 'region'">
-			AND A.tripRegion LIKE CONCAT('%', #{keyword}, '%')
+			AND T.tripRegion LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 		<if test="filter == 'author'">
 			AND M.name LIKE CONCAT('%', #{keyword}, '%')
@@ -74,10 +81,12 @@
 
 	<select id="getAllArticles" parameterType="map"
 		resultType="com.example.demo.vo.Article">
-		SELECT A.*, AI.data AS extra__thumbnailImg, AI.contentType AS extra__contentType
+		SELECT A.*, M.name AS extra__name, AI.data AS extra__thumbnailImg, AI.contentType AS extra__contentType
 		FROM article AS A
 		INNER JOIN articleImage AS AI
 		ON A.id = AI.articleId
+		INNER JOIN `member` AS M
+		ON A.memberId = M.id
 		GROUP BY A.id
 	</select>
 </mapper>
