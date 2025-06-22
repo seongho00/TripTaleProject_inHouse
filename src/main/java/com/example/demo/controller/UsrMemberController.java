@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.WebMvcConfigurer;
 import com.example.demo.interceptor.BeforeActionInterceptor;
@@ -197,6 +198,18 @@ public class UsrMemberController {
 		}
 
 		return rq.replace(loginedMember.getName() + "님 환영합니다.", "http://localhost:8080/usr/home/main");
+	}
+
+	@RequestMapping("usr/member/getLoginIdDup")
+	@ResponseBody
+	public ResultData getLoginIdDup(Model model, String loginId) {
+
+		Member existsMember = memberService.getMemberById("local", loginId);
+
+		if (existsMember != null) {
+			return ResultData.from("F-1", "해당 아이디는 이미 사용중이야", "loginId", loginId);
+		}
+		return ResultData.from("F-1", "사용 가능", "loginId", loginId);
 	}
 
 }
