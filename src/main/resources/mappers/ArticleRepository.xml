@@ -6,11 +6,11 @@
 <mapper namespace="com.example.demo.repository.ArticleRepository">
 
 
-	<select id="getArticle" parameterType="int"
+	<select id="getArticleById" parameterType="int"
 		resultType="com.example.demo.vo.Article">
 		SELECT *
 		FROM article
-		WHERE id = 1
+		WHERE id = #{articleId}
 	</select>
 
 
@@ -20,6 +20,7 @@
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		memberId = #{memberId},
+		region = #{tripRegion},
 		title = #{title},
 		`body` = #{body};
 	</select>
@@ -46,4 +47,25 @@
 		WHERE articleId = #{articleId}
 	</select>
 
+	<select id="getArticleByFilterAndKeyword" parameterType="map"
+		resultType="com.example.demo.vo.Article">
+		SELECT A.*, M.name AS extra__name
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON A.memberId = M.id
+		WHERE 1
+		<if test="filter =='title'">
+			AND A.title LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="filter == 'body'">
+			AND A.body LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="filter == 'region'">
+			AND A.tripRegion LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+		<if test="filter == 'author'">
+			AND M.name LIKE CONCAT('%', #{keyword}, '%')
+		</if>
+
+	</select>
 </mapper>

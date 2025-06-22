@@ -10,14 +10,16 @@ import com.example.demo.vo.ArticleImage;
 @Mapper
 public interface ArticleRepository {
 
-	public Article getArticle(int articleId);
+	public Article getArticleById(int articleId);
 
 	public void addArticleImage(int articleId, String fileName, String contentType, byte[] data);
 
-	public void doWrite(int memberId, String title, String body);
+	public void doWrite(int memberId, String title, String body, String tripRegion);
 
 	public int getLastInsertId();
 
 	public List<ArticleImage> getArticlePictures(int articleId);
+
+	public List<Article> getArticleByFilterAndKeyword(String filter, String keyword);
 
 }

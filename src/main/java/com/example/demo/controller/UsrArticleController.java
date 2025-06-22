@@ -16,9 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.TripTaleProjectApplication;
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.ChatGptService;
+import com.example.demo.service.PlannerService;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.ArticleImage;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripInfo;
 
 @Controller
 public class UsrArticleController {
@@ -29,9 +31,11 @@ public class UsrArticleController {
 	Rq rq;
 
 	@Autowired
-	ChatGptService chatGptService;
+	private ChatGptService chatGptService;
 	@Autowired
-	ArticleService articleService;
+	private ArticleService articleService;
+	@Autowired
+	private PlannerService plannerService;
 
 	UsrArticleController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -45,22 +49,30 @@ public class UsrArticleController {
 	}
 
 	@RequestMapping("usr/article/writeByAI")
-	public String writeByAI(Model model) {
+	public String writeByAI(Model model, int tripId) {
+
+		TripInfo tripInfo = plannerService.getTripInfoById(tripId);
+
+		// 시작날짜, 마지막날짜 yyyy-MM-DD 형식으로 formatting
+		String dateFormattedStartDate = plannerService.formatter(tripInfo.getTripStartDate());
+		String dateFormattedEndDate = plannerService.formatter(tripInfo.getTripEndDate());
+
+		model.addAttribute("tripInfo", tripInfo);
+		model.addAttribute("startDate", dateFormattedStartDate);
+		model.addAttribute("endDate", dateFormattedEndDate);
 
 		return "usr/article/writeByAI";
 	}
 
 	@RequestMapping("usr/article/doWriteByAI")
-	@ResponseBody
-	public List<String> doWrite(Model model, @RequestParam("selectedMoods[]") List<String> moods,
-			List<MultipartFile> images) throws IOException {
+	public String doWrite(Model model, @RequestParam("selectedMoods[]") List<String> moods, List<MultipartFile> images,
+			String tripRegion, String title) throws IOException {
 
 		int memberId = rq.getLoginedMemberId();
-		String title = "";
-		String body = chatGptService.askQuestion(moods, images);
-		
-		System.out.println(body);
-		int articleId = articleService.doWrite(memberId, title, body);
+
+		String body = chatGptService.askQuestion(moods, images, tripRegion);
+
+		int articleId = articleService.doWrite(memberId, title, body, tripRegion);
 
 		for (MultipartFile image : images) {
 			if (!image.isEmpty()) {
@@ -72,7 +84,7 @@ public class UsrArticleController {
 			}
 		}
 
-		return moods;
+		return "usr/article/detail?articleId" + articleId;
 	}
 
 	@RequestMapping("usr/article/write")
@@ -81,48 +93,55 @@ public class UsrArticleController {
 		return "usr/article/write";
 	}
 
-	@RequestMapping("usr/article/doWrite")
-	public String doWrite(Model model, String title, String body, List<MultipartFile> images) throws IOException {
+//	@RequestMapping("usr/article/doWrite")
+//	public String doWrite(Model model, String title, String body, List<MultipartFile> images) throws IOException {
+//
+//		int memberId = rq.getLoginedMemberId();
+//
+//		int articleId = articleService.doWrite(memberId, title, body);
+//
+//		for (MultipartFile image : images) {
+//			if (!image.isEmpty()) {
+//				String fileName = image.getOriginalFilename();
+//				String contentType = image.getContentType();
+//				byte[] data = image.getBytes();
+//
+//				articleService.addArticleImage(articleId, fileName, contentType, data);
+//			}
+//		}
+//
+//		return "usr/article/list";
+//	}
 
-		int memberId = rq.getLoginedMemberId();
-
-		int articleId = articleService.doWrite(memberId, title, body);
-
-		for (MultipartFile image : images) {
-			if (!image.isEmpty()) {
-				String fileName = image.getOriginalFilename();
-				String contentType = image.getContentType();
-				byte[] data = image.getBytes();
-
-				articleService.addArticleImage(articleId, fileName, contentType, data);
-			}
-		}
-
-		return "usr/article/list";
-	}
-	
 	@RequestMapping("usr/article/detail")
 	public String detail(Model model, int articleId) {
-		
+
 		// 게시글 제목, 내용 등 가져오기
-		Article article = articleService.getArticle(articleId);
-		
+		Article article = articleService.getArticleById(articleId);
+
 		// 게시글 사진 가져오기
 		List<ArticleImage> articleImages = articleService.getArticlePictures(articleId);
-		
-		 // Base64 인코딩된 이미지 리스트 생성
-	    List<String> base64Images = new ArrayList<>();
-	    for (ArticleImage img : articleImages) {
-	        String base64 = Base64.getEncoder().encodeToString(img.getData());
-	        String fullDataUrl = "data:" + img.getContentType() + ";base64," + base64;
-	        base64Images.add(fullDataUrl);
-	    }
-	    
-	    System.out.println(article);
+
+		// Base64 인코딩된 이미지 리스트 생성
+		List<String> base64Images = new ArrayList<>();
+		for (ArticleImage img : articleImages) {
+			String base64 = Base64.getEncoder().encodeToString(img.getData());
+			String fullDataUrl = "data:" + img.getContentType() + ";base64," + base64;
+			base64Images.add(fullDataUrl);
+		}
+
 		model.addAttribute("article", article);
 		model.addAttribute("articleImages", base64Images);
-		
+
 		return "usr/article/detail";
+	}
+
+	@RequestMapping("usr/article/searchKeyword")
+	@ResponseBody
+	public List<Article> searchword(Model model, String filter, String keyword) {
+
+		List<Article> articles = articleService.getArticleByFilterAndKeyword(filter, keyword);
+		return articles;
 	}
 
 }

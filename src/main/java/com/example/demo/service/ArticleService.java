@@ -19,8 +19,8 @@ public class ArticleService {
 		this.articleRepository = articleRepository;
 	}
 
-	public Article getArticle(int articleId) {
-		return articleRepository.getArticle(articleId);
+	public Article getArticleById(int articleId) {
+		return articleRepository.getArticleById(articleId);
 
 	}
 
@@ -29,14 +29,20 @@ public class ArticleService {
 		articleRepository.addArticleImage(articleId, fileName, contentType, data);
 	}
 
-	public int doWrite(int memberId, String title, String body) {
-		articleRepository.doWrite(memberId, title, body);
+	public int doWrite(int memberId, String title, String body, String tripRegion) {
+		articleRepository.doWrite(memberId, title, body, tripRegion);
 		return articleRepository.getLastInsertId();
 	}
 
 	public List<ArticleImage> getArticlePictures(int articleId) {
 
 		return articleRepository.getArticlePictures(articleId);
+	}
+
+	public List<Article> getArticleByFilterAndKeyword(String filter, String keyword) {
+
+
+		return articleRepository.getArticleByFilterAndKeyword(filter, keyword);
 	}
 
 }

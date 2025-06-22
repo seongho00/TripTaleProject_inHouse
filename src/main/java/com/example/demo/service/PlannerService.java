@@ -35,8 +35,6 @@ import com.google.gson.reflect.TypeToken;
 @Service
 public class PlannerService {
 
-	private final UsrArticleController usrArticleController;
-
 	@Autowired
 	private ChatGptService chatGptService;
 	@Autowired
@@ -45,9 +43,8 @@ public class PlannerService {
 	@Autowired
 	private PlannerRepository plannerRepository;
 
-	public PlannerService(PlannerRepository plannerRepository, UsrArticleController usrArticleController) {
+	public PlannerService(PlannerRepository plannerRepository) {
 		this.plannerRepository = plannerRepository;
-		this.usrArticleController = usrArticleController;
 
 	}
 
@@ -92,8 +89,8 @@ public class PlannerService {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
 		int year = tripStartDate.getYear();
-
-		plannerRepository.createPlan(tripRegion, tripStartDate, tripEndDate, memberId);
+		String formattedtripRegion = tripRegion.replace("특별시", "").replace("광역시", "").replace("도", "").trim();
+		plannerRepository.createPlan(formattedtripRegion, tripStartDate, tripEndDate, memberId);
 		int tripId = plannerRepository.getLastInsertId();
 
 		int dayIndex = 1;

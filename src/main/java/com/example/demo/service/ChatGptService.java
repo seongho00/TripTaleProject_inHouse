@@ -28,7 +28,7 @@ public class ChatGptService {
 
 	private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
-	public String askQuestion(List<String> moods, List<MultipartFile> images) throws IOException {
+	public String askQuestion(List<String> moods, List<MultipartFile> images, String tripName) throws IOException {
 
 		String apiKey = "Bearer " + rq.getChatGptClientId();
 		RestTemplate restTemplate = new RestTemplate();
@@ -43,8 +43,10 @@ public class ChatGptService {
 
 		// 감정 텍스트 만들기
 		String moodsText = String.join(", ", moods);
-		String prompt = "이 이미지를 보고 다음 감정들을 느꼈다고 가정하고 글을 써줘: " + moodsText + ". 글의 형식은 일기 또는 짧은 에세이처럼 해줘. "
-				+ "감정 표현이 자연스럽게 드러나도록 이미지 분위기와 감정을 연결해줘.";
+		String prompt = "아래는 여행 중 찍은 사진들입니다. 이 사진들을 통해 느껴지는 감정은 다음과 같습니다: " + moodsText + ".\n"
+				+ "이 감정들을 바탕으로, 해당 여행지에서 느꼈을 법한 분위기와 생각을 일기 또는 짧은 에세이 형식으로 써 주세요.\n"
+				+ "감정 표현이 자연스럽고 섬세하게 드러나도록, 사진의 분위기와 연결해 주세요.\n" + "여행 지역: " + tripName + "\n"
+				+ "글은 너무 설명적이지 않게, 독자가 여행지의 감정을 함께 느낄 수 있도록 써 주세요.";
 
 		// messages 구성
 		Map<String, Object> textPart = Map.of("type", "text", "text", prompt);
