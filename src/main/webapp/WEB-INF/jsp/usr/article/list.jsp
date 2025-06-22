@@ -6,8 +6,8 @@
 <c:set var="pageTitle" value="ARTICLE LIST"></c:set>
 <%@ include file="../common/head.jspf"%>
 <script>
-	function showDetail() {
-		window.location.href = "detail?articleId=1";
+	function showDetail(articleId) {
+		window.location.href = "detail?articleId=" + articleId;
 	}
 
 	function searchByKeyWord() {
@@ -26,12 +26,47 @@
 				filter : filter,
 				keyword : keyword
 			},
-			success : function(data) {
-				console.log(data);
+			success : function(articles) {
+				renderArticles(articles);
 			},
 			error : function() {
 				alert('검색 중 오류가 발생했습니다.');
 			}
+		});
+	}
+	
+	function renderArticles(articles) {
+		const container = $('.articleContainer');
+		container.empty(); // 기존 목록 제거
+
+		if (articles.length === 0) {
+			container.append('<p class="text-center w-full text-gray-500">검색 결과가 없습니다.</p>');
+			return;
+		}
+
+		articles.forEach(article => {
+			const html = `
+				<div onclick="showDetail(\${article.id});"
+					class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
+					<img src="image-24.png"
+						class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
+					<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+						<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">\${article.title}</p>
+						<p class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">\${article.tripRegion}</p>
+					</div>
+					<p class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">
+						\${article.body.split('\n')[0] || ''}
+					</p>
+					<div class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
+						<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수: ${article.hitCount}</p>
+						<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수: </p>
+						<img src="image.png" class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
+						<img src="image-28.png" class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
+					</div>
+				</div>
+			`;
+
+			container.append(html);
 		});
 	}
 </script>
@@ -85,265 +120,45 @@
 		<div
 			class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[290px] h-9 relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
 			<input type="text" name="keyword" id="keywordInput"
-				class="w-full focus:outline-none focus:ring-0 focus:border-none" autocomplete="off"/>
+				class="w-full focus:outline-none focus:ring-0 focus:border-none"
+				autocomplete="off" />
 			<i onClick="searchByKeyWord();"
 				class="fa-solid fa-magnifying-glass cursor-pointer"></i>
 		</div>
 	</div>
 	<div
-		class="flex flex-wrap justify-center items-start flex-grow w-[1084px] overflow-auto gap-[13px] py-2.5">
-		<div onClick="showDetail();"
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
+		class="articleContainer flex flex-wrap justify-center items-start flex-grow w-[1084px] overflow-auto gap-[13px] py-2.5">
+		<c:forEach var="article" items="${articles }">
+			<div onClick="showDetail(${article.id});"
+				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
+				<img src="image-24.png"
+					class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
+				<div
+					class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+					<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
+						나들이</p>
+					<p
+						class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
+				</div>
 				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
+					class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
+					본문 글 첫번째 줄 내용</p>
+				<div
+					class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
+					<p
+						class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
+						2000</p>
+					<p
+						class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
+						2000</p>
+					<img src="image.png"
+						class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
+					<img src="image-28.png"
+						class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
+				</div>
 			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
-		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black">
-			<img src="image-24.png"
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-			<div
-				class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-				<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울
-					나들이</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-			</div>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행
-				본문 글 첫번째 줄 내용</p>
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수:
-					2000</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
-					2000</p>
-				<img src="image.png"
-					class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
-				<img src="image-28.png"
-					class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-			</div>
-		</div>
+		</c:forEach>
+
 	</div>
 </div>
 

@@ -22,7 +22,8 @@
 		memberId = #{memberId},
 		region = #{tripRegion},
 		title = #{title},
-		`body` = #{body};
+		`body`
+		= #{body};
 	</select>
 
 	<select id="getLastInsertId" parameterType="int">
@@ -51,7 +52,8 @@
 		resultType="com.example.demo.vo.Article">
 		SELECT A.*, M.name AS extra__name
 		FROM article AS A
-		INNER JOIN `member` AS M
+		INNER JOIN `member`
+		AS M
 		ON A.memberId = M.id
 		WHERE 1
 		<if test="filter =='title'">
@@ -67,5 +69,11 @@
 			AND M.name LIKE CONCAT('%', #{keyword}, '%')
 		</if>
 
+	</select>
+	
+	<select id="getAllArticles" parameterType="map"
+		resultType="com.example.demo.vo.Article">
+		SELECT *
+		FROM article
 	</select>
 </mapper>

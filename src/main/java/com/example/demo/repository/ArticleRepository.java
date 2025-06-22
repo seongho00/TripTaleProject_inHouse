@@ -22,4 +22,6 @@ public interface ArticleRepository {
 
 	public List<Article> getArticleByFilterAndKeyword(String filter, String keyword);
 
+	public List<Article> getAllArticles();
+
 }

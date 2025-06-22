@@ -41,8 +41,12 @@ public class ArticleService {
 
 	public List<Article> getArticleByFilterAndKeyword(String filter, String keyword) {
 
-
 		return articleRepository.getArticleByFilterAndKeyword(filter, keyword);
+	}
+
+	public List<Article> getAllArticles() {
+
+		return articleRepository.getAllArticles();
 	}
 
 }

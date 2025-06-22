@@ -43,8 +43,12 @@ public class UsrArticleController {
 	}
 
 	@RequestMapping("usr/article/list")
+
 	public String list(Model model) {
 
+		List<Article> articles = articleService.getAllArticles();
+
+		model.addAttribute("articles", articles);
 		return "usr/article/list";
 	}
 
