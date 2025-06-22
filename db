@@ -128,6 +128,9 @@ CREATE TABLE article (
 ALTER TABLE article
 MODIFY hitCount INT(10) NOT NULL DEFAULT 0;
 
+ALTER TABLE article
+ADD COLUMN tripRegion VARCHAR(50) AFTER `body`;
+
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
@@ -245,14 +248,20 @@ startTime = '18:30',
 endTime = '19:30';
 
 
-SELECT *
-FROM article
+
+SELECT A.*, AI.data AS extra__thumbnailImg
+FROM article AS A
+INNER JOIN articleImage AS AI
+ON A.id = AI.articleId
+GROUP BY A.id
 
 SELECT *
 FROM `member`
 
 SELECT *
 FROM articleImage
+
+
 
 SELECT *
 FROM tripInfo
