@@ -26,8 +26,10 @@
 				filter : filter,
 				keyword : keyword
 			},
-			success : function(articles) {
-				renderArticles(articles);
+			success : function(response) {
+				const articles = response.articles;
+				const articleImages = response.articleImages;
+				renderArticles(articles, articleImages);
 			},
 			error : function() {
 				alert('검색 중 오류가 발생했습니다.');
@@ -35,7 +37,7 @@
 		});
 	}
 	
-	function renderArticles(articles) {
+	function renderArticles(articles , articleImages) {
 		const container = $('.articleContainer');
 		container.empty(); // 기존 목록 제거
 
@@ -44,11 +46,14 @@
 			return;
 		}
 
-		articles.forEach(article => {
+		articles.forEach((article, index) => {
+			
+			const articleImg = articleImages[index];
+			console.log(articleImg);
 			const html = `
 				<div onclick="showDetail(\${article.id});"
 					class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
-					<img src="image-24.png"
+					<img src="\${articleImg}"
 						class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
 					<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
 						<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">\${article.title}</p>
@@ -128,10 +133,11 @@
 	</div>
 	<div
 		class="articleContainer flex flex-wrap justify-center items-start flex-grow w-[1084px] overflow-auto gap-[13px] py-2.5">
-		<c:forEach var="article" items="${articles }">
+		<c:forEach var="article" items="${articles }" varStatus="status">
+
 			<div onClick="showDetail(${article.id});"
 				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
-				<img src="image-24.png"
+				<img src="${articleImages.get(status.index) }"
 					class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
 				<div
 					class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
@@ -151,8 +157,7 @@
 					<p
 						class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수:
 						2000</p>
-					<img src="image.png"
-						class="flex-grow-0 flex-shrink-0 w-3.5 h-3 object-cover" />
+					<i class="fa-solid fa-heart text-red-500"></i>
 					<img src="image-28.png"
 						class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
 				</div>

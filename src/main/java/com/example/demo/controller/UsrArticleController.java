@@ -3,7 +3,9 @@ package com.example.demo.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,7 +50,16 @@ public class UsrArticleController {
 
 		List<Article> articles = articleService.getAllArticles();
 
+		List<String> articleImages = new ArrayList<>();
+		for (Article article : articles) {
+			String base64 = Base64.getEncoder().encodeToString(article.getExtra__thumbnailImg());
+			String fullDataUrl = "data:" + article.getExtra__contentType() + ";base64," + base64;
+			articleImages.add(fullDataUrl);
+		}
+
 		model.addAttribute("articles", articles);
+		model.addAttribute("articleImages", articleImages);
+
 		return "usr/article/list";
 	}
 
@@ -142,10 +153,22 @@ public class UsrArticleController {
 
 	@RequestMapping("usr/article/searchKeyword")
 	@ResponseBody
-	public List<Article> searchword(Model model, String filter, String keyword) {
+	public Map<String, Object> searchword(Model model, String filter, String keyword) {
 
 		List<Article> articles = articleService.getArticleByFilterAndKeyword(filter, keyword);
-		return articles;
+
+		List<String> articleImages = new ArrayList<>();
+		for (Article article : articles) {
+			String base64 = Base64.getEncoder().encodeToString(article.getExtra__thumbnailImg());
+			String fullDataUrl = "data:" + article.getExtra__contentType() + ";base64," + base64;
+			articleImages.add(fullDataUrl);
+		}
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("articles", articles);
+		response.put("articleImages", articleImages);
+
+		return response;
 	}
 
 }

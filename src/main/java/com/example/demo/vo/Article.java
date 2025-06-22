@@ -1,5 +1,6 @@
 package com.example.demo.vo;
 
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +20,9 @@ public class Article {
 	private String tripRegion;
 
 	private String extra__name;
+	private String extra__contentType;
+
+	@Lob
+	private byte[] extra__thumbnailImg;
 
 }
