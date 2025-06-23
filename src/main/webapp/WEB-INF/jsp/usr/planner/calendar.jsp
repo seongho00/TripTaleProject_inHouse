@@ -1,9 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="CALENDAR PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
+<%@ include file="../common/daisyUi.jspf"%>
 <style>
 .flatpickr-day.inRange {
 	background: #AEDFF7; /* 파란 계열 배경 */
@@ -54,35 +54,30 @@
 	<div
 		class="planner_calender flex flex-col justify-center items-center w-screen h-screen overflow-hidden gap-2.5 bg-[#020000]/[0.43] border border-[#0f0000]">
 		<div
-		class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[839px] relative overflow-hidden gap-2.5 px-[29px] rounded-[10px] bg-white border-2 border-black">
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[467px] h-[86px] text-[32px] text-center text-black">여행
-				일정 선택 하기</p>
-			<p
-				class="flex-grow-0 flex-shrink-0 w-[185px] h-[22px] text-[15px] text-center text-black">유의사항</p>
+			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[839px] relative overflow-hidden gap-2.5 px-[29px] rounded-[10px] bg-white border-2 border-black">
+			<p class=" flex-grow-0 flex-shrink-0 w-[467px] text-[32px] text-center text-black mt-5">여행 일정 선택 하기</p>
+			<p class=" flex-grow-0 flex-shrink-0 h-[22px] text-[15px] text-center text-black">유의사항 : 최대 5일까지 선택하실 수 있습니다.</p>
 			<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[839px] relative overflow-hidden px-[165px]">
-				<div
-				class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden">
+				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[839px] relative overflow-hidden px-[165px]">
+				<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden">
 					<div
-					class=" flex flex-col justify-start items-start flex-grow-0 flex-shrink-0  overflow-hidden   rounded-lg  h-[300px]"
-					style="box-shadow: 2px 16px 19px 0 rgba(0, 0, 0, 0.09);">
+						class=" flex flex-col justify-start items-start flex-grow-0 flex-shrink-0  overflow-hidden   rounded-lg  h-[300px]"
+						style="box-shadow: 2px 16px 19px 0 rgba(0, 0, 0, 0.09);">
 						<form action="selectTime" id="calendarForm">
 							<input type="hidden" name="startDate" id="startDateInput">
 							<input type="hidden" name="endDate" id="endDateInput">
 							<input type="hidden" name="region" value="${region }" />
-							<input type="text" id="datepicker"
-								style="position: absolute; left: -9999px;">
+							<input type="text" id="datepicker" style="position: absolute; left: -9999px;">
 
 							<script>
 								let lastValidRange = [];
-								
+
 								flatpickr(
 										"#datepicker",
 										{
 											dateFormat : "Y-m-d", // 출력 포맷
 											mode : "range",
-											minDate: "today", // 오늘 이전 날짜 선택 불가능
+											minDate : "today", // 오늘 이전 날짜 선택 불가능
 											inline : true,
 											locale : "ko", // 한국어 사용 시
 											showMonths : 2,
@@ -91,44 +86,54 @@
 												if (selectedDates.length === 2) {
 													const startDate = selectedDates[0];
 													const endDate = selectedDates[1];
-													
+
 													// 날짜 계산
-													const diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
-										            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+													const diffTime = Math
+															.abs(selectedDates[1]
+																	- selectedDates[0]);
+													const diffDays = diffTime
+															/ (1000 * 60 * 60 * 24);
 
-										            if (diffDays > 4) { // 5일 초과 선택 불가
-										                alert("최대 5일까지 선택할 수 있습니다.");
-										                instance.setDate(lastValidRange, false); // 이전 유효 범위로 되돌리기
-										                return;
-										            }
-										            
-										         	// ✅ 날짜 가공 (yyyy-MM-dd 포맷으로)
-													const formattedStart = startDate.toISOString().split("T")[0];
-													const formattedEnd = endDate.toISOString().split("T")[0];
+													if (diffDays > 4) { // 5일 초과 선택 불가
+														alert("최대 5일까지 선택할 수 있습니다.");
+														instance.setDate(
+																lastValidRange,
+																false); // 이전 유효 범위로 되돌리기
+														return;
+													}
 
+													// ✅ 날짜 가공 (yyyy-MM-dd 포맷으로)
+													const formattedStart = startDate
+															.toISOString()
+															.split("T")[0];
+													const formattedEnd = endDate
+															.toISOString()
+															.split("T")[0];
 
 													// jQuery 방식으로 값 설정
-													$('#startDateInput').val(formattedStart + "T00:00:00");
-													$('#endDateInput').val(formattedEnd + "T00:00:00");
+													$('#startDateInput')
+															.val(
+																	formattedStart
+																			+ "T00:00:00");
+													$('#endDateInput')
+															.val(
+																	formattedEnd
+																			+ "T00:00:00");
 												}
 											},
 
 										});
 							</script>
 						</form>
+					</div>
+
+				</div>
+				<div class="flex justify-end items-center w-[500px] mb-5">
+					<button form="calendarForm" class="btn btn-outline btn-info ">확인</button>
 				</div>
 
 			</div>
-				<div
-				class=" self-stretch flex-grow-0 flex-shrink-0 h-[41px] relative overflow-hidden">
-					<button form="calendarForm"
-						class="cursor-pointer flex justify-center items-center w-[59px] absolute left-[450.5px] top-1.5 overflow-hidden gap-2.5 rounded-[10px] bg-black">
-						<p
-							class="flex-grow-0 flex-shrink-0 text-xl text-center text-white ">확인</p>
-					</button>
-			</div>
 		</div>
-	</div>
 	</div>
 
 	<%@ include file="../common/foot.jspf"%>

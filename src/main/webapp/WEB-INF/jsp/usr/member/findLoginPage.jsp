@@ -3,6 +3,7 @@
 
 <c:set var="pageTitle" value="LOGIN PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
+<%@ include file="../common/daisyUi.jspf"%>
 
 <script>
 	var activeId = $
@@ -93,7 +94,7 @@
 
 <div class="flex justify-center items-center w-screen h-screen overflow-hidden gap-2.5 px-[9px] py-[7px] ">
 	<div
-		class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[611px] w-[510px] relative overflow-hidden gap-[18px] px-[41px] py-[29px] ">
+		class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[611px] w-[510px] relative overflow-hidden gap-[18px] px-[41px] py-[29px] mt-9">
 		<div
 			class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 w-[398px] relative overflow-hidden px-[60px]">
 
@@ -149,10 +150,11 @@
 				<img class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50" src="/images/이메일.png" />
 			</div>
 		</div>
+		
 		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">
-			<p class="findIdUi flex-grow-0 flex-shrink-0 text-xl text-center text-white">아이디 찾기</p>
-			<p class="findPwUi flex-grow-0 flex-shrink-0 text-xl text-center text-white">비밀번호 찾기</p>
+			class="">
+			<button class="findIdUi btn btn-info flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">아이디 찾기</button>
+			<button class="findPwUi btn btn-info flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">비밀번호 찾기</button>
 		</div>
 	</div>
 </div>
