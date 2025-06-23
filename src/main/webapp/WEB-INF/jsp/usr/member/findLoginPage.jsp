@@ -4,11 +4,15 @@
 <c:set var="pageTitle" value="LOGIN PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
 
-<script >
-
-	var activeId = ${activeId};
-	var activePw = ${activePw};
-
+<script>
+	var activeId = $
+	{
+		activeId
+	};
+	var activePw = $
+	{
+		activePw
+	};
 </script>
 
 <script>
@@ -67,7 +71,7 @@
 	left: 0;
 	height: 2px;
 	width: 100%;
-	background-color: black;
+	background-color: #18a0fb;
 	transform: scaleX(0); /* 처음엔 안 보이게 */
 	transform-origin: left; /* 왼쪽에서 시작 */
 }
@@ -87,16 +91,12 @@
 }
 </style>
 
-<div
-	class="flex justify-center items-center w-screen h-screen overflow-hidden gap-2.5 px-[9px] py-[7px] bg-white border border-[#0f0000]">
+<div class="flex justify-center items-center w-screen h-screen overflow-hidden gap-2.5 px-[9px] py-[7px] ">
 	<div
-		class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[611px] w-[510px] relative overflow-hidden gap-[18px] px-[41px] py-[29px] rounded-[10px] bg-[#aedff7] border border-black"
-		style="box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.25);">
+		class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[611px] w-[510px] relative overflow-hidden gap-[18px] px-[41px] py-[29px] ">
 		<div
 			class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 w-[398px] relative overflow-hidden px-[60px]">
-			<a href="../home/main">
-				<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
-			</a>
+
 			<div class="flex justify-center items-center flex-grow-0 flex-shrink-0 h-[67px] relative overflow-hidden gap-[31px]">
 				<p class="self-stretch flex-grow-0 flex-shrink-0 w-[322px] h-[67px] text-3xl text-center text-black">아이디/비밀번호 찾기</p>
 			</div>
@@ -150,9 +150,9 @@
 			</div>
 		</div>
 		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[5px] bg-[#18a0fb]">
-			<a class="findIdUi flex-grow-0 flex-shrink-0 text-2xl text-center text-white" href="#">아이디 찾기</a>
-			<a class="findPwUi flex-grow-0 flex-shrink-0 text-2xl text-center text-white" href="#">비밀번호 찾기</a>
+			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">
+			<p class="findIdUi flex-grow-0 flex-shrink-0 text-xl text-center text-white">아이디 찾기</p>
+			<p class="findPwUi flex-grow-0 flex-shrink-0 text-xl text-center text-white">비밀번호 찾기</p>
 		</div>
 	</div>
 </div>
