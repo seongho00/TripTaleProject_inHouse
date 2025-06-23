@@ -925,7 +925,7 @@ body {
 
 			</div>
 			<div
-				class="selectLocationDiv hidden flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
+				class="selectLocationDiv hidden flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4 pb-4">
 				<form id="planForm" action="createPlan" method="post">
 					<input type="hidden" name="tripRegion" id="tripRegionInput"
 						value="${param.region}">
@@ -935,7 +935,8 @@ body {
 						value="${param.endDate}">
 					<input type="hidden" name="planData" id="planDataInput" />
 					<button type="submit" onclick="return confirm('일정을 생성하시겠습니까?')"
-						class="flex justify-center items-center  h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">
+						class="btn btn-neutral flex justify-center items-center  h-[40px] relative overflow-hidden gap-2.5 px-[9px] rounded-[5px] bg-black cursor-pointer">
+						
 						<p class="text-[15px] font-medium text-center text-white">일정
 							생성</p>
 					</button>
