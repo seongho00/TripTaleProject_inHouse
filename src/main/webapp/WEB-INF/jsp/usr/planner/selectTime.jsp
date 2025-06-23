@@ -680,7 +680,7 @@ body {
 				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
 			</div>
 
-			<div class="selectTimeDiv hidden self-stretch flex-grow-0 flex-shrink-0 h-[759px] relative overflow-auto">
+			<div class="selectTimeDiv self-stretch flex-grow-0 flex-shrink-0 h-[759px] relative overflow-auto">
 				<p class="w-[184px] h-[51px] absolute left-[146.5px] top-0 text-3xl font-medium text-center text-black">시간 선택</p>
 				<div class="flex flex-col justify-start items-start w-[407px] absolute left-[35px] top-[95px] gap-3">
 					<c:forEach var="date" items="${dateList}" varStatus="status">
@@ -734,7 +734,7 @@ body {
 
 			</div>
 			<div
-				class="selectLocationDiv flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 pt-4">
+				class="selectLocationDiv hidden flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[18px] px-10 pt-4">
 				<p class="flex-grow-0 flex-shrink-0 w-[184px] h-[27px] text-3xl font-medium text-center text-black">장소 선택</p>
 				<div
 					class="flex justify-start items-start flex-grow-0 flex-shrink-0 w-[244px] relative overflow-hidden gap-2.5 px-[22px] py-[9px]">

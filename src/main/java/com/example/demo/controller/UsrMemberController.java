@@ -148,7 +148,7 @@ public class UsrMemberController {
 
 		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, email);
 
-		return rq.replace(name + "님 환영합니다.", "http://localhost:8080/usr/home/main");
+		return rq.replace(name + "님 회원가입되었습니다.", "http://localhost:8080/usr/member/login");
 	}
 
 	@RequestMapping("usr/member/login")
@@ -207,9 +207,9 @@ public class UsrMemberController {
 		Member existsMember = memberService.getMemberById("local", loginId);
 
 		if (existsMember != null) {
-			return ResultData.from("F-1", "해당 아이디는 이미 사용중이야", "loginId", loginId);
+			return ResultData.from("F-1", "해당 아이디는 이미 사용중입니다.", "loginId", loginId);
 		}
-		return ResultData.from("F-1", "사용 가능", "loginId", loginId);
+		return ResultData.from("S-1", "사용 가능한 아이디입니다.", "loginId", loginId);
 	}
 
 }
