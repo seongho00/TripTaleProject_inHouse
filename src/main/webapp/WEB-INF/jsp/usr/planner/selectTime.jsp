@@ -38,6 +38,25 @@ $(document).ready(function() {
 	$('#daySelect').on('change', function () {
 		const selectedDay = $(this).val();
 		
+		// 시간 데이터 가져와서 넣기 
+		const timeIndex = selectedDay - 1;
+		const startTime = $('.start-time[data-index="' + timeIndex + '"]').text().trim();
+		const endTime = $('.end-time[data-index="' + timeIndex + '"]').text().trim();
+		
+		// 나머지 숨기고 선택된 것만 보이게 하기
+		$('.day-time').hide();
+		
+		const $selected = $('.day-time[data-index="' + selectedDay + '"]');
+	    $selected.show();
+		
+		const startInput = $(`div[data-index='\${selectedDay}'] .selectLocationStratTime`);
+		const endInput = $(`div[data-index='\${selectedDay}'] .selectLocationEndTime`);
+		startInput.empty();
+		endInput.empty();
+		startInput.text(startTime);
+		endInput.text(endTime);
+
+		
 		// 기존 마커/오버레이 모두 숨기기
 		  Object.values(dayMarkersMap).forEach(list =>
 		    list.forEach(({ marker, overlay }) => {
@@ -160,7 +179,7 @@ $(document).ready(function() {
 					if (!startIsAM) {
 						
 						startHour -= 12;
-						startHour = String(endHour).padStart(2, '0');
+						startHour = String(startHour).padStart(2, '0');
 					}
 
 					if (!endIsAM) {
@@ -722,11 +741,11 @@ body {
 
 
 					<div
-						class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0 h-[99px] overflow-hidden gap-2.5 pl-[72px] pr-[85px] py-[19px]">
+						class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-2.5 pl-[72px] pr-[85px] py-[19px]">
 						<button onclick="hideTimeSelectDiv()"
-							class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 p-2.5 rounded-[10px] bg-black cursor-pointer">
+							class="btn btn-info h-[99px] flex justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 p-2.5 rounded-[10px] ">
 							<p
-								class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[205px] h-[41px] text-xl font-medium text-center text-white">시간
+								class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[205px] h-[41px] text-xl font-medium text-center text-black">시간
 								설정 완료</p>
 						</button>
 					</div>
@@ -796,7 +815,8 @@ body {
 				</div>
 
 			</div>
-			<div class="flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
+			<div
+				class="selectLocationDiv hidden flex flex-col justify-start items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden pr-4">
 				<form id="planForm" action="createPlan" method="post">
 					<input type="hidden" name="tripRegion" id="tripRegionInput" value="${param.region}">
 					<input type="hidden" name="tripStartDate" id="tripStartDateInput" value="${param.startDate}">
@@ -811,7 +831,8 @@ body {
 
 		</div>
 
-		<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
+		<div
+			class="selectLocationDiv hidden flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
 
 			<div
 				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-screen relative overflow-hidden gap-[9px] border-t-0 border-r border-b-0 border-l-0 border-black">
@@ -825,8 +846,15 @@ body {
 							<option value="${i}">${i}일차일정장바구니</option>
 						</c:forEach>
 					</select>
-					<p class="w-[207px] h-10 absolute left-6 top-[84px] text-xl font-medium text-center text-black">시간 : 10:00 ~
-						22:00</p>
+					<c:forEach var="i" begin="1" end="${diffDays}">
+						<div class="day-time flex items-center gap-2 text-xl text-black absolute left-6 top-[84px]" data-index="${i}">
+							<span>시간 :</span>
+							<span class="selectLocationStratTime">10:00</span>
+							<span>~</span>
+							<span class="selectLocationEndTime">22:00</span>
+						</div>
+					</c:forEach>
+
 				</div>
 				<div class=" flex flex-col justify-start items-center flex-grow w-[527px] overflow-auto gap-2.5">
 					<c:forEach var="i" begin="1" end="${diffDays}">
