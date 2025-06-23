@@ -754,8 +754,8 @@ body {
 </style>
 
 <div
-	class=" relative flex justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<div class="left-[500px] z-0 h-screen w-screen" id="map"></div>
+	class=" relative flex justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white">
+	<div class="left-[500px] z-0 h-screen w-screen " id="map"></div>
 	<div
 		class="flex absolute justify-start items-center self-stretch flex-grow overflow-hidden pr-2.5">
 		<div
@@ -945,10 +945,10 @@ body {
 		</div>
 
 		<div
-			class="selectLocationDiv hidden flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden bg-white">
+			class="selectLocationDiv hidden h-full flex justify-start items-center flex-grow-0 flex-shrink-0 overflow-hidden ">
 
 			<div
-				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-screen relative overflow-hidden gap-[9px] border-t-0 border-r border-b-0 border-l-0 border-black">
+				class="dailyPlanContainer w-[527px] transition-all duration-[500ms] ease-in-out flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-screen relative overflow-hidden gap-[9px] border-t-0 border-r border-b-0 border-l-0 border-black bg-white ">
 				<div
 					class="flex-grow-0 flex-shrink-0 w-[527px] h-[134px] relative overflow-hidden">
 					<p onClick="deleteAllDailyPlan();"
@@ -987,7 +987,7 @@ body {
 
 			<div class="bg-transparent h-screen flex items-center">
 				<div onClick="toggleDailyPlan();"
-					class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer">
+					class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 border-r border-t border-b cursor-pointer bg-white">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[30px] h-[50px] text-xs font-medium text-center text-black">
 						<i
