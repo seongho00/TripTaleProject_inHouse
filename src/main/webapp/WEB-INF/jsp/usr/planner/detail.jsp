@@ -8,6 +8,48 @@
 <script>
 	let isExpanded = false;
 	let size = ${todayTripPlaces.size() - 1};
+	
+
+	/* 카카오맵 관련 전역번수 */
+	let map;       // 전역 지도 객체
+	let marker;    // 전역 마커 객체
+
+	let infoMarker = null;    // trip-item 클릭 시 마커
+	let infoOverlay = null;   // trip-item 클릭 시 이름 오버레이
+
+	let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
+	
+	
+	$(document).ready(function() {
+		kakao.maps.load(function () {
+			initMap(); // API가 완전히 로드된 후 실행해야 함
+		});
+	});
+	
+	// 카카오톡 맵 설정
+	function initMap() {
+	    // ✨ 1. li에서 좌표 추출
+	    const lineCoords = getPathCoordsFromTimeline();
+	    
+	    // ✨ 2. 평균 좌표 계산
+	    const centerCoord = getCenterFromCoords(lineCoords);
+
+	    const container = document.getElementById('map'); // 지도 담을 영역
+	    const options = {
+			center: centerCoord, // 서울시청 좌표
+			level: 7 // 확대 레벨 (작을수록 확대)
+	    };
+
+	    map = new kakao.maps.Map(container, options); // 전역 map 설정
+
+	    marker = new kakao.maps.Marker({ map: map });
+	    
+	    drawPolyline(map, lineCoords);
+	    drawMarkers(map, lineCoords);  
+	    // ✨ li 클릭 시 지도 center 이동
+	    bindTimelineClickEvents(map);
+	    showAllPlaceOverlays(map);
+	}
 
 	// 모든 일정 보기 버튼
 	function viewAllSchedule(elem) {
@@ -137,11 +179,11 @@
 					$sidebar.css('max-width', contentWidth + 'px');
 					$sidebar.removeClass('w-[497px]').addClass(`w-[\${contentWidth}px]`);
 					$timelineItems.removeClass('w-[80px]').addClass(`w-[\${eachBoxWidth}px]`);
-					$(elem).find('p').text("축소하기");
+					$(elem).find('button').text("축소하기");
 				} else {
 					$timelineItems.removeClass(`w-[\${eachBoxWidth}px]`).addClass('w-[80px]');
 					$sidebar.removeClass(`w-[\${contentWidth}px]`).addClass('w-[497px]');
-					$(elem).find('p').text("전체 보기");
+					$(elem).find('button').text("전체 보기");
 					
 
 					$tripPlaceList.empty(); // ⛔ #timelineList 포함 전부 삭제됨
@@ -215,7 +257,7 @@
 			const dateStr = date.split(' ')[0];
  			const startTimeStr = $(this).data('starttime'); // "HH:mm"
  			const endTimeStr = $(this).data('endtime'); // "HH:mm"
-			console.log(dateStr);
+
  			const $hrs = $(this).find('hr');
  			const $icon = $(this).find('svg');
 
@@ -366,16 +408,119 @@
 			});
 		});
 	});
+	
+	// 카카오맵을 위한 좌표 추출
+	function getPathCoordsFromTimeline() {
+	    const coords = [];
+
+	    $('#timelineList .placeList').each(function () {
+	        const mapx = $(this).data('mapx');
+	        const mapy = $(this).data('mapy');
+
+	        if (mapx && mapy) {
+	            coords.push(new kakao.maps.LatLng(mapy, mapx)); // mapY = lat, mapX = lng
+	        }
+	    });
+
+	    return coords;
+	}
+	
+	// 좌표 그리는 함수
+	function drawPolyline(map, coords) {
+	    const polyline = new kakao.maps.Polyline({
+	        path: coords,
+	        strokeWeight: 4,
+	        strokeColor: '#FF0000',
+	        strokeOpacity: 0.8,
+	        strokeStyle: 'solid'
+	    });
+
+	    polyline.setMap(map);
+
+	    if (coords.length > 0) {
+	        map.setCenter(coords[Math.floor(coords.length / 2)]);
+	    }
+
+	    return polyline;
+	}
+	
+	// 처음 보여지는 평균 좌표 계산(중심점)
+	function getCenterFromCoords(coords) {
+	    if (coords.length === 0) return new kakao.maps.LatLng(37.5665, 126.9780); // fallback center
+
+	    let sumLat = 0;
+	    let sumLng = 0;
+
+	    coords.forEach(coord => {
+	        sumLat += coord.getLat(); // 위도
+	        sumLng += coord.getLng(); // 경도
+	    });
+
+	    const avgLat = sumLat / coords.length;
+	    const avgLng = sumLng / coords.length;
+
+	    return new kakao.maps.LatLng(avgLat, avgLng);
+	}
+	
+	// 지도 상에 마커 찍기
+	function drawMarkers(map, coords) {
+	    coords.forEach(coord => {
+	        new kakao.maps.Marker({
+	            position: coord,
+	            map: map
+	        });
+	    });
+	}
+	
+	// li 클릭 시 지도 이동
+	function bindTimelineClickEvents(map) {
+	    $('#timelineList .placeList').on('click', function () {
+	        const mapx = $(this).data('mapx');
+	        const mapy = $(this).data('mapy');
+
+	        if (mapx && mapy) {
+	            const center = new kakao.maps.LatLng(mapy, mapx);
+	            map.setCenter(center);
+			}
+		});
+	}
+	
+	// 오버레이 표시
+	function showAllPlaceOverlays(map) {
+	    $('.placeList').each(function () {
+	        const mapx = $(this).data('mapx');
+	        const mapy = $(this).data('mapy');
+	        const name = $(this).data('name'); // 또는 다른 p 요소
+
+	        if (mapx && mapy && name) {
+	            const position = new kakao.maps.LatLng(mapy, mapx);
+
+	            const content = `
+	                <div style="padding:4px 10px; background:white; border:1px solid #333; border-radius:4px; font-size:13px;">
+	                    \${name}
+	                </div>`;
+
+	            const overlay = new kakao.maps.CustomOverlay({
+	                content: content,
+	                position: position,
+	                yAnchor: 2.5
+	            });
+
+	            overlay.setMap(map);
+	        }
+	    });
+	}
 </script>
 
 
 
-<div class="flex flex-col justify-start items-center h-[919px] overflow-hidden  bg-white border border-[#0f0000]">
+<div class="flex flex-col justify-start items-center h-[919px] overflow-hidden  bg-white">
 	<div class="flex justify-end items-center self-stretch flex-grow relative overflow-hidden ">
+		<div class="fixed left-[300px] h-screen w-screen" id="map"></div>
 		<div
 			class="sidebar transition-all duration-500 flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] absolute left-0 top-0 overflow-hidden gap-2.5 bg-white border border-black">
 			<div
-				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#aedff7] border border-black">
+				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#aedff7] border-b border-black">
 				<div
 					class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 h-[53px] relative overflow-hidden">
 					<a href="../home/main">
@@ -521,8 +666,9 @@
 							</div>
 						</c:if>
 
-						<div draggable="true"
-							class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+						<div draggable="true" data-mapx="${tripPlace.mapX }" data-mapy="${tripPlace.mapY }"
+							data-name="${tripPlace.locationName }"
+							class="placeList cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 							<img src="${tripPlace.extra__pictureUrl}"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div

@@ -145,7 +145,7 @@ public class UsrPlannerController {
 
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
-		System.out.println(todayTripPlaces);
+
 
 		int dayIndex = plannerService.getDayIndexById(tripId, tripDays);
 
@@ -251,9 +251,7 @@ public class UsrPlannerController {
 	@RequestMapping("usr/planner/search")
 	@ResponseBody
 	public String search(Model model, int tripId, String keyword, String source) {
-		System.out.println(tripId);
-		System.out.println(keyword);
-		System.out.println(source);
+
 
 		if (source.equals("추천")) {
 
