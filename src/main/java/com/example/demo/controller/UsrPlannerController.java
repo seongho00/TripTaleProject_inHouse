@@ -238,6 +238,7 @@ public class UsrPlannerController {
 		model.addAttribute("dateList", dateList);
 		model.addAttribute("tripDays", tripDays);
 		model.addAttribute("durations", durations);
+		
 
 		return "usr/planner/modify";
 	}

@@ -661,10 +661,53 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		});
 	}
 	
-	function showHelp() {
+	$(document).ready(function() {
 		
-		
-	}
+		let currentStep = 1;
+		const totalSteps = 5;
+
+		function showStep(step) {
+			// 모든 step 숨김
+			for (let i = 1; i <= totalSteps; i++) {
+				$(`#helpStep\${i}`).addClass('hidden');
+			}
+			// 현재 step만 표시
+			$(`#helpStep\${step}`).removeClass('hidden');
+		}
+
+		// 도움말 시작 버튼
+		$('#helpBtn').on('click', function () {
+			currentStep = 1;
+			$('#helpModal').removeClass('hidden');
+			showStep(currentStep);
+		});
+
+		// 도움말 모달 클릭 → 다음 step으로
+		$('#helpModal').on('click', function (e) {
+			// step 내부 클릭 무시
+			if ($(e.target).closest(`#helpStep\${currentStep}`).length) return;
+			console.log("실행됨");
+			// Step 1이면 확인 여부 먼저 체크
+			if (currentStep === 1) {
+				bucketButton();
+				addDailyPlanForPlus($('.addDailyPlanButton'));
+			}
+			
+			
+			currentStep++;
+			if (currentStep > totalSteps) {
+				// 마지막이면 모달 닫기
+				$('#helpModal').addClass('hidden');
+			} else if (currentStep === 2) {
+				
+				showStep(currentStep);
+			}
+			else {
+				showStep(currentStep);
+			}
+		});
+	});
+	
 </script>
 
 <style>
@@ -758,6 +801,77 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	width: 90px !important;
 	font-size: 13px;
 }
+
+/* 도움말 구멍뚫기 css */
+#helpStep1::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	-webkit-mask: linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	padding: 420px 1485px 460px 395px; /* 이걸 스텝마다 다르게 */
+}
+
+#helpStep2::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	-webkit-mask: linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	padding: 333px 1477px 548px 410px; /* 이걸 스텝마다 다르게 */
+}
+
+#helpStep3::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	-webkit-mask: linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	padding: 383px 1477px 498px 410px; /* 이걸 스텝마다 다르게 */
+}
+
+#helpStep4::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	-webkit-mask: linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	padding: 170px 1050px 700px 770px; /* 이걸 스텝마다 다르게 */
+}
+
+#helpStep5::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	-webkit-mask: linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask-composite: exclude;
+	padding: 830px 20px 15px 1780px; /* 이걸 스텝마다 다르게 */
+}
 </style>
 
 <div class=" flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5">
@@ -776,7 +890,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
-				<button onClick="showHelp();"
+				<button id="helpBtn"
 					class="flex justify-center items-center absolute left-[400px] top-[5px] h-[30px] text-sm p-2 border rounded-full hover:bg-gray-100">❓
 					사용법</button>
 				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
@@ -1057,6 +1171,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 </div>
 
+<!-- 시간 선택 UI -->
 <div class="timepicker fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center hidden">
 	<div
 		class="bg-white flex-col flex-grow-0 flex-shrink-0 w-[500px] h-[350px] relative overflow-hidden flex items-center justify-center rounded">
@@ -1079,8 +1194,62 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	</div>
 </div>
 
+<!-- 도움말 -->
+<div id="helpModal" class="fixed hidden inset-0 z-50 flex items-center justify-center ">
+
+	<div id="helpStep1" class="hidden">
+		<!-- 투명 구멍용 마스크 -->
+		<div id="step1Mask" class="stepMask absolute inset-0 pointer-events-none"></div>
+
+		<!-- 설명창 -->
+		<div class="absolute pointer-events-none left-[215px] top-[300px] z-10 bg-white p-6 rounded shadow w-[400px]">
+			<h2 class="text-xl font-bold mb-4">도움말1</h2>
+			<p>버튼을 누를 시 장바구니에 장소가 추가됩니다.</p>
+		</div>
+	</div>
+
+	<div id="helpStep2" class="hidden">
+		<div id="step2Mask" class="stepMask absolute inset-0 pointer-events-none"></div>
+
+		<!-- 설명창 -->
+		<div class="absolute pointer-events-none left-[215px] top-[430px] z-10 bg-white p-6 rounded shadow w-[400px]">
+			<h2 class="text-xl font-bold mb-4">도움말2</h2>
+			<p>버튼을 드래그하여 일정에 추가할 수 있습니다.</p>
+		</div>
+	</div>
+
+	<div id="helpStep3" class="hidden">
+		<div id="step3Mask" class="stepMask absolute inset-0 pointer-events-none"></div>
+
+		<!-- 설명창 -->
+		<div class="absolute pointer-events-none left-[215px] top-[430px] z-10 bg-white p-6 rounded shadow w-[400px]">
+			<h2 class="text-xl font-bold mb-4">도움말3</h2>
+			<p>버튼을 눌러 장바구니에서 제외시킬 수 있습니다.</p>
+		</div>
+	</div>
+
+	<div id="helpStep4" class="hidden">
+		<div id="step4Mask" class="stepMask absolute inset-0 pointer-events-none"></div>
+
+		<!-- 설명창 -->
+		<div class="absolute pointer-events-none left-[530px] top-[250px] z-10 bg-white p-6 rounded shadow w-[400px]">
+			<h2 class="text-xl font-bold mb-4">도움말4</h2>
+			<p>시간을 클릭하여 장소에 머물 시간을 정할 수 있습니다.</p>
+		</div>
+	</div>
+	<div id="helpStep5" class="hidden">
+		<div id="step5Mask" class="stepMask absolute inset-0 pointer-events-none"></div>
+
+		<!-- 설명창 -->
+		<div class="absolute pointer-events-none left-auto right-[30px] top-auto bottom-[100px] z-10 bg-white p-6 rounded shadow w-[400px]">
+			<h2 class="text-xl font-bold mb-4"></h2>
+			<p>수정이 완료되었다면 "수정 완료"버튼을 눌러 저장해주세요.</p>
+		</div>
+	</div>
+</div>
+
 <div id="toast"
-	class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-md shadow-lg opacity-0 transition-opacity duration-500 z-50">
+	class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-md shadow-lg opacity-0 transition-opacity duration-500 z-5">
 	장바구니에 추가되었습니다.</div>
 
 <%@ include file="../common/foot.jspf"%>
