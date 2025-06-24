@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,10 +19,12 @@ import com.example.demo.interceptor.BeforeActionInterceptor;
 import com.example.demo.service.KakaoOAuthService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.NaverOAuthService;
+import com.example.demo.service.PlannerService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripInfo;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -33,6 +37,8 @@ public class UsrMemberController {
 
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private PlannerService plannerService;
 	@Autowired
 	private KakaoOAuthService kakaoOAuthService;
 	@Autowired
@@ -48,7 +54,25 @@ public class UsrMemberController {
 
 	@RequestMapping("usr/member/profile")
 	public String profile(Model model) {
-		rq.getLoginedMemberId();
+		int memberId = rq.getLoginedMemberId();
+		Member loginedMember = rq.getLoginedMember();
+
+		List<TripInfo> tripInfos = plannerService.getTripInfoByMemberId(memberId);
+
+		List<String> urls = plannerService.getTripInfoThumbnail(memberId);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		// 변환 후 새로운 속성에 저장
+		for (TripInfo info : tripInfos) {
+			info.setFormattedStartDate(info.getTripStartDate().format(formatter));
+			info.setFormattedEndDate(info.getTripEndDate().format(formatter));
+		}
+		
+		System.out.println(tripInfos);
+
+		model.addAttribute("loginedMember", loginedMember);
+		model.addAttribute("tripInfos", tripInfos);
+		model.addAttribute("urls", urls);
 
 		return "usr/member/profile";
 	}
@@ -196,6 +220,8 @@ public class UsrMemberController {
 		if (!loginedMember.getLoginPw().equals(loginPw)) {
 			return rq.historyBackOnView("비밀번호가 일치하지 않습니다.");
 		}
+
+		rq.login(loginedMember.getId(), loginedMember);
 
 		return rq.replace(loginedMember.getName() + "님 환영합니다.", "http://localhost:8080/usr/home/main");
 	}

@@ -48,13 +48,12 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 
 	// 드래그 가능 함수
-	$(document).ready(
-			function() {
-				$(".connected-sortable").sortable({
-					handle : ".fa-grip-vertical",
-					placeholder : "sortable-placeholder",
-					connectWith : ".connected-sortable", // 💡 핵심: 서로 연결
-					update : function(event, ui) {
+	$(document).ready(function() {
+			$(".connected-sortable").sortable({
+				handle : ".fa-grip-vertical",
+				placeholder : "sortable-placeholder",
+				connectWith : ".connected-sortable", // 💡 핵심: 서로 연결
+				update : function(event, ui) {
 						const $this = $(this);
 						const dayIndex = $this.data('day-index');
 						const sortedIds = $this.children().map(function() {
@@ -411,7 +410,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 			locationType: $origin.find('p').eq(0).text()
 		};
 		
-		// bucketUI에 추가할 div 생성
+		// bucket에 추가할 div 생성
 		const $newItem = $(`
 			<div
 				class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
@@ -450,7 +449,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		`);
 
 		// bucketUI에 추가
-		$('.bucketUI').append($newItem);
+		$('.bucket').append($newItem);
 		
 		// 숫자 계산
 		updateBucketCount();
@@ -661,6 +660,10 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		    }
 		});
 	}
+	
+	function showHelp() {
+		
+	}
 </script>
 
 <style>
@@ -772,6 +775,9 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
+				<button onClick="showHelp();"
+					class="flex justify-center items-center absolute left-[400px] top-[5px] h-[30px] text-sm p-2 border rounded-full hover:bg-gray-100">❓
+					사용법</button>
 				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
 			</div>
 			<div
@@ -856,7 +862,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 				</div>
 				<div
-					class="bucketUI connected-sortable flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-hidden gap-3">
+					class="bucketUI bucket connected-sortable flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-hidden gap-3">
 					<!-- 추가하기를 통해 추가될 공간 -->
 
 				</div>
@@ -947,11 +953,11 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 		<div id="modifyContent"
 			class="modifyContent flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[977px] absolute left-[497px] top-0 	overflow-hidden gap-2.5 pl-2.5 py-2.5 bg-white border-r border-black">
 			<div
-				class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[909px] relative overflow-hidden gap-2.5 py-[23px]">
+				class=" flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[909px] relative overflow-y-hidden overflow-x-auto gap-2.5 py-[23px]">
 
 
 				<c:forEach var="entry" items="${groupedTripPlaces}" varStatus="status">
-					<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5 overflow-auto">
+					<div class=" flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 gap-2.5 overflow-auto">
 						<div
 							class="flex justify-start items-start self-stretch flex-grow-0 flex-shrink-0  overflow-hidden gap-2.5 pb-[23px]">
 
@@ -1038,7 +1044,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 					</div>
 				</c:forEach>
 				<div id="dragPoint"
-					class="dragPoint cursor-ew-resize flex justify-start items-center flex-grow-0 flex-shrink-0 absolute right-0 top-0 h-screen overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
+					class="dragPoint cursor-ew-resize flex justify-start items-center absolute right-0 top-0 flex-grow-0 flex-shrink-0  h-screen overflow-hidden gap-2.5 px-[15px] py-[310px] bg-white">
 					<svg width="12" height="28" viewBox="0 0 12 28" fill="none" xmlns="http://www.w3.org/2000/svg"
 						class="flex-grow-0 flex-shrink-0" preserveAspectRatio="none">
             <path d="M1 0V28M11 0V28" stroke="black" stroke-width="2"></path>

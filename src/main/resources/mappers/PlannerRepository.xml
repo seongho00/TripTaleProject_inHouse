@@ -82,10 +82,12 @@
 		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
 		TLT.typeName AS
 		extra__locationType, TD.date AS extra__date
-		FROM tripPlace AS TP
+		FROM
+		tripPlace AS TP
 		INNER JOIN
 		tripLocation AS TL
-		ON TP.tripLocationId = TL.id
+		ON TP.tripLocationId =
+		TL.id
 		LEFT JOIN
 		tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
@@ -101,7 +103,8 @@
 		FROM tripDay
 		WHERE dayIndex = #{index} AND tripId = #{tripId}
 		)
-		GROUP BY TP.id
+		GROUP BY
+		TP.id
 	</select>
 
 	<select id="getAllTripPlace" parameterType="map"
@@ -188,6 +191,40 @@
 	<select id="deleteTripPlace" parameterType="map">
 		DELETE FROM tripPlace
 		WHERE tripDayId = #{tripDayId}
+	</select>
+
+
+	<select id="getTripInfoByMemberId" parameterType="map"
+		resultType="com.example.demo.vo.TripInfo">
+		SELECT *
+		FROM tripInfo
+		WHERE memberId = #{memberId}
+		ORDER BY id DESC
+	</select>
+
+	<select id="getTripInfoThumbnail" parameterType="map"
+		resultType="java.lang.String">
+		SELECT TLP.pictureUrl
+		FROM tripPlace AS TP
+		INNER JOIN
+		tripLocation AS TL
+		ON TP.tripLocationId = TL.id
+		LEFT JOIN
+		tripLocationPicture AS TLP
+		ON TL.id
+		=
+		TLP.tripLocationId
+		INNER JOIN
+		tripDay AS TD
+		ON tripDayId = TD.id
+		INNER
+		JOIN tripInfo AS TI
+		ON TD.tripId
+		= TI.id
+		WHERE TI.memberId = #{memberId}
+		GROUP BY
+		TI.id
+		ORDER BY TI.id DESC
 	</select>
 
 

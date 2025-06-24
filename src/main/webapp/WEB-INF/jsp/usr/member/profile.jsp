@@ -4,6 +4,8 @@
 
 <c:set var="pageTitle" value="PROFILE PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 <script>
 	function toggleCaret() {
@@ -14,7 +16,6 @@
 	/* 처음 활성화될 버튼 설정 */
 	$(document).ready(function() {
 		$('#lookupPlanButton').addClass('btn-active');
-
 
 	});
 
@@ -104,7 +105,7 @@
 				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[157px] relative overflow-hidden gap-10">
 				<i class="fa-solid fa-user fa-5x"></i>
 				<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">프로필 관리</p>
-				<p class="flex-grow-0 flex-shrink-0 w-[65px] h-[30px] text-xl font-medium text-center text-black">이름</p>
+				<p class="flex-grow-0 flex-shrink-0 w-[65px] h-[30px] text-xl font-medium text-center text-black">${loginedMember.name }</p>
 				<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">아이디</p>
 				<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">즐겨찾기</p>
 			</div>
@@ -152,55 +153,28 @@
 					</div>
 				</div>
 				<div
-					class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[442px] overflow-hidden gap-2.5 p-2.5">
-					<div class="flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-[13px] py-2.5">
-						<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">3</p>
-						<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative overflow-hidden border border-black">
-							<p class="w-20 h-[41px] absolute left-[47px] top-9 text-[15px] font-medium text-center text-black">여행 사진</p>
-						</div>
+					class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 overflow-scroll gap-2.5 p-2.5">
+					<c:forEach var="tripInfo" items="${tripInfos }" varStatus="status">
 						<div
-							class="flex flex-col justify-center items-start self-stretch flex-grow relative overflow-hidden gap-2.5 pl-2.5 pr-[27px] py-[15px]">
-							<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-								<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">여행 이름</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">여행 장소</p>
+							class="flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-[13px] py-2.5">
+							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
+							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative overflow-hidden border border-black">
+								<img src="${urls[status.index] }" class="w-full h-full object-cover"/>
+
 							</div>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">여행 기간</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">인원수</p>
-						</div>
-						<i class="fa-solid fa-bars fa-lg"></i>
-					</div>
-					<div
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3 pr-[13px] py-2.5">
-						<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">2</p>
-						<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative overflow-hidden border border-black">
-							<p class="w-20 h-[41px] absolute left-[47px] top-9 text-[15px] font-medium text-center text-black">여행 사진</p>
-						</div>
-						<div
-							class="flex flex-col justify-center items-start self-stretch flex-grow relative overflow-hidden gap-2.5 pl-2.5 pr-[27px] py-[15px]">
-							<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-								<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">여행 이름</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">여행 장소</p>
+							<div
+								class="flex flex-col justify-center items-start self-stretch flex-grow relative overflow-hidden gap-2.5 pl-2.5 pr-[27px] py-[15px]">
+								<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${tripInfo.tripName}</p>
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.tripRegion}</p>
+								</div>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.formattedStartDate } ~ ${tripInfo.formattedEndDate }</p>
+
 							</div>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">여행 기간</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">인원수</p>
+							<i class="fa-solid fa-bars fa-lg"></i>
 						</div>
-						<i class="fa-solid fa-bars fa-lg"></i>
-					</div>
-					<div
-						class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-3 pr-[13px] py-2.5">
-						<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">1</p>
-						<img src="image-24.png" class="flex-grow-0 flex-shrink-0 w-[171px] h-[114px] object-cover" />
-						<div
-							class="flex flex-col justify-center items-start self-stretch flex-grow relative overflow-hidden gap-2.5 pl-2.5 pr-[27px] py-[15px]">
-							<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-								<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">서울 나들이</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">서울</p>
-							</div>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">2025.05.24~ 2025.05.25</p>
-							<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">인원 : 2명</p>
-						</div>
-						<i class="fa-solid fa-bars fa-lg"></i>
-					</div>
+					</c:forEach>
+
 				</div>
 			</div>
 		</div>

@@ -302,4 +302,12 @@ public class PlannerService {
 
 	}
 
+	public List<TripInfo> getTripInfoByMemberId(int memberId) {
+		return plannerRepository.getTripInfoByMemberId(memberId);
+	}
+
+	public List<String> getTripInfoThumbnail(int memberId) {
+		return plannerRepository.getTripInfoThumbnail(memberId);
+	}
+
 }

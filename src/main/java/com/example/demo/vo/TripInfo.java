@@ -21,5 +21,8 @@ public class TripInfo {
 	private LocalDateTime tripStartDate;
 	private LocalDateTime tripEndDate;
 	private int memberId;
+	
+	private String formattedStartDate; // 👉 새 필드 추가
+	private String formattedEndDate; // 👉 새 필드 추가
 
 }

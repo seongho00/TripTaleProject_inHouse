@@ -43,5 +43,9 @@ public interface PlannerRepository {
 
 	public void deleteTripPlace(int tripDayId);
 
+	public List<TripInfo> getTripInfoByMemberId(int memberId);
+
+	public List<String> getTripInfoThumbnail(int memberId);
+
 
 }
