@@ -1203,7 +1203,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 		<!-- 설명창 -->
 		<div class="absolute pointer-events-none left-[215px] top-[300px] z-10 bg-white p-6 rounded shadow w-[400px]">
-			<h2 class="text-xl font-bold mb-4">도움말1</h2>
+			<h2 class="text-xl font-bold mb-4">일정 추가</h2>
 			<p>버튼을 누를 시 장바구니에 장소가 추가됩니다.</p>
 		</div>
 	</div>
@@ -1213,7 +1213,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 		<!-- 설명창 -->
 		<div class="absolute pointer-events-none left-[215px] top-[430px] z-10 bg-white p-6 rounded shadow w-[400px]">
-			<h2 class="text-xl font-bold mb-4">도움말2</h2>
+			<h2 class="text-xl font-bold mb-4">일정 옮기기</h2>
 			<p>버튼을 드래그하여 일정에 추가할 수 있습니다.</p>
 		</div>
 	</div>
@@ -1223,8 +1223,8 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 		<!-- 설명창 -->
 		<div class="absolute pointer-events-none left-[215px] top-[430px] z-10 bg-white p-6 rounded shadow w-[400px]">
-			<h2 class="text-xl font-bold mb-4">도움말3</h2>
-			<p>버튼을 눌러 장바구니에서 제외시킬 수 있습니다.</p>
+			<h2 class="text-xl font-bold mb-4">일정 삭제</h2>
+			<p>버튼을 눌러 일정을 제외시킬 수 있습니다.</p>
 		</div>
 	</div>
 
@@ -1233,7 +1233,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 		<!-- 설명창 -->
 		<div class="absolute pointer-events-none left-[530px] top-[250px] z-10 bg-white p-6 rounded shadow w-[400px]">
-			<h2 class="text-xl font-bold mb-4">도움말4</h2>
+			<h2 class="text-xl font-bold mb-4">시간 설정</h2>
 			<p>시간을 클릭하여 장소에 머물 시간을 정할 수 있습니다.</p>
 		</div>
 	</div>
@@ -1242,7 +1242,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 
 		<!-- 설명창 -->
 		<div class="absolute pointer-events-none left-auto right-[30px] top-auto bottom-[100px] z-10 bg-white p-6 rounded shadow w-[400px]">
-			<h2 class="text-xl font-bold mb-4"></h2>
+			<h2 class="text-xl font-bold mb-4">저장하기</h2>
 			<p>수정이 완료되었다면 "수정 완료"버튼을 눌러 저장해주세요.</p>
 		</div>
 	</div>
