@@ -36,5 +36,6 @@ public class TripPlace {
 	
 	private String extra__pictureUrl;
     private String extra__locationType;
+    private String extra__date;
 
 }

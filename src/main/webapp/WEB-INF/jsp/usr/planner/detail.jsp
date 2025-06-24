@@ -27,7 +27,10 @@
 			    
 				
 				Object.entries(groupedTripPlaces).forEach(([dayIndex, tripPlaces]) => {
-					let $rowTimeLine = $('<ul class="rowTimeLine timeline timeline-vertical w-[50px]"></ul>');
+
+					let $rowTimeLine = $(`
+							  <ul class="rowTimeLine timeline timeline-vertical w-[50px]" data-date="\${tripPlaces[0].extra__date}"></ul>
+							`);
 				    $tripPlaceList.append($rowTimeLine);
 				    let $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
 				    $tripPlaceList.append($timelineList);
@@ -107,10 +110,12 @@
 								</li>
 							`;
 							$rowTimeLine.append(timeLineItem);
-							markTimelineByTime(); 
+							
 						});
 					
+					
 				});
+				markTimelineByTime();
 				
 				// 1. 자식 전체 내용 너비 측정용 dummy span 만들기
 				const $clone = $sidebar.clone().css({
@@ -203,14 +208,17 @@
 		const now = new Date();
 		const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
 		const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
+		
 		$('.rowTimeLine > li').each(function () {
-			const dateStr = "2025-06-19"; // "2025-06-18"
+			
+			const date = $('.rowTimeLine').data('date');
+			const dateStr = date.split(' ')[0];
  			const startTimeStr = $(this).data('starttime'); // "HH:mm"
  			const endTimeStr = $(this).data('endtime'); // "HH:mm"
-			
+			console.log(dateStr);
  			const $hrs = $(this).find('hr');
  			const $icon = $(this).find('svg');
+
 
 			if (!dateStr) return;
 
@@ -259,6 +267,8 @@
 		    
 		    container.empty(); // ✅ 기존 내용 제거
 		    timeLine.empty(); // 타임라인 내용 제거
+		    
+		    
 			$.ajax({
 				type: 'GET',
 				url: '/usr/planner/getTripPlace', // 컨트롤러 매핑 경로
@@ -271,9 +281,13 @@
 					    const minutes = parseInt(parts[1] || '0', 10);
 					    return hours * 60 + minutes;
 					};
-					
+					$('.rowTimeLine').removeData('date'); // 캐시 초기화
+					$('.rowTimeLine').attr('data-date', tripPlaces[0].extra__date);
+
 					$('.timelineList').innerHTML = '';
+					
 					tripPlaces.forEach((tripPlace, i) => {
+						
 						
 						
 						const formatTime = (timeStr) => timeStr?.substring(0, 5);
@@ -340,8 +354,9 @@
 								</li>
 							`;
 							timeLine.append(timeLineItem);
-							markTimelineByTime(); 
+							
 						});
+					markTimelineByTime(); 
 					
 				},
 				error: function (xhr, status, error) {
@@ -369,18 +384,18 @@
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl font-medium text-black">${tripInfo.tripName }</p>
 					<a href="modify?tripId=${tripId}"
-						class="mr-2 flex justify-center items-center flex-grow-0 flex-shrink-0 w-[84px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[20px] bg-black/[0.81]">
-						<p class="flex justify-center items-center flex-grow text-[15px] font-medium text-white">수정하기</p>
+						class="mr-2 flex justify-center items-center flex-grow-0 flex-shrink-0 w-[84px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[5px] bg-black/[0.81]">
+						<button class="btn btn-neutral flex justify-center items-center flex-grow text-[15px] font-medium text-white">수정하기</button>
 					</a>
 				</div>
 				<div class="flex justify-center items-end flex-grow-0 flex-shrink-0 relative overflow-hidden px-11 py-[13px]">
-					<p class="flex-grow-0 flex-shrink-0 max-w-[100px] text-xl font-medium text-center text-black">${tripInfo.tripRegion }</p>
-					<p class="flex-grow-0 flex-shrink-0 w-[201px] h-6 text-[15px] font-medium text-center text-black">${formattedStartDate}
+					<p class="flex-grow-0 flex-shrink-0  text-xl font-medium text-center text-black">${tripInfo.tripRegion }</p>
+					<p class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">${formattedStartDate}
 						~ ${formattedEndDate }</p>
 				</div>
 				<div onClick="viewAllSchedule(this);"
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[90px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[20px] bg-black/[0.81] cursor-pointer">
-					<p class=" flex justify-center items-center w-[65px] text-[15px] font-medium text-white">전체 보기</p>
+					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[90px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[5px] cursor-pointer">
+					<button class="btn btn-neutral flex justify-center items-center text-[15px] font-medium text-white">전체 보기</button>
 				</div>
 				<!-- 가로 데이지 UI 시작 -->
 				<ul class="h-5 colTimeLine timeline transition-all duration-500">
@@ -434,7 +449,7 @@
 				class="tripPlaceList flex justify-start items-start self-stretch flex-grow relative overflow-auto gap-2.5 px-[5px] py-[23px]">
 
 				<!-- 세로 데이지UI 시작 -->
-				<ul class="rowTimeLine timeline timeline-vertical w-[50px]">
+				<ul class="rowTimeLine timeline timeline-vertical w-[50px]" data-date="${todayTripPlaces[0].extra__date}">
 					<li data-startTime="${todayTripPlaces[0].startTime }" data-endTime="${todayTripPlaces[0].endTime }"
 						class="relative min-h-[120px]">
 

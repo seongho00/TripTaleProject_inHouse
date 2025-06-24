@@ -55,17 +55,22 @@
 		resultType="com.example.demo.vo.TripPlace">
 		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
 		TLT.typeName AS
-		extra__locationType
-		FROM tripPlace AS TP
+		extra__locationType, TD.date AS extra__date
+		FROM
+		tripPlace AS TP
 		INNER JOIN
 		tripLocation AS TL
-		ON TP.tripLocationId = TL.id
+		ON TP.tripLocationId =
+		TL.id
 		LEFT JOIN
 		tripLocationPicture AS TLP
 		ON TL.id = TLP.tripLocationId
 		INNER JOIN
 		tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
+		INNER
+		JOIN tripDay AS TD
+		ON TP.tripDayId = TD.id
 		WHERE tripDayId =
 		#{tripDayId}
 		GROUP BY TP.id
@@ -76,7 +81,7 @@
 		resultType="com.example.demo.vo.TripPlace">
 		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
 		TLT.typeName AS
-		extra__locationType
+		extra__locationType, TD.date AS extra__date
 		FROM tripPlace AS TP
 		INNER JOIN
 		tripLocation AS TL
@@ -87,6 +92,9 @@
 		INNER JOIN
 		tripLocationType AS TLT
 		ON TL.locationTypeId = TLT.id
+		INNER
+		JOIN tripDay AS TD
+		ON TP.tripDayId = TD.id
 		WHERE tripDayId =
 		(
 		SELECT id
@@ -100,19 +108,24 @@
 		resultType="com.example.demo.vo.TripPlace">
 		SELECT TP.*, TL.*, TLP.pictureUrl AS extra__pictureUrl,
 		TLT.typeName AS
-		extra__locationType, TD.dayIndex
+		extra__locationType, TD.dayIndex, TD.date AS
+		extra__date
 		FROM tripPlace AS TP
 		INNER JOIN tripLocation AS TL
-		ON TP.tripLocationId = TL.id
+		ON
+		TP.tripLocationId = TL.id
 		LEFT JOIN
 		tripLocationPicture AS TLP
-		ON TL.id = TLP.tripLocationId
+		ON TL.id =
+		TLP.tripLocationId
 		INNER JOIN
 		tripLocationType AS TLT
-		ON TL.locationTypeId = TLT.id
+		ON
+		TL.locationTypeId = TLT.id
 		INNER JOIN tripDay
 		AS TD
-		ON TP.tripDayId = TD.id
+		ON TP.tripDayId =
+		TD.id
 		WHERE tripDayId IN (
 		SELECT id
 		FROM tripDay

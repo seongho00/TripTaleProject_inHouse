@@ -120,13 +120,12 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("/usr/planner/createPlan")
-	@ResponseBody
 	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion,
 			LocalDateTime tripStartDate, LocalDateTime tripEndDate) throws IOException {
 
-		List<String> results = plannerService.createPlan(planDataJson, tripRegion, tripStartDate, tripEndDate);
+		int tripId = plannerService.createPlan(planDataJson, tripRegion, tripStartDate, tripEndDate);
 
-		return results.toString();
+		return "usr/planner/detail?tripId=" + tripId;
 	}
 
 	@RequestMapping("usr/planner/detail")
@@ -146,6 +145,7 @@ public class UsrPlannerController {
 
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
+		System.out.println(todayTripPlaces);
 
 		int dayIndex = plannerService.getDayIndexById(tripId, tripDays);
 
