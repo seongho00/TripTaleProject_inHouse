@@ -663,6 +663,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	
 	function showHelp() {
 		
+		
 	}
 </script>
 

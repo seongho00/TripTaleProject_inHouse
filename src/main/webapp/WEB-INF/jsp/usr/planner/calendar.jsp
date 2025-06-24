@@ -4,6 +4,54 @@
 <c:set var="pageTitle" value="CALENDAR PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
 <%@ include file="../common/daisyUi.jspf"%>
+<script>
+	let lastValidRange = [];
+	$(document).ready(
+			function() {flatpickr("#datepicker", {
+					dateFormat : "Y-m-d", // 출력 포맷
+					mode : "range",
+					minDate : "today", // 오늘 이전 날짜 선택 불가능
+					inline : true,
+					locale : "ko", // 한국어 사용 시
+					showMonths : 2,
+					onChange : function(selectedDates, dateStr, instance) {
+					console.log(selectedDates);
+					if (selectedDates.length === 2) {
+						const startDate = selectedDates[0];
+						const endDate = selectedDates[1];
+						console.log(startDate);
+
+						// 날짜 계산
+						const diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
+						const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+						if (diffDays > 4) { // 5일 초과 선택 불가
+							alert("최대 5일까지 선택할 수 있습니다.");
+							instance.setDate(lastValidRange, false); // 이전 유효 범위로 되돌리기
+							return;
+						}
+
+						// ✅ 날짜 가공 (yyyy-MM-dd 포맷으로)
+						const formattedStart = formatDateToLocalYYYYMMDD(startDate);
+						const formattedEnd = formatDateToLocalYYYYMMDD(endDate);
+
+						// jQuery 방식으로 값 설정
+						$('#startDateInput').val(formattedStart + "T00:00:00");
+						$('#endDateInput').val(formattedEnd + "T00:00:00");
+					}
+				},
+
+			});
+		});
+	
+	function formatDateToLocalYYYYMMDD(date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작
+		const day = String(date.getDate()).padStart(2, '0');
+		return `\${year}-\${month}-\${day}`;
+	}
+</script>
+
 <style>
 .flatpickr-day.inRange {
 	background: #AEDFF7; /* 파란 계열 배경 */
@@ -69,61 +117,6 @@
 							<input type="hidden" name="region" value="${region }" />
 							<input type="text" id="datepicker" style="position: absolute; left: -9999px;">
 
-							<script>
-								let lastValidRange = [];
-
-								flatpickr(
-										"#datepicker",
-										{
-											dateFormat : "Y-m-d", // 출력 포맷
-											mode : "range",
-											minDate : "today", // 오늘 이전 날짜 선택 불가능
-											inline : true,
-											locale : "ko", // 한국어 사용 시
-											showMonths : 2,
-											onChange : function(selectedDates,
-													dateStr, instance) {
-												if (selectedDates.length === 2) {
-													const startDate = selectedDates[0];
-													const endDate = selectedDates[1];
-
-													// 날짜 계산
-													const diffTime = Math
-															.abs(selectedDates[1]
-																	- selectedDates[0]);
-													const diffDays = diffTime
-															/ (1000 * 60 * 60 * 24);
-
-													if (diffDays > 4) { // 5일 초과 선택 불가
-														alert("최대 5일까지 선택할 수 있습니다.");
-														instance.setDate(
-																lastValidRange,
-																false); // 이전 유효 범위로 되돌리기
-														return;
-													}
-
-													// ✅ 날짜 가공 (yyyy-MM-dd 포맷으로)
-													const formattedStart = startDate
-															.toISOString()
-															.split("T")[0];
-													const formattedEnd = endDate
-															.toISOString()
-															.split("T")[0];
-
-													// jQuery 방식으로 값 설정
-													$('#startDateInput')
-															.val(
-																	formattedStart
-																			+ "T00:00:00");
-													$('#endDateInput')
-															.val(
-																	formattedEnd
-																			+ "T00:00:00");
-												}
-											},
-
-										});
-							</script>
 						</form>
 					</div>
 
