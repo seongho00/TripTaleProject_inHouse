@@ -115,7 +115,7 @@
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
-	<%@ include file="../common/header.jspf"%>
+	<%@ include file="../common/header_blue.jspf"%>
 	<div
 		class="flex flex-col justify-center items-center flex-grow relative overflow-hidden gap-2.5 p-2.5">
 		<div

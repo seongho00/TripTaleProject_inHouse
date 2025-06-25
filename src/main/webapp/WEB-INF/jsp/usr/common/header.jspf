@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <%@ include file="../common/head.jspf"%>
@@ -17,12 +18,17 @@
 	<div
 		class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-full h-full relative gap-2.5 border-0 border-[#f00]">
 		<a href="../home/main">
-			<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
+			<img src="/images/로고_blue.png"
+				class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
 		</a>
 
 		<c:if test="${!rq.isLogined() }">
-			<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">여행 리스트</p>
+			<div
+				class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
+				<p
+					class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+					<a href="../article/list">여행 리스트</a>
+				</p>
 
 
 
@@ -35,15 +41,20 @@
 			</div>
 		</c:if>
 		<c:if test="${rq.isLogined() }">
-			<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+			<div
+				class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
+				<p
+					class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 					<a href="../article/list">여행 리스트</a>
 				</p>
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+				<p
+					class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 					<a href="../planner/region">여행 작성</a>
 				</p>
-				<div onClick="showProfileMenu();" class="relative justify-center items-center flex-grow w-[107px] h-14 ">
-					<button class="h-full w-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
+				<div onClick="showProfileMenu();"
+					class="relative justify-center items-center flex-grow w-[107px] h-14 ">
+					<button
+						class="h-full w-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
 						<i class="fa-solid fa-user text-5xl"></i>
 
 					</button>
@@ -51,7 +62,7 @@
 					<ul id="ProfileMenu"
 						class="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg hidden z-51">
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-							<a href="../member/profile">내 정보</a>
+							<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내 정보</a>
 						</li>
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">설정</li>
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">

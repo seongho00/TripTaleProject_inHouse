@@ -37,8 +37,7 @@
 			</div>
 		</c:if>
 		<c:if test="${rq.isLogined() }">
-			<c:out value="${rq.loginedMemberId}" default="값 없음" />
-			<p>memberId: ${memberId}</p>
+
 			<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
 				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 					<a href="../article/list">여행 리스트</a>
@@ -55,7 +54,7 @@
 					<ul id="ProfileMenu"
 						class="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg hidden z-51">
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-							<a href="../member/profile?memberId=${rq.loginedMemberId}">내 정보</a>
+							<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내 정보</a>
 						</li>
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">설정</li>
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">

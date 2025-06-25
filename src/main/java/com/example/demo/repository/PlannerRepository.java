@@ -53,5 +53,7 @@ public interface PlannerRepository {
 
 	public void deleteTripInfo(int tripId);
 
+	public List<TripInfo> getTripInfoByKeywordAndMemberId(String keyword, int memberId, String searchKeywordType);
+
 
 }

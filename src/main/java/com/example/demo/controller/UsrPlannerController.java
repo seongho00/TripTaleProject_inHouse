@@ -281,11 +281,10 @@ public class UsrPlannerController {
 
 		// tripDay 삭제
 		plannerService.deleteTripDay(tripId);
-		
+
 		// tripInfo 삭제
 		plannerService.deleteTripInfo(tripId);
-		
-		
+
 		return "usr/member/profile?memberId=" + loginedMember.getId();
 	}
 
@@ -322,11 +321,20 @@ public class UsrPlannerController {
 
 	}
 
-	@RequestMapping("usr/planner/searchTripInfos")
+	@RequestMapping("usr/planner/searchByKeywordType")
 	@ResponseBody
-	public String searchTripInfos(Model model, int tripId) {
+	public List<TripInfo> searchByKeywordType(Model model, String keyword, int memberId, String searchKeywordType) {
 
-		return "";
+		List<TripInfo> tripInfos = plannerService.getTripInfoByKeywordAndMemberId(keyword, memberId, searchKeywordType);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		// 변환 후 새로운 속성에 저장
+		for (TripInfo info : tripInfos) {
+			info.setFormattedStartDate(info.getTripStartDate().format(formatter));
+			info.setFormattedEndDate(info.getTripEndDate().format(formatter));
+		}
+
+		return tripInfos;
 	}
 
 }

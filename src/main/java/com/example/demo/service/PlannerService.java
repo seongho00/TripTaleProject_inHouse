@@ -326,12 +326,17 @@ public class PlannerService {
 
 	public void deleteTripDay(int tripId) {
 		plannerRepository.deleteTripDay(tripId);
-		
+
 	}
 
 	public void deleteTripInfo(int tripId) {
 		plannerRepository.deleteTripInfo(tripId);
-		
+
+	}
+
+	public List<TripInfo> getTripInfoByKeywordAndMemberId(String keyword, int memberId, String searchKeywordType) {
+
+		return plannerRepository.getTripInfoByKeywordAndMemberId(keyword, memberId, searchKeywordType);
 	}
 
 }
