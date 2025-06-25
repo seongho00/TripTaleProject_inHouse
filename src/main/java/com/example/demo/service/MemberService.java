@@ -36,11 +36,15 @@ public class MemberService {
 	public void updateProfileImageData(int memberId, String fileName, byte[] imageBytes) {
 		System.out.println(fileName);
 		System.out.println(imageBytes);
-		
+
 		MemberImage memberImage = memberRepository.getMemberImageIdByMemberId(memberId);
 
 		memberRepository.updateMemberImage(memberId, fileName, imageBytes);
 
+	}
+
+	public MemberImage getMemberImageByMemberId(int memberId) {
+		return memberRepository.getMemberImageByMemberId(memberId);
 	}
 
 }

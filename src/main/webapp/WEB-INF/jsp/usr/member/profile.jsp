@@ -293,7 +293,13 @@
 						<!-- ✅ 실제 프로필 썸네일 -->
 						<div id="profileThumbnail"
 							class="w-full h-full rounded-full bg-white flex items-center justify-center">
-							<i class="fa-solid fa-user fa-3x text-gray-700"></i>
+							<c:if test="${base64Image == null}">
+								<i class="fa-solid fa-user fa-3x text-gray-700"></i>
+							</c:if>
+							<c:if test="${base64Image != null}">
+								<img src="data:image/jpeg;base64,${base64Image}"
+									class="w-full h-full object-cover rounded-full" />
+							</c:if>
 						</div>
 					</div>
 

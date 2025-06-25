@@ -24,4 +24,6 @@ public interface MemberRepository {
 
 	public void updateMemberImage(int memberId, String fileName, byte[] imageBytes);
 
+	public MemberImage getMemberImageByMemberId(int memberId);
+
 }

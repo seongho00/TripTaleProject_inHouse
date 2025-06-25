@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +27,7 @@ import com.example.demo.service.PlannerService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.Member;
+import com.example.demo.vo.MemberImage;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripInfo;
@@ -80,10 +78,21 @@ public class UsrMemberController {
 		// 게시글 가져오기
 		List<Article> articels = articleService.getArticleByMemberId(memberId);
 
+		// 프로필 이미지 가져오기
+		MemberImage memberImage = memberService.getMemberImageByMemberId(memberId);
+
+		if (memberImage.getData() != null) {
+			String base64Image = Base64.getEncoder().encodeToString(memberImage.getData());
+			model.addAttribute("base64Image", base64Image);
+		} else {
+			model.addAttribute("base64Image", null);
+		}
+
 		model.addAttribute("loginedMember", loginedMember);
 		model.addAttribute("tripInfos", tripInfos);
 		model.addAttribute("urls", urls);
 		model.addAttribute("articels", articels);
+
 
 		return "usr/member/profile";
 	}

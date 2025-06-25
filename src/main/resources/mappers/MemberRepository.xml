@@ -69,5 +69,14 @@
 		WHERE memberId =
 		#{memberId}
 	</select>
+	
+		<select id="getMemberImageByMemberId" parameterType="map"
+		resultType="com.example.demo.vo.MemberImage">
+		SELECT *
+		FROM memberImage
+		WHERE memberId = #{memberId}
+	</select>
+	
+	
 
 </mapper>
