@@ -68,7 +68,7 @@ public class PlannerService {
 		return dateList;
 	}
 
-	public int createPlan(String planDataJson, String tripRegion, LocalDateTime tripStartDate,
+	public int createPlan(String planDataJson, String tripName, String tripRegion, LocalDateTime tripStartDate,
 			LocalDateTime tripEndDate) throws IOException {
 
 		Gson gson = new Gson();
@@ -90,7 +90,7 @@ public class PlannerService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
 		int year = tripStartDate.getYear();
 		String formattedtripRegion = tripRegion.replace("특별시", "").replace("광역시", "").trim();
-		plannerRepository.createPlan(formattedtripRegion, tripStartDate, tripEndDate, memberId);
+		plannerRepository.createPlan(tripName, formattedtripRegion, tripStartDate, tripEndDate, memberId);
 		int tripId = plannerRepository.getLastInsertId();
 
 		int dayIndex = 1;

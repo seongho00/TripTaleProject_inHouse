@@ -10,7 +10,7 @@
 		SET
 		regDate = NOW(),
 		updateDate = NOW(),
-		tripName = '대전여행',
+		tripName = #{tripName},
 		tripRegion =
 		#{tripRegion},
 		tripStartDate = #{tripStartDate},

@@ -55,11 +55,12 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/calendar")
-	public String calender(Model model, @RequestParam(defaultValue = "") String region) {
+	public String calender(Model model, @RequestParam(defaultValue = "") String region, String tripName) {
 		if (region.equals("")) {
 			return rq.replace("지역을 선택해주세요.", "../planner/region");
 		}
 		model.addAttribute("region", region);
+		model.addAttribute("tripName", tripName);
 
 		return "usr/planner/calendar";
 	}
@@ -72,7 +73,7 @@ public class UsrPlannerController {
 
 	@RequestMapping("usr/planner/selectTime")
 	public String selectTime(Model model, LocalDateTime startDate, LocalDateTime endDate,
-			@RequestParam(defaultValue = "") String region) throws JsonProcessingException {
+			@RequestParam(defaultValue = "") String region, String tripName) throws JsonProcessingException {
 		if (region.equals("")) {
 			return rq.replace("지역을 선택해주세요.", "../planner/region");
 		}
@@ -121,9 +122,9 @@ public class UsrPlannerController {
 
 	@RequestMapping("/usr/planner/createPlan")
 	public String generatePlan(@RequestParam("planData") String planDataJson, Model model, String tripRegion,
-			LocalDateTime tripStartDate, LocalDateTime tripEndDate) throws IOException {
+			String tripName, LocalDateTime tripStartDate, LocalDateTime tripEndDate) throws IOException {
 
-		int tripId = plannerService.createPlan(planDataJson, tripRegion, tripStartDate, tripEndDate);
+		int tripId = plannerService.createPlan(planDataJson, tripName, tripRegion, tripStartDate, tripEndDate);
 
 		return "usr/planner/detail?tripId=" + tripId;
 	}

@@ -115,6 +115,7 @@
 							<input type="hidden" name="startDate" id="startDateInput">
 							<input type="hidden" name="endDate" id="endDateInput">
 							<input type="hidden" name="region" value="${region }" />
+							<input type="hidden" name="tripName" value="${tripName }" />
 							<input type="text" id="datepicker" style="position: absolute; left: -9999px;">
 
 						</form>

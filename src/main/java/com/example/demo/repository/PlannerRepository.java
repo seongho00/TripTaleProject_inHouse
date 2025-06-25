@@ -16,7 +16,7 @@ public interface PlannerRepository {
 
 	public int getLastInsertId();
 
-	public void createPlan(String tripRegion, LocalDateTime tripStartDate, LocalDateTime tripEndDate, int memberId);
+	public void createPlan(String tripName, String tripRegion, LocalDateTime tripStartDate, LocalDateTime tripEndDate, int memberId);
 
 	public void insertTripDay(int tripId, int dayIndex, String date, LocalTime startTime, LocalTime endTime);
 
