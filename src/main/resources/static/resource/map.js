@@ -182,8 +182,19 @@ window.onload = function() {
 
 				if (selectBtn) {
 					selectBtn.addEventListener('click', () => {
-						location.replace(`../planner/calendar?region=${name}`);
-						alert(`✅ ${name} 선택됨!`);
+						$('#helpModal').removeClass('hidden').addClass('flex');
+
+						$('#helpModalCloseBtn').on('click', function() {
+							const tripName = $('#tripNameInput').val().trim();
+
+							if (!tripName) {
+								alert('여행 이름을 입력해주세요!');
+								return;
+							}
+							const region = $('.select-btn').closest('.info-window').data('region'); // ← 필요 시 dataset에서 꺼내기
+							location.replace(`../planner/calendar?region=${region}&tripName=${tripName}`);
+						});
+						
 					});
 				}
 

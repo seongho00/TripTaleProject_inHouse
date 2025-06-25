@@ -11,12 +11,28 @@
 	function toggleCaret() {
 		$('.fa-caret-down').toggleClass('!hidden');
 		$('.fa-caret-up').toggleClass('!hidden');
+		
+		$.ajax({
+		    url: `/trip/reverse`, // 적절한 URL로 변경
+		    method: 'GET',
+		    data: { tripId: tripId },
+		    success: function(responseHtml) {
+		      // 서버에서 반환한 HTML을 영역에 삽입
+		      $('#tripDetailContainer').html(responseHtml);
+		    },
+		    error: function(xhr, status, error) {
+		      console.error('에러 발생:', error);
+		      alert('여행 정보를 불러오는 데 실패했습니다.');
+		    }
+		  });
+		
+		
 	}
 
 	/* 처음 활성화될 버튼 설정 */
 	$(document).ready(function() {
 		$('#lookupPlanButton').addClass('btn-active');
-
+		$('.tripPlanUI').addClass('ui-active');
 	});
 
 	// 여행계획조회 찾기, 여행기록조회 찾기 눌렀을 때
@@ -26,6 +42,8 @@
 		}
 		$('#lookupPlanButton').toggleClass('btn-active');
 		$('#lookupRecordButton').toggleClass('btn-active');
+		$('.tripPlanUI').toggleClass('ui-active');
+		$('.tripArticleUI').toggleClass('ui-active');
 
 	}
 	function lookupRecordButton() {
@@ -34,6 +52,8 @@
 		}
 		$('#lookupPlanButton').toggleClass('btn-active');
 		$('#lookupRecordButton').toggleClass('btn-active');
+		$('.tripPlanUI').toggleClass('ui-active');
+		$('.tripArticleUI').toggleClass('ui-active');
 
 	}
 
@@ -93,12 +113,22 @@
 	transform: scaleX(1); /* 애니메이션으로 왼쪽→오른쪽 확장 */
 	transition: transform 0.3s;
 }
+
+/* 추천장소, 장소 찾기 UI css  */
+.tripPlanUI, .tripArticleUI {
+	display: none;
+}
+
+.tripPlanUI.ui-active, .tripArticleUI.ui-active {
+	display: block;
+}
 </style>
+
 
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<%@ include file="../common/header.jspf"%>
+	<%@ include file="../common/header_blue.jspf"%>
 	<div class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
 		<div
 			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] relative overflow-hidden gap-[26px] px-[93px]">
@@ -122,7 +152,10 @@
 					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">여행 기록
 					조회</p>
 			</div>
-			<div class="flex flex-col justify-start items-center flex-grow w-[565px] relative  gap-2.5 pt-[18px] pb-[62px]">
+
+
+			<div
+				class="tripPlanUI flex flex-col justify-start items-center flex-grow w-[565px] relative  gap-2.5 pt-[18px] pb-[62px]">
 
 
 				<div class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
@@ -177,10 +210,84 @@
 								<ul
 									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
 									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../article/writeByAI?tripId=${tripInfo.id}">글쓰기</a>
+									</li>
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a href="../planner/modify?tripId=${tripInfo.id}">수정하기</a>
 									</li>
 									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a href="../planner/delete?tripId=${tripInfo.id }">삭제하기</a>
+									</li>
+
+								</ul>
+							</div>
+						</div>
+					</c:forEach>
+
+				</div>
+			</div>
+
+
+			<div
+				class="tripArticleUI hidden flex flex-col justify-start items-center flex-grow w-[565px] relative  gap-2.5 pt-[18px] pb-[62px]">
+
+
+				<div class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
+					<div
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative  gap-2.5 px-2 py-[9px] border border-black">
+						<select name="searchKeyword"
+							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black focus:outline-none focus:ring-0 focus:border-none">
+							<option value="ALL">전체</option>
+							<option value="tripName">여행 이름</option>
+							<option value="tripLocation">여행 장소</option>
+						</select>
+					</div>
+					<div
+						class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[290px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
+						<input type="text" placeholder="검색어를 입력하세요" autocomplete="off"
+							class="focus:outline-none focus:border-none focus:ring-0 flex-grow " />
+						<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"
+							class="flex-grow-0 flex-shrink-0 w-[21px] h-[21.5px] cursor-pointer" preserveAspectRatio="none">
+      <circle cx="9" cy="9" r="8.5" transform="matrix(-1 0 0 1 18.5 0)" stroke="black"></circle>
+      <path d="M15.5 15.5L21.5 21.5" stroke="black" stroke-linecap="round"></path>
+    </svg>
+					</div>
+					<div onClick="toggleCaret()"
+						class="sortOrder flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-[3px] cursor-pointer">
+						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">최근순</p>
+						<i class="fa-solid fa-caret-down"></i>
+						<i class="fa-solid fa-caret-up !hidden"></i>
+					</div>
+				</div>
+				<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
+					<c:forEach var="article" items="${articles }" varStatus="status">
+						<div onClick="showDetail(${tripInfo.id});"
+							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
+							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
+							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+								<img src="${urls[status.index] }" class="w-full h-full object-cover" />
+
+							</div>
+							<div
+								class="flex flex-col justify-center items-start self-stretch flex-grow relative  gap-2.5 pl-2.5 pr-[27px] py-[15px]">
+								<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${article.tripName}</p>
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.tripRegion}</p>
+								</div>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.formattedStartDate }
+									~ ${article.formattedEndDate }</p>
+
+							</div>
+							<div class="relative">
+								<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+								<!-- 숨겨진 메뉴 -->
+								<ul
+									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../planner/modify?articleId=${article.id}">수정하기</a>
+									</li>
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../planner/delete?articleId=${article.id }">삭제하기</a>
 									</li>
 								</ul>
 							</div>
@@ -189,6 +296,9 @@
 
 				</div>
 			</div>
+
+
+
 		</div>
 	</div>
 </div>

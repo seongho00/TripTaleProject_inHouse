@@ -24,4 +24,6 @@ public interface ArticleRepository {
 
 	public List<Article> getAllArticles();
 
+	public List<Article> getArticleByMemberId(int memberId);
+
 }

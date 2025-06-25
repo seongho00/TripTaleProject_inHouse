@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="pageTitle" value="REGION PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
@@ -22,17 +21,13 @@
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
 	<div
 		class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden px-2.5 bg-[#aedff7] border border-black">
-		<a
-			class="flex justify-start items-center flex-grow relative overflow-hidden gap-2.5"
-			href="../home/main"> <img src="/images/로고.png"
-			class="flex-grow-0 flex-shrink-0 w-[121px] h-[121px] object-cover" />
+		<a class="flex justify-start items-center flex-grow relative overflow-hidden gap-2.5" href="../home/main">
+			<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[121px] h-[121px] object-cover" />
 		</a>
 
-		<div
-			class="flex justify-center items-center self-stretch  flex-shrink-0 w-[684px] h-[121px] text-[40px] text-black">
+		<div class="flex justify-center items-center self-stretch  flex-shrink-0 w-[684px] h-[121px] text-[40px] text-black">
 			어떤 지역으로 여행하고 싶으신가요?</div>
-		<div
-			class="self-stretch flex-grow  h-[121px] relative overflow-hidden"></div>
+		<div class="self-stretch flex-grow  h-[121px] relative overflow-hidden"></div>
 	</div>
 
 	<div
@@ -46,5 +41,16 @@
 
 	</div>
 </div>
+
+<!-- 도움말 모달 -->
+<div id="helpModal" class="fixed inset-0 bg-black/20 hidden items-center justify-center z-50">
+	<div class="bg-white w-[360px] p-6 rounded-xl text-center shadow-xl animate-fade-in">
+		<p class="text-xl font-semibold mb-4">여행 이름을 작성해주세요</p>
+		<input id="tripNameInput" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="여행 이름" type="text" />
+		<button id="helpModalCloseBtn" class="mt-6 px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">확인</button>
+	</div>
+</div>
+
+
 <script src="/resource/map.js"></script>
 <%@ include file="../common/foot.jspf"%>

@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.WebMvcConfigurer;
 import com.example.demo.interceptor.BeforeActionInterceptor;
+import com.example.demo.service.ArticleService;
 import com.example.demo.service.KakaoOAuthService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.util.Ut;
+import com.example.demo.vo.Article;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
@@ -37,6 +39,8 @@ public class UsrMemberController {
 
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private ArticleService articleService;
 	@Autowired
 	private PlannerService plannerService;
 	@Autowired
@@ -68,11 +72,14 @@ public class UsrMemberController {
 			info.setFormattedEndDate(info.getTripEndDate().format(formatter));
 		}
 		
-		System.out.println(tripInfos);
+		// 게시글 가져오기
+		List<Article> articels = articleService.getArticleByMemberId(memberId);
+
 
 		model.addAttribute("loginedMember", loginedMember);
 		model.addAttribute("tripInfos", tripInfos);
 		model.addAttribute("urls", urls);
+		model.addAttribute("articels", articels);
 
 		return "usr/member/profile";
 	}

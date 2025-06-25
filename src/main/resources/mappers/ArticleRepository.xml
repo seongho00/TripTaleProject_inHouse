@@ -89,4 +89,16 @@
 		ON A.memberId = M.id
 		GROUP BY A.id
 	</select>
+	
+		<select id="getArticleByMemberId" parameterType="int"
+		resultType="com.example.demo.vo.Article">
+		SELECT A.*, M.name AS extra__name, T.tripRegion AS extra__tripRegion
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON A.memberId = M.id
+		INNER JOIN tripInfo AS T
+		ON A.tripId = T.id
+		WHERE M.id = #{memberId}
+		GROUP BY A.id
+	</select>
 </mapper>

@@ -49,4 +49,9 @@ public class ArticleService {
 		return articleRepository.getAllArticles();
 	}
 
+	public List<Article> getArticleByMemberId(int memberId) {
+		return articleRepository. getArticleByMemberId(memberId);
+		
+	}
+
 }

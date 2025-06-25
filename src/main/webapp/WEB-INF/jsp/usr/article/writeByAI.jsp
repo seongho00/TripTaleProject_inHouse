@@ -115,39 +115,7 @@
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
-	<div
-		class="flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[100px] w-[1700px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] !border !border-black">
-		<div
-			class="self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden">
-			<div
-				class="flex justify-center items-center w-[1008px] h-[100px] absolute left-[346px] top-0 gap-2.5 !border-0 !border-[#f00]">
-				<a href="../home/main">
-					<img src="/images/로고.png"
-						class="flex-grow-0 flex-shrink-0 w-[138px] h-[138px] object-cover" />
-				</a>
-				<div
-					class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5 p-2.5">
-					<p
-						class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">숙박</p>
-					<p
-						class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">맛집</p>
-					<p
-						class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">명소</p>
-				</div>
-				<div
-					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[428px] relative">
-					<p
-						class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">내
-						여행</p>
-					<p
-						class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">계획
-						작성</p>
-					<img src="프로필-아이콘.png"
-						class="flex-grow-0 flex-shrink-0 w-[110px] h-[110px] object-cover" />
-				</div>
-			</div>
-		</div>
-	</div>
+	<%@ include file="../common/header.jspf"%>
 	<div
 		class="flex flex-col justify-center items-center flex-grow relative overflow-hidden gap-2.5 p-2.5">
 		<div
