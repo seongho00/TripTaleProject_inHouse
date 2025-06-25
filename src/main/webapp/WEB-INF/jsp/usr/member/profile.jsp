@@ -4,7 +4,7 @@
 
 <c:set var="pageTitle" value="PROFILE PAGE"></c:set>
 <%@ include file="../common/head.jspf"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 
 <script>
@@ -35,6 +35,31 @@
 		$('#lookupPlanButton').toggleClass('btn-active');
 		$('#lookupRecordButton').toggleClass('btn-active');
 
+	}
+
+	$(document).ready(function() {
+		// 햄버거 버튼 클릭 시 해당 메뉴만 토글
+		$('.articleMenuToggle').on('click', function(e) {
+			e.stopPropagation(); // 다른 이벤트 방지
+			const $menu = $(this).siblings('.articleSlideMenu');
+
+			// 모든 메뉴 닫기
+			$('.articleSlideMenu').not($menu).addClass('hidden');
+
+			// 해당 메뉴 토글
+			$menu.toggleClass('hidden');
+		});
+
+		// 바깥 클릭 시 닫기
+		$(document).on('click', function() {
+			$('.articleSlideMenu').addClass('hidden');
+		});
+		
+		
+	});
+
+	function showDetail(tripId) {
+		window.location.href = '../planner/detail?tripId=' + tripId;
 	}
 </script>
 
@@ -73,31 +98,8 @@
 
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
-	<div
-		class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] border border-black">
-		<div class="self-stretch flex-grow-0 flex-shrink-0 h-[138px] relative overflow-hidden">
-			<div
-				class="flex justify-center items-center w-[1008px] h-[138px] absolute left-[346px] top-0 gap-2.5 border-0 border-[#f00]">
-				<a href="../home/main">
-					<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[138px] h-[138px] object-cover" />
-				</a>
-				<div class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5 p-2.5">
-					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">숙박</p>
-					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">맛집</p>
-					<p class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">명소</p>
-				</div>
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[428px] relative">
-					<p class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">내 여행</p>
-					<p class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">계획 작성</p>
-
-					<div class="flex-grow-0 flex-shrink-0 w-[110px] h-[110px] object-cover">
-						<i class="fa-solid fa-user fa-5x"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="flex justify-between items-center flex-grow w-[1028px] overflow-hidden p-2.5">
+	<%@ include file="../common/header.jspf"%>
+	<div class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
 		<div
 			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] relative overflow-hidden gap-[26px] px-[93px]">
 			<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">my page</p>
@@ -111,7 +113,7 @@
 			</div>
 		</div>
 		<div
-			class="flex flex-col justify-between items-center self-stretch flex-grow-0 flex-shrink-0 w-[745px] overflow-hidden px-[171px] py-[29px]">
+			class="flex flex-col justify-between items-center self-stretch flex-grow-0 flex-shrink-0 w-[745px] px-[171px] py-[29px]">
 			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[323px] relative overflow-hidden py-[11px]">
 				<p onClick="lookupPlanButton();" id="lookupPlanButton"
 					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50  text-black/80 cursor-pointer">여행
@@ -120,14 +122,12 @@
 					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">여행 기록
 					조회</p>
 			</div>
-			<div
-				class="flex flex-col justify-start items-center flex-grow w-[565px] relative overflow-hidden gap-2.5 pt-[18px] pb-[62px]">
+			<div class="flex flex-col justify-start items-center flex-grow w-[565px] relative  gap-2.5 pt-[18px] pb-[62px]">
 
 
-				<div
-					class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 px-[55px] py-1.5">
+				<div class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
 					<div
-						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative overflow-hidden gap-2.5 px-2 py-[9px] border border-black">
+						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative  gap-2.5 px-2 py-[9px] border border-black">
 						<select name="searchKeyword"
 							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black focus:outline-none focus:ring-0 focus:border-none">
 							<option value="ALL">전체</option>
@@ -152,26 +152,38 @@
 						<i class="fa-solid fa-caret-up !hidden"></i>
 					</div>
 				</div>
-				<div
-					class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 overflow-scroll gap-2.5 p-2.5">
+				<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
 					<c:forEach var="tripInfo" items="${tripInfos }" varStatus="status">
-						<div
-							class="flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-[13px] py-2.5">
+						<div onClick="showDetail(${tripInfo.id});"
+							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
 							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
-							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative overflow-hidden border border-black">
-								<img src="${urls[status.index] }" class="w-full h-full object-cover"/>
+							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+								<img src="${urls[status.index] }" class="w-full h-full object-cover" />
 
 							</div>
 							<div
-								class="flex flex-col justify-center items-start self-stretch flex-grow relative overflow-hidden gap-2.5 pl-2.5 pr-[27px] py-[15px]">
+								class="flex flex-col justify-center items-start self-stretch flex-grow relative  gap-2.5 pl-2.5 pr-[27px] py-[15px]">
 								<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
 									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${tripInfo.tripName}</p>
 									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.tripRegion}</p>
 								</div>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.formattedStartDate } ~ ${tripInfo.formattedEndDate }</p>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.formattedStartDate }
+									~ ${tripInfo.formattedEndDate }</p>
 
 							</div>
-							<i class="fa-solid fa-bars fa-lg"></i>
+							<div class="relative">
+								<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+								<!-- 숨겨진 메뉴 -->
+								<ul
+									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../planner/modify?tripId=${tripInfo.id}">수정하기</a>
+									</li>
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../planner/delete?tripId=${tripInfo.id }">삭제하기</a>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</c:forEach>
 

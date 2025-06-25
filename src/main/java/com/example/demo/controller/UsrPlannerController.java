@@ -146,7 +146,6 @@ public class UsrPlannerController {
 		// 오늘의 일정들
 		List<TripPlace> todayTripPlaces = plannerService.getTripPlace(tripDays);
 
-
 		int dayIndex = plannerService.getDayIndexById(tripId, tripDays);
 
 		model.addAttribute("tripInfo", tripInfo);
@@ -238,7 +237,6 @@ public class UsrPlannerController {
 		model.addAttribute("dateList", dateList);
 		model.addAttribute("tripDays", tripDays);
 		model.addAttribute("durations", durations);
-		
 
 		return "usr/planner/modify";
 	}
@@ -253,7 +251,6 @@ public class UsrPlannerController {
 	@ResponseBody
 	public String search(Model model, int tripId, String keyword, String source) {
 
-
 		if (source.equals("추천")) {
 
 		} else if (source.equals("검색")) {
@@ -262,6 +259,13 @@ public class UsrPlannerController {
 		} else if (source.equals("장바구니")) {
 
 		}
+
+		return "";
+	}
+
+	@RequestMapping("usr/planner/delete")
+	@ResponseBody
+	public String delete(Model model, int tripId) {
 
 		return "";
 	}

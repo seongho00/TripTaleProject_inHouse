@@ -27,10 +27,15 @@
 							.addClass('opacity-100 translate-y-0');
 
 				}
+				
+				if (scrollTop >= 900) {
+					$('#scrollText2').removeClass('opacity-0 translate-y-6')
+							.addClass('opacity-100 translate-y-0');
+
+				}
 
 			});
-	
-	
+
 	$(document).ready(function() {
 		$('#addEventBtn').on('click', function(e) {
 			if (!confirm('일정을 추가하시겠습니까?')) {
@@ -135,26 +140,8 @@ to {
 }
 </style>
 
-<div class="flex flex-col justify-between items-center w-full  overflow-hidden bg-white">
-	<div class="h-[100px]"></div>
-	<div
-		class="flex fixed justify-center items-center self-stretch w-full z-3 bg-white flex-grow-0 flex-shrink-0 h-[100px] overflow-hidden gap-2.5 px-[293px] py-[41px]  border border-black">
-
-
-		<div
-			class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-full h-full relative gap-2.5 border-0 border-[#f00]">
-			<a href="../home/main">
-				<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
-			</a>
-
-			<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[428px] relative">
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">여행 기록</p>
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">계획 작성</p>
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">로그인</p>
-				<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">회원가입</p>
-			</div>
-		</div>
-	</div>
+<div class="flex flex-col justify-between items-center w-full overflow-hidden bg-white">
+	<%@ include file="../common/header.jspf"%>
 	<div class="flex flex-col justify-start items-center self-stretch flex-grow relative overflow-hidden gap-[46px] pb-2.5">
 		<div class="w-screen flex justify-center h-[600px] ">
 			<div class="swiper mySwiper h-full">
@@ -231,7 +218,7 @@ to {
 		</div>
 		<div class="h-[200px]"></div>
 
-		<div class="flex flex-col">
+		<div id="scrollText2" class="flex flex-col opacity-0 translate-y-6 transition-all duration-[1000ms]">
 			<p class="self-stretch flex-grow  h-[83px] text-6xl text-center text-black">사진과 함께 나만의 경험을 남겨보세요</p>
 			<img src="/images/게시판.png" class="flex-grow-0 flex-shrink-0 w-[948.46px] h-[420px] object-cover" />
 			<p class="flex-grow-0 flex-shrink-0 w-[501px] h-[274px] text-6xl text-center text-black"></p>
