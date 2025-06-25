@@ -28,4 +28,6 @@ public interface MemberRepository {
 
 	public void doDelete(int memberId);
 
+	public Member getMemberByNameAndEmail(String name, String email);
+
 }

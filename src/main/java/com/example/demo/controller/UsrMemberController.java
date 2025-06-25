@@ -214,7 +214,7 @@ public class UsrMemberController {
 	}
 
 	@RequestMapping("usr/member/findLoginPage")
-	public String findLoginId(Model model, @RequestParam(defaultValue = "id") String findType) {
+	public String findLoginPage(Model model, @RequestParam(defaultValue = "id") String findType) {
 
 		if (findType.equals("id")) {
 			model.addAttribute("activeId", true);
@@ -296,6 +296,20 @@ public class UsrMemberController {
 		memberService.doDelete(memberId);
 
 		return ResultData.from("S-1", "삭제 성공");
+
+	}
+
+	@RequestMapping("usr/member/findLoginId")
+	@ResponseBody
+	public ResultData findLoginId(Model model, String name, String email) {
+
+		Member member = memberService.getMemberByNameAndEmail(name, email);
+
+		if (member == null) {
+			return ResultData.from("F-1", "아이디 찾기 실패");
+		}
+
+		return ResultData.from("S-1", "아이디 찾기 성공", "아이디", member.getProviderId());
 
 	}
 
