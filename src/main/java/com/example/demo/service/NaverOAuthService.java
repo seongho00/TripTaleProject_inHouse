@@ -131,7 +131,10 @@ public class NaverOAuthService {
 			if (loginedMember == null) {
 				memberRepository.doJoin("naver", id, null, name, email, profileImage);
 				loginedMember = memberRepository.getMemberById("naver", id);
+				int lastId = memberRepository.getLastInsertId();
+				memberRepository.insertMemberImage(lastId, "", null);
 			}
+			
 
 			rq.login(loginedMember.getId(), loginedMember);
 
@@ -183,7 +186,6 @@ public class NaverOAuthService {
 
 				double mapx = Double.parseDouble(item.get("mapx").toString()) / 10000000.0;
 				double mapy = Double.parseDouble(item.get("mapy").toString()) / 10000000.0;
-
 
 				tripLocationService.process(title, 3, mapx, mapy);
 				try {

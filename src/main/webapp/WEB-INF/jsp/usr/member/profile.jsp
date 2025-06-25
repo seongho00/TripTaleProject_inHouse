@@ -252,6 +252,22 @@
 			$toast.addClass('opacity-0');
 		}, 2000); // 2초 후 사라짐
 	}
+	
+	function deleteMember(memberId) {
+		 $.ajax({
+				url: '/usr/member/doDelete',  // 컨트롤러 매핑 경로
+		        type: 'POST',               // GET도 가능하지만 POST가 더 안전
+		        data: { memberId: memberId },     // 서버에서 `@RequestParam("id")`로 받음
+		        success: function() {
+					alert('삭제가 완료되었습니다.');
+		            location.replace("../home/main"); // 또는 페이지 이동
+		        },
+		        error: function(xhr, status, error) {
+		            alert('삭제 중 오류가 발생했습니다.');
+		            console.error(error);
+		        }
+		});	
+	}
 </script>
 
 <style>
@@ -305,18 +321,47 @@
 		<div
 			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] bg-slate-200 rounded-[5px] relative overflow-hidden gap-[26px] px-[93px] border border-black">
 			<p
-				class="flex-grow-0 flex-shrink-0 w-[65px] h-[30px] text-xl font-medium text-center text-black">${loginedMember.name }</p>
+				class="flex-grow-0 flex-shrink-0  h-[30px] text-xl font-medium text-center text-black z-1">PROFILE</p>
+
+			<svg class="absolute top-0" width="100%" height="230"
+				viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg"
+				preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#93c5fd" />
+    </linearGradient>
+  </defs>
+  <path
+					d="
+    M0,60
+    C200,50 400,70 600,60
+    S1000,70 1200,60
+    L1200,0
+    L0,0
+    Z"
+					fill="url(#grad)" />
+</svg>
+
+
 			<div
 				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[157px]  relative  gap-10">
+
+
+
 				<div onClick="showProfileInput();" class="indicator cursor-pointer">
 					<!-- ✅ 그라데이션 border 처리용 wrapper -->
 					<div
-						class="w-20 h-20 rounded-full p-[3px] bg-gradient-to-tr from-purple-500 via-pink-500 to-red-500">
+						class="w-20 h-20 rounded-full p-[3px] bg-gradient-to-tr from-purple-500 via-pink-500 to-red-500 ">
 						<!-- ✅ 실제 프로필 썸네일 -->
 						<div id="profileThumbnail"
 							class="w-full h-full rounded-full bg-white flex items-center justify-center">
-							<c:if test="${base64Image == null}">
+							<c:if test="${base64Image == null and developerImage == null}">
 								<i class="fa-solid fa-user fa-3x text-gray-700"></i>
+							</c:if>
+							<c:if test="${base64Image == null and developerImage != null}">
+								<img src="${developerImage}"
+									class="w-full h-full object-cover rounded-full" />
 							</c:if>
 							<c:if test="${base64Image != null}">
 								<img src="data:image/jpeg;base64,${base64Image}"
@@ -354,7 +399,7 @@
 						<div class="pt-2 pl-5 ">
 							<input type="text"
 								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
-								value="${loginedMember.name }" />
+								value="${loginedMember.email }" />
 						</div>
 					</div>
 
@@ -380,18 +425,19 @@
 						</div>
 					</div>
 
-					<p
-						class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${loginedMember.email }</p>
-					<p
-						class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">즐겨찾기</p>
+
 					<button onClick="showToast('변경사항이 저장되었습니다.');"
-						class="btn btn-outline btn-primary flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">저장하기</button>
+						class="mt-5 btn btn-outline btn-primary flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">저장하기</button>
+
+
 				</div>
 
-
-
-
 			</div>
+			<a href="#"
+				onClick="if(confirm('정말 삭제하시겠습니까?')) deleteMember(${loginedMember.id}});"
+				class="absolute bottom-2 right-[15px] flex-grow-0 flex-shrink-0 text-sm font-medium text-center !text-red-500 underline decoration-2 decoration-red-500">삭제하기</a>
+			<!-- <a href="#" onClick=""
+				class="flex justify-center items-center absolute inset-0 bg-black/20 flex-grow-0 flex-shrink-0  z-5"></a> -->
 		</div>
 		<div
 			class="flex flex-col justify-between items-center self-stretch flex-grow-0 flex-shrink-0 w-[745px] px-[171px] py-[29px]">
@@ -415,7 +461,7 @@
 					<div
 						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative  gap-2.5 px-2 py-[9px] border border-black">
 						<select id="tripSearchKeywordType"
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black focus:outline-none focus:ring-0 focus:border-none">
+							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black outline-none border-none focus:outline-none focus:border-none">
 							<option value="ALL">전체</option>
 							<option value="tripName">여행 이름</option>
 							<option value="tripRegion">여행 장소</option>
@@ -425,7 +471,7 @@
 						class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[290px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
 						<input id="tripSearchKeyword" type="text" placeholder="검색어를 입력하세요"
 							autocomplete="off"
-							class="focus:outline-none focus:border-none focus:ring-0 flex-grow " />
+							class="outline-none border-none focus:outline-none focus:border-none flex-grow " />
 						<i
 							onClick="getUIBySearchKeyword(${loginedMember.id}, 'tripInfo');"
 							class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>

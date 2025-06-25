@@ -17,7 +17,8 @@
 		loginPw = #{loginPw},
 		`name` =
 		#{name},
-		email = #{email};
+		email = #{email},
+		profileImage = #{profileImage}
 
 	</select>
 
@@ -69,14 +70,29 @@
 		WHERE memberId =
 		#{memberId}
 	</select>
-	
-		<select id="getMemberImageByMemberId" parameterType="map"
+
+	<select id="getMemberImageByMemberId" parameterType="map"
 		resultType="com.example.demo.vo.MemberImage">
 		SELECT *
 		FROM memberImage
 		WHERE memberId = #{memberId}
 	</select>
-	
-	
+
+	<select id="insertMemberImage" parameterType="map"
+		resultType="com.example.demo.vo.MemberImage">
+		INSERT INTO memberImage
+		SET memberId = #{memberId},
+		fileName
+		= #{fileName},
+		data = #{imageBytes}
+	</select>
+
+
+	<select id="doDelete" parameterType="map"
+		resultType="com.example.demo.vo.MemberImage">
+		DELETE FROM member
+		WHERE id = #{memberId}
+	</select>
+
 
 </mapper>

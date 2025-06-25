@@ -134,7 +134,11 @@ public class KakaoOAuthService {
 
 			if (loginedMember == null) {
 				memberRepository.doJoin("kakao", id, null, nickname, email, profileImage);
+				int lastId = memberRepository.getLastInsertId();
+				memberRepository.insertMemberImage(lastId, "", null);
 			}
+			
+			
 
 			rq.login(loginedMember.getId(), loginedMember);
 

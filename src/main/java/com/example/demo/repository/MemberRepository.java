@@ -26,4 +26,6 @@ public interface MemberRepository {
 
 	public MemberImage getMemberImageByMemberId(int memberId);
 
+	public void doDelete(int memberId);
+
 }

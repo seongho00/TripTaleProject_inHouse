@@ -80,6 +80,13 @@ public class UsrMemberController {
 
 		// 프로필 이미지 가져오기
 		MemberImage memberImage = memberService.getMemberImageByMemberId(memberId);
+		System.out.println(loginedMember.getProfileImage());
+		if (loginedMember.getProfileImage() != null) {
+
+			model.addAttribute("developerImage", loginedMember.getProfileImage());
+		} else {
+			model.addAttribute("developerImage", null);
+		}
 
 		if (memberImage.getData() != null) {
 			String base64Image = Base64.getEncoder().encodeToString(memberImage.getData());
@@ -92,7 +99,6 @@ public class UsrMemberController {
 		model.addAttribute("tripInfos", tripInfos);
 		model.addAttribute("urls", urls);
 		model.addAttribute("articels", articels);
-
 
 		return "usr/member/profile";
 	}
@@ -281,6 +287,16 @@ public class UsrMemberController {
 			e.printStackTrace();
 			return ResultData.from("F-2", "파일 저장 중 오류");
 		}
+	}
+
+	@RequestMapping("usr/member/doDelete")
+	@ResponseBody
+	public ResultData doDelete(Model model, int memberId) {
+
+		memberService.doDelete(memberId);
+
+		return ResultData.from("S-1", "삭제 성공");
+
 	}
 
 }

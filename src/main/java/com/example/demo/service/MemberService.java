@@ -47,4 +47,9 @@ public class MemberService {
 		return memberRepository.getMemberImageByMemberId(memberId);
 	}
 
+	public void doDelete(int memberId) {
+		memberRepository.doDelete(memberId);
+
+	}
+
 }
