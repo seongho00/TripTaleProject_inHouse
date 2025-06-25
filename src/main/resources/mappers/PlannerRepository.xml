@@ -199,8 +199,19 @@
 		SELECT *
 		FROM tripInfo
 		WHERE memberId = #{memberId}
-		ORDER BY id DESC
+		ORDER BY
+		id DESC
 	</select>
+
+	<select id="getTripInfoReverseByMemberId" parameterType="map"
+		resultType="com.example.demo.vo.TripInfo">
+		SELECT *
+		FROM tripInfo
+		WHERE memberId = #{memberId}
+		ORDER BY
+		id ASC
+	</select>
+
 
 	<select id="getTripInfoThumbnail" parameterType="map"
 		resultType="java.lang.String">

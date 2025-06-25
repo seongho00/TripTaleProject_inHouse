@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -269,6 +270,39 @@ public class UsrPlannerController {
 	public String delete(Model model, int tripId) {
 
 		return "";
+	}
+
+	@RequestMapping("usr/planner/getTripInfos")
+	@ResponseBody
+	public List<TripInfo> getTripInfos(Model model, String sortType, @RequestParam(defaultValue = "0") int memberId) {
+
+		if (sortType.equals("recent")) {
+			List<TripInfo> tripInfos = plannerService.getTripInfoByMemberId(memberId);
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			// 변환 후 새로운 속성에 저장
+			for (TripInfo info : tripInfos) {
+				info.setFormattedStartDate(info.getTripStartDate().format(formatter));
+				info.setFormattedEndDate(info.getTripEndDate().format(formatter));
+			}
+
+			return tripInfos;
+		} else {
+
+			List<TripInfo> tripInfos =plannerService.getTripInfoReverseByMemberId(memberId);
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			// 변환 후 새로운 속성에 저장
+			for (TripInfo info : tripInfos) {
+				info.setFormattedStartDate(info.getTripStartDate().format(formatter));
+				info.setFormattedEndDate(info.getTripEndDate().format(formatter));
+			}
+
+			return tripInfos;
+		}
+
 	}
 
 }

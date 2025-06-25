@@ -8,25 +8,66 @@
 
 
 <script>
-	function toggleCaret() {
+	let currentSort = 'recent';
+	
+	function toggleCaret(memberId) {
+		currentSort = currentSort === 'recent' ? 'old' : 'recent';
+		
 		$('.fa-caret-down').toggleClass('!hidden');
 		$('.fa-caret-up').toggleClass('!hidden');
 		
-		$.ajax({
-		    url: `/trip/reverse`, // 적절한 URL로 변경
-		    method: 'GET',
-		    data: { tripId: tripId },
-		    success: function(responseHtml) {
-		      // 서버에서 반환한 HTML을 영역에 삽입
-		      $('#tripDetailContainer').html(responseHtml);
-		    },
-		    error: function(xhr, status, error) {
-		      console.error('에러 발생:', error);
-		      alert('여행 정보를 불러오는 데 실패했습니다.');
-		    }
-		  });
-		
-		
+		loadPosts(currentSort, memberId);
+
+	}
+	
+	function loadPosts(sortType, memberId) {
+
+
+	    $.ajax({
+	        type: 'GET',
+	        url: '../planner/getTripInfos',
+	        data: { sortType: sortType, memberId : memberId },
+	        success: function (tripInfos) {
+	        	const container = $('.tripInfoContainer');
+				container.empty();
+				tripInfos.forEach((tripInfo, index) => {
+					const reverseIndex = tripInfos.length - index;
+					const html = `
+						<div onclick="showDetail(\${tripInfo.id});"
+							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
+							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">\${reverseIndex}</p>
+							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+								<img src="\${tripInfo.url}" class="w-full h-full object-cover" />
+							</div>
+							<div class="flex flex-col justify-center items-start self-stretch flex-grow relative gap-2.5 pl-2.5 pr-[27px] py-[15px]">
+								<div class="flex justify-start items-end gap-2.5 pr-[7px]">
+									<p class="text-xl font-medium text-center text-black">\${tripInfo.tripName}</p>
+									<p class="text-[15px] font-medium text-center text-black">\${tripInfo.tripRegion}</p>
+								</div>
+								<p class="text-[15px] font-medium text-center text-black">\${tripInfo.formattedStartDate} ~ \${tripInfo.formattedEndDate}</p>
+							</div>
+							<div class="relative">
+								<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+								<ul class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../article/writeByAI?tripId=\${tripInfo.id}">글쓰기</a>
+									</li>
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../planner/modify?tripId=\${tripInfo.id}">수정하기</a>
+									</li>
+									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../planner/delete?tripId=\${tripInfo.id}">삭제하기</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					`;
+					container.append(html);
+				});
+	        	
+	        	
+	        }
+	    });
 	}
 
 	/* 처음 활성화될 버튼 설정 */
@@ -178,14 +219,15 @@
       <path d="M15.5 15.5L21.5 21.5" stroke="black" stroke-linecap="round"></path>
     </svg>
 					</div>
-					<div onClick="toggleCaret()"
+					<div onClick="toggleCaret(${loginedMember.id})"
 						class="sortOrder flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-[3px] cursor-pointer">
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">최근 순</p>
+						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">최근순</p>
 						<i class="fa-solid fa-caret-down"></i>
 						<i class="fa-solid fa-caret-up !hidden"></i>
 					</div>
 				</div>
-				<div class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
+				<div
+					class="tripInfoContainer flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
 					<c:forEach var="tripInfo" items="${tripInfos }" varStatus="status">
 						<div onClick="showDetail(${tripInfo.id});"
 							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">

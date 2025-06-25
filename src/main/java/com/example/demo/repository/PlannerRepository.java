@@ -47,5 +47,7 @@ public interface PlannerRepository {
 
 	public List<String> getTripInfoThumbnail(int memberId);
 
+	public List<TripInfo> getTripInfoReverseByMemberId(int memberId);
+
 
 }

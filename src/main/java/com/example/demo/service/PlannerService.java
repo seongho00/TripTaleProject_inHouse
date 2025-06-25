@@ -310,4 +310,8 @@ public class PlannerService {
 		return plannerRepository.getTripInfoThumbnail(memberId);
 	}
 
+	public List<TripInfo> getTripInfoReverseByMemberId(int memberId) {
+		return plannerRepository.getTripInfoReverseByMemberId(memberId);
+	}
+
 }
