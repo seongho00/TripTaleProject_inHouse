@@ -20,7 +20,6 @@ public class Member {
 	private String loginPw;
 	private String name;
 	private String email;
-	private String profileImage;
 	private int delStatus;
 	private String delDate;
 	private int authLevel;

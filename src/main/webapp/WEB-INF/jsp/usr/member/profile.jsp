@@ -229,6 +229,19 @@
 		
 		
 	});
+	
+	function showPassword() {
+		const $input = $('#profilePassword');
+	    const currentType = $input.attr('type');
+
+	    if (currentType === 'password') {
+			$input.attr('type', 'text');
+			$('#showPassword').removeClass('fa-eye').addClass('fa-eye-slash');
+	    } else {
+			$input.attr('type', 'password');
+			$('#showPassword').removeClass('fa-eye-slash').addClass('fa-eye');
+	    }
+	}
 </script>
 
 <style>
@@ -280,10 +293,9 @@
 	<div
 		class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
 		<div
-			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] relative overflow-hidden gap-[26px] px-[93px]">
+			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] bg-slate-200 rounded-[5px] relative overflow-hidden gap-[26px] px-[93px] border border-black">
 			<p
-				class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">my
-				page</p>
+				class="flex-grow-0 flex-shrink-0 w-[65px] h-[30px] text-xl font-medium text-center text-black">${loginedMember.name }</p>
 			<div
 				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[157px]  relative  gap-10">
 				<div onClick="showProfileInput();" class="indicator cursor-pointer">
@@ -313,15 +325,62 @@
 				</div>
 				<!-- 숨겨진 파일 선택 input -->
 				<input type="file" id="profileInput" class="hidden" accept="image/*" />
-				<p
-					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">프로필
-					관리</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 w-[65px] h-[30px] text-xl font-medium text-center text-black">${loginedMember.name }</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">아이디</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">즐겨찾기</p>
+
+				<div class="flex flex-col gap-[5px]">
+					<div class="flex flex-col w-[200px]">
+						<p class="text-lg font-bold text-left text-black">Name</p>
+
+						<div class="pt-2 pl-5">
+							<input type="text"
+								class=" text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								value="${loginedMember.name }" />
+						</div>
+					</div>
+
+
+
+					<div class="flex flex-col w-[200px]">
+						<p class="text-lg font-bold text-left text-black ">Email</p>
+						<div class="pt-2 pl-5 ">
+							<input type="text"
+								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								value="${loginedMember.name }" />
+						</div>
+					</div>
+
+
+					<div class="flex flex-col w-[200px] relative">
+						<p class="text-lg font-bold text-left text-black ">Password</p>
+						<div class="flex jutify-between pt-2 pl-5 ">
+							<input type="password" id="profilePassword"
+								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								value="${loginedMember.loginPw }" />
+
+						</div>
+						<i onClick="showPassword();" id="showPassword"
+							class="top-[37px] right-0 absolute fa-solid fa-eye  cursor-pointer p-1"></i>
+					</div>
+
+					<div class="flex flex-col w-[200px]">
+						<p class="text-lg font-bold text-left text-black ">Email</p>
+						<div class="pt-2 pl-5 ">
+							<input
+								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								value="${loginedMember.name }" />
+						</div>
+					</div>
+
+					<p
+						class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${loginedMember.email }</p>
+					<p
+						class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">즐겨찾기</p>
+					<button
+						class="btn btn-outline btn-primary flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">저장하기</button>
+				</div>
+
+
+
+
 			</div>
 		</div>
 		<div
