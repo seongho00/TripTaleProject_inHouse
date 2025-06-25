@@ -891,7 +891,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 						~ ${endDate}</p>
 				</div>
 				<button id="helpBtn"
-					class="flex justify-center items-center absolute left-[400px] top-[5px] h-[30px] text-sm p-2 border rounded-full hover:bg-gray-100">❓
+					class="btn btn-outline btn-secondary flex justify-center items-center absolute left-[390px] top-[5px] h-[30px] text-sm mr-2 ">❓
 					사용법</button>
 				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
 			</div>
