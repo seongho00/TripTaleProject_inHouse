@@ -242,6 +242,16 @@
 			$('#showPassword').removeClass('fa-eye-slash').addClass('fa-eye');
 	    }
 	}
+	
+	// 장바구니 추가 시 알림 메세지
+	function showToast(message) {
+		const $toast = $('#toast');
+		$toast.text(message).removeClass('opacity-0');
+
+		setTimeout(() => {
+			$toast.addClass('opacity-0');
+		}, 2000); // 2초 후 사라짐
+	}
 </script>
 
 <style>
@@ -288,7 +298,7 @@
 
 
 <div
-	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
+	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
 	<%@ include file="../common/header_blue.jspf"%>
 	<div
 		class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
@@ -374,7 +384,7 @@
 						class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${loginedMember.email }</p>
 					<p
 						class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">즐겨찾기</p>
-					<button
+					<button onClick="showToast('변경사항이 저장되었습니다.');"
 						class="btn btn-outline btn-primary flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">저장하기</button>
 				</div>
 
@@ -569,5 +579,9 @@
 
 		</div>
 	</div>
+</div>
+
+<div id="toast"
+	class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-md shadow-lg opacity-0 transition-opacity duration-500 z-5">
 </div>
 <%@ include file="../common/foot.jspf"%>

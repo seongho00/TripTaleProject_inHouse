@@ -12,7 +12,7 @@
 
 <div class="h-[100px]"></div>
 <div
-	class="flex fixed justify-center items-center self-stretch w-full z-3 flex-grow-0 flex-shrink-0 h-[100px] gap-2.5 px-[293px] py-[41px] bg-[#aedff7] border border-black">
+	class="flex fixed justify-center items-center self-stretch w-full z-3 flex-grow-0 flex-shrink-0 h-[100px] gap-2.5 px-[293px] py-[41px] bg-[#aedff7] border-b border-black">
 
 
 	<div
