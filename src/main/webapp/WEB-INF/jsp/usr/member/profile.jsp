@@ -206,27 +206,28 @@
 		
 			reader.readAsDataURL(file);
 		
+			// 🔸 서버에 Ajax로 전송
+			const formData = new FormData();
+			formData.append("profileImage", file);
+			
+			$.ajax({
+			    url: "/usr/member/updateProfileImage", // 서버 업로드 경로
+			    method: "POST",
+			    data: formData,
+			    processData: false,
+			    contentType: false,
+			    success: function (response) {
+					console.log("업로드 성공:", response);
+					// 알림 또는 UI 업데이트
+			    },
+			    error: function (xhr, status, error) {
+					console.error("업로드 실패:", error);
+					alert("프로필 업로드 중 오류가 발생했습니다.");
+			    }
+			});
 		});
 		
-		// 🔸 서버에 Ajax로 전송
-		const formData = new FormData();
-		formData.append("profileImage", file);
 		
-		$.ajax({
-		    url: "/usr/member/updateProfileImage", // 서버 업로드 경로
-		    method: "POST",
-		    data: formData,
-		    processData: false,
-		    contentType: false,
-		    success: function (response) {
-				console.log("업로드 성공:", response);
-				// 알림 또는 UI 업데이트
-		    },
-		    error: function (xhr, status, error) {
-				console.error("업로드 실패:", error);
-				alert("프로필 업로드 중 오류가 발생했습니다.");
-		    }
-		});
 	});
 </script>
 

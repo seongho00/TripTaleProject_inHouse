@@ -23,21 +23,51 @@
 
 
 	<select id="getMemberById" parameterType="map">
-		SELECT *
-		FROM `member`
-		WHERE provider = #{provider} AND providerId = #{providerId};
+		SELECT M.*, MI.data AS
+		extra__data
+		FROM `member` AS M
+		INNER JOIN memberImage AS MI
+		ON M.id =
+		MI.memberId
+		WHERE M.provider = #{provider} AND M.providerId =
+		#{providerId};
 	</select>
-	
+
 	<select id="getLastInsertId" parameterType="int">
 		SELECT
 		LAST_INSERT_ID()
 	</select>
 
 	<select id="getMemberByLoingId" parameterType="map">
-		SELECT *
+		SELECT M.*,
+		MI.data
+		AS
+		extra__data
 		FROM
 		`member`
-		WHERE loginId = #{loginId}
+		INNER JOIN memberImage AS MI
+		ON M.id =
+		MI.memberId
+		WHERE M.loginId = #{loginId}
+	</select>
+
+
+	<select id="getMemberImageIdByMemberId" parameterType="map">
+		SELECT *
+		FROM
+		memberImage
+		WHERE memberId = #{memberId}
+	</select>
+
+
+	<select id="updateMemberImage" parameterType="map">
+		UPDATE
+		memberImage
+		SET fileName = #{fileName},
+		data =
+		#{imageBytes}
+		WHERE memberId =
+		#{memberId}
 	</select>
 
 </mapper>

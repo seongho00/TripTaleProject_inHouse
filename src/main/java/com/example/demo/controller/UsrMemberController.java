@@ -1,10 +1,15 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.WebMvcConfigurer;
 import com.example.demo.interceptor.BeforeActionInterceptor;
@@ -70,10 +76,9 @@ public class UsrMemberController {
 			info.setFormattedStartDate(info.getTripStartDate().format(formatter));
 			info.setFormattedEndDate(info.getTripEndDate().format(formatter));
 		}
-		
+
 		// 게시글 가져오기
 		List<Article> articels = articleService.getArticleByMemberId(memberId);
-
 
 		model.addAttribute("loginedMember", loginedMember);
 		model.addAttribute("tripInfos", tripInfos);
@@ -242,6 +247,31 @@ public class UsrMemberController {
 			return ResultData.from("F-1", "해당 아이디는 이미 사용중입니다.", "loginId", loginId);
 		}
 		return ResultData.from("S-1", "사용 가능한 아이디입니다.", "loginId", loginId);
+	}
+
+	@RequestMapping("usr/member/updateProfileImage")
+	@ResponseBody
+	public ResultData updateProfileImage(Model model, @RequestParam("profileImage") MultipartFile profileImage) {
+
+		int loginedMemberId = rq.getLoginedMemberId();
+
+		if (profileImage.isEmpty()) {
+			return ResultData.from("F-1", "파일이 없습니다.");
+		}
+
+		try {
+
+			byte[] imageBytes = profileImage.getBytes();
+			int memberId = rq.getLoginedMemberId();
+			String fileName = profileImage.getOriginalFilename();
+
+			memberService.updateProfileImageData(memberId, fileName, imageBytes);
+
+			return ResultData.from("S-1", "업로드 성공");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResultData.from("F-2", "파일 저장 중 오류");
+		}
 	}
 
 }

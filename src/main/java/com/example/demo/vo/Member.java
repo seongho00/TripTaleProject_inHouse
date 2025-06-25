@@ -1,5 +1,6 @@
 package com.example.demo.vo;
 
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +24,8 @@ public class Member {
 	private int delStatus;
 	private String delDate;
 	private int authLevel;
+	
+	@Lob
+	private byte[] extra__data;
 
 }
