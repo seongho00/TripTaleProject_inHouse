@@ -24,6 +24,7 @@ import com.example.demo.service.ChatGptService;
 import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
+import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripDay;
 import com.example.demo.vo.TripInfo;
@@ -266,10 +267,26 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/delete")
-	@ResponseBody
 	public String delete(Model model, int tripId) {
 
-		return "";
+		Member loginedMember = rq.getLoginedMember();
+
+		// tripDay 가져오기
+		List<TripDay> tripDays = plannerService.getTripDayById(tripId);
+
+		// tripPlace 삭제
+		for (TripDay tripDay : tripDays) {
+			plannerService.deleteTripPlace(tripDay.getId());
+		}
+
+		// tripDay 삭제
+		plannerService.deleteTripDay(tripId);
+		
+		// tripInfo 삭제
+		plannerService.deleteTripInfo(tripId);
+		
+		
+		return "usr/member/profile?memberId=" + loginedMember.getId();
 	}
 
 	@RequestMapping("usr/planner/getTripInfos")
@@ -290,7 +307,7 @@ public class UsrPlannerController {
 			return tripInfos;
 		} else {
 
-			List<TripInfo> tripInfos =plannerService.getTripInfoReverseByMemberId(memberId);
+			List<TripInfo> tripInfos = plannerService.getTripInfoReverseByMemberId(memberId);
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -303,6 +320,13 @@ public class UsrPlannerController {
 			return tripInfos;
 		}
 
+	}
+
+	@RequestMapping("usr/planner/searchTripInfos")
+	@ResponseBody
+	public String searchTripInfos(Model model, int tripId) {
+
+		return "";
 	}
 
 }

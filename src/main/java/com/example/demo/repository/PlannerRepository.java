@@ -49,5 +49,9 @@ public interface PlannerRepository {
 
 	public List<TripInfo> getTripInfoReverseByMemberId(int memberId);
 
+	public void deleteTripDay(int tripId);
+
+	public void deleteTripInfo(int tripId);
+
 
 }

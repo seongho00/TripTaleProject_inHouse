@@ -57,8 +57,7 @@ public class UsrMemberController {
 	}
 
 	@RequestMapping("usr/member/profile")
-	public String profile(Model model) {
-		int memberId = rq.getLoginedMemberId();
+	public String profile(Model model, int memberId) {
 		Member loginedMember = rq.getLoginedMember();
 
 		List<TripInfo> tripInfos = plannerService.getTripInfoByMemberId(memberId);

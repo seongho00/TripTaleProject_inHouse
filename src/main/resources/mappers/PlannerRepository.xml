@@ -192,6 +192,18 @@
 		DELETE FROM tripPlace
 		WHERE tripDayId = #{tripDayId}
 	</select>
+	
+	
+	<select id="deleteTripDay" parameterType="map">
+		DELETE FROM tripDay
+		WHERE tripId = #{tripId}
+	</select>
+	
+	
+	<select id="deleteTripInfo" parameterType="map">
+		DELETE FROM tripInfo
+		WHERE id = #{tripId}
+	</select>
 
 
 	<select id="getTripInfoByMemberId" parameterType="map"

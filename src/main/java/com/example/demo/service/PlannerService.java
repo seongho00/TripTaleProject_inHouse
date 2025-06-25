@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.demo.controller.UsrArticleController;
+import com.example.demo.interceptor.BeforeActionInterceptor;
 import com.example.demo.repository.PlannerRepository;
 import com.example.demo.vo.AvailableTime;
 import com.example.demo.vo.ChatPlanPlace;
@@ -35,6 +36,8 @@ import com.google.gson.reflect.TypeToken;
 @Service
 public class PlannerService {
 
+	private final BeforeActionInterceptor beforeActionInterceptor;
+
 	@Autowired
 	private ChatGptService chatGptService;
 	@Autowired
@@ -43,8 +46,9 @@ public class PlannerService {
 	@Autowired
 	private PlannerRepository plannerRepository;
 
-	public PlannerService(PlannerRepository plannerRepository) {
+	public PlannerService(PlannerRepository plannerRepository, BeforeActionInterceptor beforeActionInterceptor) {
 		this.plannerRepository = plannerRepository;
+		this.beforeActionInterceptor = beforeActionInterceptor;
 
 	}
 
@@ -312,6 +316,22 @@ public class PlannerService {
 
 	public List<TripInfo> getTripInfoReverseByMemberId(int memberId) {
 		return plannerRepository.getTripInfoReverseByMemberId(memberId);
+	}
+
+	public void deleteTripPlace(int tripDayId) {
+
+		plannerRepository.deleteTripPlace(tripDayId);
+
+	}
+
+	public void deleteTripDay(int tripId) {
+		plannerRepository.deleteTripDay(tripId);
+		
+	}
+
+	public void deleteTripInfo(int tripId) {
+		plannerRepository.deleteTripInfo(tripId);
+		
 	}
 
 }
