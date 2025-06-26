@@ -333,9 +333,9 @@ public class UsrMemberController {
 	@ResponseBody
 	public ResultData updateMember(HttpServletRequest request, String name, String email, String loginPw) {
 		int memberId = rq.getLoginedMemberId();
-		
+
 		HttpSession session = request.getSession();
-		
+
 		memberService.updateMember(memberId, name, email, loginPw);
 
 		Member updatedMember = memberService.getMemberByMemberId(memberId);
@@ -343,5 +343,7 @@ public class UsrMemberController {
 
 		return ResultData.from("S-1", "수정 성공");
 	}
+
+
 
 }

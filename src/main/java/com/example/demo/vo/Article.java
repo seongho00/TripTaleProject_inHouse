@@ -17,7 +17,7 @@ public class Article {
 	private String updateDate;
 	private String title;
 	private String body;
-	private String tripId;
+	private int tripId;
 
 	private String extra__name;
 	private String extra__contentType;

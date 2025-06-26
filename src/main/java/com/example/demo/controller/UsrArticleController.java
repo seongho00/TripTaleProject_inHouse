@@ -1,20 +1,22 @@
 package com.example.demo.controller;
 
+import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.TripTaleProjectApplication;
@@ -25,6 +27,8 @@ import com.example.demo.vo.Article;
 import com.example.demo.vo.ArticleImage;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripInfo;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class UsrArticleController {
@@ -101,7 +105,7 @@ public class UsrArticleController {
 			}
 		}
 
-		return "usr/article/detail?articleId" + articleId;
+		return "redirect:detail?articleId=" + articleId;
 	}
 
 	@RequestMapping("usr/article/write")
@@ -110,33 +114,17 @@ public class UsrArticleController {
 		return "usr/article/write";
 	}
 
-//	@RequestMapping("usr/article/doWrite")
-//	public String doWrite(Model model, String title, String body, List<MultipartFile> images) throws IOException {
-//
-//		int memberId = rq.getLoginedMemberId();
-//
-//		int articleId = articleService.doWrite(memberId, title, body);
-//
-//		for (MultipartFile image : images) {
-//			if (!image.isEmpty()) {
-//				String fileName = image.getOriginalFilename();
-//				String contentType = image.getContentType();
-//				byte[] data = image.getBytes();
-//
-//				articleService.addArticleImage(articleId, fileName, contentType, data);
-//			}
-//		}
-//
-//		return "usr/article/list";
-//	}
-
 	@RequestMapping("usr/article/detail")
 	public String detail(Model model, int articleId) {
 
 		// 게시글 제목, 내용 등 가져오기
 		Article article = articleService.getArticleById(articleId);
 
-		TripInfo tripInfo = plannerService.getTripInfoById(articleId);
+		// tripId 가져오기
+		int tripId = article.getTripId();
+
+		// TripInfo 가져오기
+		TripInfo tripInfo = plannerService.getTripInfoById(tripId);
 
 		String dateFormattedStartDate = plannerService.formatter(tripInfo.getTripStartDate());
 		String dateFormattedEndDate = plannerService.formatter(tripInfo.getTripEndDate());
@@ -183,7 +171,62 @@ public class UsrArticleController {
 	@RequestMapping("usr/article/modify")
 	public String modify(Model model, int articleId) {
 
+		Article article = articleService.getArticleById(articleId);
+		List<ArticleImage> articleImages = articleService.getArticlePictures(articleId);
+
+		model.addAttribute("article", article);
+		model.addAttribute("articleImages", articleImages);
+
 		return "usr/article/modify";
+	}
+
+	@RequestMapping("usr/article/fileUpload")
+	@ResponseBody
+	public Map<String, Object> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<>();
+
+		if (file.isEmpty()) {
+			result.put("error", "파일이 비어 있습니다.");
+			return result;
+		}
+
+		try {
+			// 저장 경로 설정 (예: /upload)
+			String uploadDir = request.getServletContext().getRealPath("/upload");
+			File dir = new File(uploadDir);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+
+			// 저장할 파일 이름 설정 (UUID로 중복 방지)
+			String uuid = UUID.randomUUID().toString();
+			String originalFilename = file.getOriginalFilename();
+			String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+			String savedFilename = uuid + extension;
+
+			// 파일 저장
+			File savedFile = new File(dir, savedFilename);
+			file.transferTo(savedFile);
+
+			// 클라이언트에 제공할 이미지 경로
+			String fileUrl = "http://localhost:8080/article/fileUpload/" + savedFilename;
+
+			result.put("url", fileUrl);
+			return result;
+
+		} catch (IOException e) {
+			result.put("error", "파일 업로드 실패");
+			return result;
+		}
+	}
+
+	@PostMapping("/usr/article/doModify")
+	public String doModify(String title, String body) {
+
+		System.out.println(title);
+		System.out.println(body);
+
+		return "";
 	}
 
 }

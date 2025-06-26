@@ -1,12 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="ARTICLE DETAIL" />
 <%@ include file="../common/head.jspf"%>
 
-<script
-	src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -34,6 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
     calculateHeight();
     window.addEventListener('resize', calculateHeight);
   });
+  
+function showProfileMenu() {
+	$('#ProfileMenu').toggle();
+}
 </script>
 <style>
 /* swiper 코드 */
@@ -106,59 +108,86 @@ document.addEventListener("DOMContentLoaded", function () {
 </style>
 
 
-<div
-	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
+<div class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
+
+
+	<div class="h-[100px]"></div>
 	<div
-		class="flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0 h-[100px] relative overflow-hidden gap-2.5 px-2.5 bg-[#aedff7] border border-black">
+		class="flex fixed justify-center items-center self-stretch w-full z-3 flex-grow-0 flex-shrink-0 h-[100px] gap-2.5 px-[293px] py-[41px] bg-[#aedff7] border-b border-black">
+
+
 		<div
-			class="self-stretch flex-grow-0 flex-shrink-0 h-full relative overflow-hidden">
-			<div
-				class="flex justify-center items-center w-[1008px] h-full absolute left-[346px] top-0 gap-2.5 border-0 border-[#f00]">
-				<a href="../home/main">
-					<img src="/images/로고.png"
-						class="flex-grow-0 flex-shrink-0 w-[138px] h-full object-cover" />
-				</a>
-				<div
-					class="flex justify-start items-start self-stretch flex-grow relative overflow-hidden gap-2.5 p-2.5">
-					<p
-						class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">
-						숙박</p>
-					<p
-						class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">
-						맛집</p>
-					<p
-						class="self-stretch flex-grow w-[127.33px] h-[118px] text-xl font-medium text-center text-black">
-						명소</p>
+			class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-full h-full relative gap-2.5 border-0 border-[#f00]">
+			<a href="../home/main">
+				<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
+			</a>
+
+
+			<c:if test="${!rq.isLogined() }">
+				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
+					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">여행 리스트</p>
+
+
+
+
+					<a href="../member/login"
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">로그인</a>
+
+
+
 				</div>
-				<div
-					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[428px] relative">
-					<p
-						class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">내
-						여행</p>
-					<p
-						class="flex-grow w-[159px] h-14 text-xl font-medium text-center text-black">
-						계획 작성</p>
-					<img src="프로필-아이콘.png"
-						class="flex-grow-0 flex-shrink-0 w-[110px] h-[110px] object-cover" />
+			</c:if>
+			<c:if test="${rq.isLogined() }">
+
+				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
+					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+						<a href="../article/list">여행 리스트</a>
+					</p>
+					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+						<a href="../planner/region">여행 작성</a>
+					</p>
+					<div onClick="showProfileMenu();" class="relative justify-center items-center flex-grow h-14 ">
+						<button class="h-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
+							<div id="profileThumbnail" class="w-18 h-18 rounded-full bg-white flex items-center justify-center">
+								<c:if test="${base64Image == null and developerImage == null}">
+									<i class="fa-solid fa-user fa-3x text-gray-700"></i>
+								</c:if>
+								<c:if test="${base64Image == null and developerImage != null}">
+									<img src="${developerImage}" class="w-full h-full object-cover rounded-full" />
+								</c:if>
+								<c:if test="${base64Image != null}">
+									<img src="data:image/jpeg;base64,${base64Image}" class="w-full h-full object-cover rounded-full" />
+								</c:if>
+							</div>
+
+						</button>
+						<!-- 숨겨진 메뉴 -->
+						<ul id="ProfileMenu"
+							class="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg hidden z-51">
+							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+								<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내 정보</a>
+							</li>
+							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">설정</li>
+							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+								<a href="../member/doLogout">로그아웃</a>
+							</li>
+						</ul>
+					</div>
+
 				</div>
-			</div>
+			</c:if>
 		</div>
+
 	</div>
-	<div
-		class="flex justify-center items-center self-stretch flex-grow overflow-hidden gap-2.5 p-2.5">
+	<div class="flex justify-center items-center self-stretch flex-grow overflow-hidden gap-2.5 p-2.5">
 		<div
 			class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 p-2.5">
 			<div
 				class="flex justify-start items-end self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-10">
-				<p
-					class="flex-grow-0 flex-shrink-0  h-[52px] text-3xl text-center text-black">
-					여행 이름</p>
-				<p
-					class="flex-grow-0 flex-shrink-0 h-[38px] text-xl text-center text-black">
-					${article.extra__tripRegion }</p>
-				<p
-					class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">
-					${startDate } ~ ${endDate }</p>
+				<p class="flex-grow-0 flex-shrink-0  h-[52px] text-3xl text-center text-black">여행 이름</p>
+				<p class="flex-grow-0 flex-shrink-0 h-[38px] text-xl text-center text-black">${article.extra__tripRegion }</p>
+				<p class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">${startDate }~
+					${endDate }</p>
 				<div class="flex-grow flex justify-end items-center">
 					<a href="modify?articleId=${param.articleId }">
 						<i class="fa-solid fa-pen-to-square text-3xl cursor-pointer"></i>
@@ -220,8 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			<div
 				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[306px] w-[1000px] relative overflow-hidden gap-2.5">
-				<p
-					class="flex-grow-0 flex-shrink-0 w-[1000px] h-[161px] text-xl font-medium text-start text-black">
+				<p class="flex-grow-0 flex-shrink-0 w-[1000px] h-[161px] text-xl font-medium text-start text-black">
 					${article.body}</p>
 			</div>
 
