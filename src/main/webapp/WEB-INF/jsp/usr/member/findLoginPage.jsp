@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="LOGIN PAGE"></c:set>
@@ -76,13 +75,14 @@
 				email : email
 			},
 			success : function(data) {
-				if (data.fail){
+				if (data.fail) {
 					alert('존재하지 않는 아이디 혹은 이메일입니다.');
 					return;
 				}
-				
-				console.log(data.data1);
-				
+
+				$('.findIdUi').addClass('!hidden');
+				$('.resultUi').removeClass('!hidden');
+				$('#resultIdInput').html(data.data1);
 
 			},
 			error : function(xhr, status, error) {
@@ -134,18 +134,14 @@
 }
 </style>
 
-<div
-	class="flex justify-center items-center w-screen h-screen overflow-hidden gap-2.5 px-[9px] py-[7px] ">
+<div class="flex justify-center items-center w-screen h-screen overflow-hidden gap-2.5 px-[9px] py-[7px] ">
 	<div
 		class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[611px] w-[510px] relative overflow-hidden gap-[18px] px-[41px] py-[29px] mt-9">
 		<div
 			class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 w-[398px] relative overflow-hidden px-[60px]">
 
-			<div
-				class="flex justify-center items-center flex-grow-0 flex-shrink-0 h-[67px] relative overflow-hidden gap-[31px]">
-				<p
-					class="self-stretch flex-grow-0 flex-shrink-0 w-[322px] h-[67px] text-3xl text-center text-black">아이디/비밀번호
-					찾기</p>
+			<div class="flex justify-center items-center flex-grow-0 flex-shrink-0 h-[67px] relative overflow-hidden gap-[31px]">
+				<p class="self-stretch flex-grow-0 flex-shrink-0 w-[322px] h-[67px] text-3xl text-center text-black">아이디/비밀번호 찾기</p>
 			</div>
 		</div>
 		<div
@@ -161,64 +157,53 @@
 			<div class="underline"></div>
 		</div>
 		<div class="findIdUi">
-			<div
-				class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
-				<p
-					class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이름</p>
-				<div
-					class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
+			<div class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
+				<p class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이름</p>
+				<div class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
 				<input id="findIdName"
 					class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
 					type="text" name="name" placeholder="이름" autocomplete="off"></input>
 
 				<br>
-				<img
-					class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50"
-					src="/images/사람.png" />
+				<img class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50" src="/images/사람.png" />
 			</div>
-			<div
-				class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
-				<p
-					class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이메일</p>
-				<div
-					class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
+			<div class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
+				<p class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이메일</p>
+				<div class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
 				<input id="findIdEmail"
 					class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
 					type="text" name="email" placeholder="이메일" autocomplete="off"></input>
-				<img
-					class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50"
-					src="/images/이메일.png" />
+				<img class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50" src="/images/이메일.png" />
 			</div>
 		</div>
+
+
+
 		<div class="findPwUi">
-			<div
-				class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
-				<p
-					class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">아이디</p>
-				<div
-					class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
-				<input
-					class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
+			<div class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
+				<p class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">아이디</p>
+				<div class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
+				<input class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
 					type="text" name="name" placeholder="아이디" autocomplete="off"></input>
 
 				<br>
-				<img
-					class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50"
-					src="/images/사람.png" />
+				<img class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50" src="/images/사람.png" />
 			</div>
-			<div
-				class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
-				<p
-					class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이메일</p>
-				<div
-					class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
-				<input
-					class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
+			<div class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
+				<p class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이메일</p>
+				<div class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
+				<input class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
 					type="text" name="name" placeholder="이메일" autocomplete="off"></input>
-				<img
-					class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50"
-					src="/images/이메일.png" />
+				<img class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50" src="/images/이메일.png" />
 			</div>
+		</div>
+
+		<div class="resultUi !hidden mt-6 flex justify-center items-center w-[80%] h-[150px] border border-gray-400">
+			<span class="text-lg">아이디 :</span>
+			&nbsp;
+			&nbsp;
+			<span id="resultIdInput" class="text-purple-600 font-bold text-3xl"> </span>
+
 		</div>
 
 		<div class="">
@@ -228,6 +213,10 @@
 			<button
 				class="findPwUi btn btn-info flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">비밀번호
 				찾기</button>
+
+			<button onClick="window.close();"
+				class="resultUi !hidden btn btn-info flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">확인</button>
+
 		</div>
 	</div>
 </div>
