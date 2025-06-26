@@ -116,13 +116,13 @@
 		UPDATE
 		member
 		<set>
-			<if test="loginPw != null">
+			<if test="loginPw != ''">
 				loginPw = #{loginPw},
 			</if>
-			<if test="name != null">
+			<if test="name != ''">
 				name = #{name},
 			</if>
-			<if test="email != null">
+			<if test="email != ''">
 				email = #{email},
 			</if>
 			updateDate = NOW()

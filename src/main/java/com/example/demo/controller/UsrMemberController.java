@@ -321,11 +321,20 @@ public class UsrMemberController {
 		if (member == null) {
 			return ResultData.from("F-1", "비밀번호 찾기 실패");
 		}
-		
 
 		ResultData notifyTempLoginPwByEmailRd = memberService.notifyTempLoginPwByEmail(member);
 
 		return ResultData.from("S-1", "비밀번호 찾기 성공");
+	}
+
+	@RequestMapping("/usr/member/updateMember")
+	@ResponseBody
+	public ResultData updateMember(String name, String email, String loginPw) {
+		int memberId = rq.getLoginedMemberId();
+
+		memberService.updateMember(memberId, name, email, loginPw);
+
+		return ResultData.from("S-1", "수정 성공");
 	}
 
 }

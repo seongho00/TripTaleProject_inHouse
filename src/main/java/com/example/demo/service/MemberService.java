@@ -85,12 +85,18 @@ public class MemberService {
 	}
 
 	private void setTempPassword(Member member, String tempPassword) {
-		memberRepository.updateMember(member.getId(), tempPassword, null, null);
+		memberRepository.updateMember(member.getId(), tempPassword, "", "");
 	}
 
 	public Member getMemberByProviderId(String providerId) {
 
 		return memberRepository.getMemberByProviderId(providerId);
+		
+	}
+
+	public void updateMember(int memberId, String name, String email, String loginPw) {
+
+		memberRepository.updateMember(memberId, loginPw, name, email);
 		
 	}
 

@@ -191,12 +191,9 @@
 	$(document).ready(function () {
 		$('#profileInput').on('change', function (e) {
 			const file = e.target.files[0];
-			console.log("실행1");
 			if (!file) return;
-			console.log("실행2");
 			const reader = new FileReader();
 			reader.onload = function (event) {
-				console.log("실행3");
 				$('#profileThumbnail').empty();
 			    $('#profileThumbnail').html(`
 					<img src="\${event.target.result}" class="w-full h-full object-cover rounded-full" />
@@ -241,6 +238,21 @@
 			$('#showPassword').removeClass('fa-eye-slash').addClass('fa-eye');
 	    }
 	}
+	
+	function showCheckPassword() {
+		const $input = $('#passwordCheckInput');
+	    const currentType = $input.attr('type');
+
+	    if (currentType === 'password') {
+			$input.attr('type', 'text');
+			$('#showCheckPassword').removeClass('fa-eye').addClass('fa-eye-slash');
+	    } else {
+			$input.attr('type', 'password');
+			$('#showCheckPassword').removeClass('fa-eye-slash').addClass('fa-eye');
+	    }
+	}
+	
+	
 	
 	// 장바구니 추가 시 알림 메세지
 	function showToast(message) {
@@ -290,6 +302,58 @@
 			alert('비밀번호가 일치하지 않습니다.');
 			return;
 		}
+		
+	}
+	
+	
+	function updateProfile() {
+		let name = $('.profileName').val().trim();
+		let email = $('.profileEmail').val().trim();
+		let loginPw = $('.profilePassword').val().trim();
+
+		if (name == ""){
+			alert('이름을 입력해주세요.');
+			return;
+		}
+		
+		if (email == ""){
+			alert('이메일을 입력해주세요.');
+			return;
+		}
+		
+		if (loginPw == ""){
+			alert('비밀번호를 입력해주세요.');
+			return;
+		}
+		
+		
+		if (name == '${loginedMember.name}'){
+			name = null;
+		}
+		
+		if (email == '${loginedMember.email}'){
+			email = null;
+		}
+		
+		if (loginPw == '${loginedMember.loginPw}'){
+			loginPw = null;
+		}
+		
+		
+		$.ajax({
+			url: '/usr/member/updateMember',  // 컨트롤러 매핑 경로
+	        type: 'POST',               // GET도 가능하지만 POST가 더 안전
+	        data: { name: name, email: email, loginPw: loginPw},     // 서버에서 `@RequestParam("id")`로 받음
+	        success: function() {
+	        	showToast('변경사항이 저장되었습니다.');
+	        },
+	        error: function(xhr, status, error) {
+	            alert('수정 중 오류가 발생했습니다.');
+	            console.error(error);
+	        }
+	});	
+		
+		
 		
 	}
 </script>
@@ -342,7 +406,7 @@
 	<div class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
 		<div
 			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] bg-slate-200 rounded-[5px] relative overflow-hidden gap-[26px] px-[93px] border border-black">
-			<p class="flex-grow-0 flex-shrink-0  h-[30px] text-xl font-medium text-center text-black z-1">PROFILE</p>
+			<p class="flex-grow-0 flex-shrink-0  h-[30px] text-xl font-medium text-center text-[#aedff7] z-1">PROFILE</p>
 
 			<svg class="absolute top-0" width="100%" height="230" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg"
 				preserveAspectRatio="none">
@@ -399,28 +463,34 @@
 
 						<div class="pt-2 pl-5">
 							<input type="text"
-								class=" text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								class="profileName text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
 								value="${loginedMember.name }" />
 						</div>
 					</div>
-
-
 
 					<div class="flex flex-col w-[200px]">
 						<p class="text-lg font-bold text-left text-black ">Email</p>
 						<div class="pt-2 pl-5 ">
 							<input type="text"
-								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								class="profileEmail text-sm font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
 								value="${loginedMember.email }" />
 						</div>
 					</div>
 
+					<div class="flex flex-col w-[200px]">
+						<p class="text-lg font-bold text-left text-black ">ID</p>
+						<div class="pt-2 pl-5 ">
+							<input readonly
+								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								value="${loginedMember.providerId }" />
+						</div>
+					</div>
 
 					<div class="flex flex-col w-[200px] relative">
 						<p class="text-lg font-bold text-left text-black ">Password</p>
 						<div class="flex jutify-between pt-2 pl-5 ">
 							<input type="password" id="profilePassword"
-								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
+								class="profilePassword text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
 								value="${loginedMember.loginPw }" />
 
 						</div>
@@ -428,17 +498,8 @@
 							class="top-[37px] right-0 absolute fa-solid fa-eye  cursor-pointer p-1"></i>
 					</div>
 
-					<div class="flex flex-col w-[200px]">
-						<p class="text-lg font-bold text-left text-black ">Email</p>
-						<div class="pt-2 pl-5 ">
-							<input
-								class="text-base font-medium text-left text-[#544c4c] outline-none border-none focus:outline-none focus:border-none"
-								value="${loginedMember.name }" />
-						</div>
-					</div>
 
-
-					<button onClick="showToast('변경사항이 저장되었습니다.');"
+					<button onClick="updateProfile();"
 						class="mt-5 btn btn-outline btn-primary flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">저장하기</button>
 
 
@@ -546,7 +607,7 @@
 					<div
 						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative  gap-2.5 px-2 py-[9px] border border-black">
 						<select id="articleSearchKeywordType"
-							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black focus:outline-none focus:ring-0 focus:border-none">
+							class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black outline-none border-none focus:outline-none focus:border-none">
 							<option value="ALL">전체</option>
 							<option value="title">제목</option>
 							<option value="body">내용</option>
@@ -557,7 +618,7 @@
 					<div
 						class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[290px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
 						<input id="articleSearchKeyword" type="text" placeholder="검색어를 입력하세요" autocomplete="off"
-							class="focus:outline-none focus:border-none focus:ring-0 flex-grow " />
+							class="outline-none border-none focus:outline-none focus:border-none flex-grow " />
 						<i onClick="getUIBySearchKeyword(${loginedMember.id}, 'article');"
 							class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>
 					</div>
@@ -620,7 +681,7 @@
 
 	<div class="flex flex-col bg-white rounded-xl shadow-xl p-6 max-w-md relative">
 		<!-- 닫기 버튼 -->
-		<button onClick="hideCheckPasswordUI();" class="absolute top-3 right-3 text-gray-500 hover:text-black">
+		<button onClick="hideCheckPasswordUI();" class="cursor-pointer absolute top-3 right-3 text-gray-500 hover:text-black">
 			<i class="fa-solid fa-xmark text-lg"></i>
 		</button>
 
@@ -628,6 +689,8 @@
 		<h2 class="text-xl font-bold mb-4">비밀번호 확인</h2>
 		<p class="pt-2 pb-2 text-sm text-gray-700">비밀번호를 입력해주세요.</p>
 		<input id="passwordCheckInput" type="password" class="" />
+		<i onClick="showCheckPassword();" id="showCheckPassword"
+			class="top-[105px] right-[25px] absolute fa-solid fa-eye  cursor-pointer p-1"></i>
 		<div class="flex pt-2 justify-end">
 			<button onClick="checkPassword();" class="btn btn-neutral">확인</button>
 		</div>
