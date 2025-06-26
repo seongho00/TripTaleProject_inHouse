@@ -1,6 +1,18 @@
 server:
   port: 8080
+
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tjdwns000927@gmail.com
+    password: rryv rvtm hnnt zolb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -17,5 +29,10 @@ spring:
 mybatis:
   type-aliases-package: com.example.demo.vo
   mapper-locations: classpath:/mappers/**/*.xml
-  
+
+custom:
+    siteName: tripTale
+    siteMainUri: http://localhost:8080
+    emailFrom: no-reply@localhost
+    emailFromName: tripTale
   

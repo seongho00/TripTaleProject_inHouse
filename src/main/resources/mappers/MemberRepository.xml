@@ -93,13 +93,43 @@
 		DELETE FROM member
 		WHERE id = #{memberId}
 	</select>
-	
+
 	<select id="getMemberByNameAndEmail" parameterType="map"
 		resultType="com.example.demo.vo.Member">
 		SELECT *
 		FROM member
-		WHERE provider = 'local' AND name = #{name} AND email = #{email}
+		WHERE provider = 'local' AND name =
+		#{name} AND email = #{email}
 	</select>
+
+
+	<select id="getMemberByProviderId" parameterType="map"
+		resultType="com.example.demo.vo.Member">
+		SELECT *
+		FROM member
+		WHERE provider = 'local' AND providerId
+		= #{providerId}
+	</select>
+
+
+	<select id="updateMember" parameterType="map">
+		UPDATE
+		member
+		<set>
+			<if test="loginPw != null">
+				loginPw = #{loginPw},
+			</if>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="email != null">
+				email = #{email},
+			</if>
+			updateDate = NOW()
+		</set>
+		WHERE id = #{memberId}
+	</select>
+
 
 
 </mapper>

@@ -76,13 +76,51 @@
 			},
 			success : function(data) {
 				if (data.fail) {
-					alert('존재하지 않는 아이디 혹은 이메일입니다.');
+					alert('존재하지 않는 이름 혹은 이메일입니다.');
 					return;
 				}
 
 				$('.findIdUi').addClass('!hidden');
 				$('.resultUi').removeClass('!hidden');
 				$('#resultIdInput').html(data.data1);
+
+			},
+			error : function(xhr, status, error) {
+				alert('아이디 찾기에 실패했습니다.');
+				console.error(error);
+			}
+		});
+
+	}
+
+	function findPwByIdAndEmail() {
+
+		const providerId = $('#findPwId').val().trim();
+		const email = $('#findPwEmail').val().trim();
+
+		if (!providerId) {
+			alert('아이디를 입력해주세요.');
+			return;
+		}
+
+		if (!email) {
+			alert('이메일을 입력해주세요.');
+			return;
+		}
+
+		$.ajax({
+			url : '/usr/member/doFindLoginPw', // 🔁 실제 컨트롤러 경로로 수정
+			type : 'POST',
+			data : {
+				providerId : providerId,
+				email : email
+			},
+			success : function(data) {
+				if (data.fail) {
+					alert('존재하지 않는 아이디 혹은 이메일입니다.');
+					return;
+				}
+				alert('메일로 임시 비밀번호를 발송했습니다');
 
 			},
 			error : function(xhr, status, error) {
@@ -183,7 +221,8 @@
 			<div class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
 				<p class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">아이디</p>
 				<div class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
-				<input class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
+				<input id="findPwId"
+					class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
 					type="text" name="name" placeholder="아이디" autocomplete="off"></input>
 
 				<br>
@@ -192,7 +231,8 @@
 			<div class="flex-grow-0 flex-shrink-0 w-[373px] h-[95px] relative overflow-hidden">
 				<p class="w-[78px] h-5 absolute left-[17px] top-[7px] text-lg text-left text-black">이메일</p>
 				<div class="w-[341px] h-[46px] absolute left-[17px] top-[38px] bg-[#f4f5f5] border border-[#757678]"></div>
-				<input class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
+				<input id="findPwEmail"
+					class="pl-5 w-[289px] h-[46px] absolute left-[69px] top-[38px] bg-[#f4f5f5] border border-[#757678] text-lg"
 					type="text" name="name" placeholder="이메일" autocomplete="off"></input>
 				<img class="w-[35px] h-[35px] absolute left-[25px] top-[43px] opacity-50" src="/images/이메일.png" />
 			</div>
@@ -200,8 +240,7 @@
 
 		<div class="resultUi !hidden mt-6 flex justify-center items-center w-[80%] h-[150px] border border-gray-400">
 			<span class="text-lg">아이디 :</span>
-			&nbsp;
-			&nbsp;
+			&nbsp; &nbsp;
 			<span id="resultIdInput" class="text-purple-600 font-bold text-3xl"> </span>
 
 		</div>
@@ -210,7 +249,7 @@
 			<button onClick="findIdByNameAndEmail();"
 				class="findIdUi btn btn-info flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">아이디
 				찾기</button>
-			<button
+			<button onClick="findPwByIdAndEmail();"
 				class="findPwUi btn btn-info flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-12 w-[276px] relative overflow-hidden rounded-[2px] bg-[#18a0fb] mt-8 cursor-pointer">비밀번호
 				찾기</button>
 

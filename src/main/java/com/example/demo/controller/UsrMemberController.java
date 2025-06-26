@@ -313,4 +313,19 @@ public class UsrMemberController {
 
 	}
 
+	@RequestMapping("/usr/member/doFindLoginPw")
+	@ResponseBody
+	public ResultData doFindLoginPw(String providerId, String email) {
+
+		Member member = memberService.getMemberByProviderId(providerId);
+		if (member == null) {
+			return ResultData.from("F-1", "비밀번호 찾기 실패");
+		}
+		
+
+		ResultData notifyTempLoginPwByEmailRd = memberService.notifyTempLoginPwByEmail(member);
+
+		return ResultData.from("S-1", "비밀번호 찾기 성공");
+	}
+
 }
