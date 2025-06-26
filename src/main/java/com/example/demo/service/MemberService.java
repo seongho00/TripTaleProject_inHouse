@@ -100,4 +100,9 @@ public class MemberService {
 		
 	}
 
+	public Member getMemberByMemberId(int memberId) {
+
+		return memberRepository.getMemberByMemberId(memberId);
+	}
+
 }

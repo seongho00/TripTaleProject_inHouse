@@ -34,4 +34,6 @@ public interface MemberRepository {
 
 	public void updateMember(int memberId, String loginPw, String name, String email);
 
+	public Member getMemberByMemberId(int memberId);
+
 }

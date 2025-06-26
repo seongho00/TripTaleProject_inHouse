@@ -32,6 +32,7 @@ import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripInfo;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -153,7 +154,8 @@ public class UsrMemberController {
 			}
 
 		}
-		return "usr/home/main";
+
+		return "redirect:/usr/home/main";
 	}
 
 	@GetMapping("usr/member/kakaoLogout")
@@ -329,10 +331,15 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/updateMember")
 	@ResponseBody
-	public ResultData updateMember(String name, String email, String loginPw) {
+	public ResultData updateMember(HttpServletRequest request, String name, String email, String loginPw) {
 		int memberId = rq.getLoginedMemberId();
-
+		
+		HttpSession session = request.getSession();
+		
 		memberService.updateMember(memberId, name, email, loginPw);
+
+		Member updatedMember = memberService.getMemberByMemberId(memberId);
+		session.setAttribute("loginedMember", updatedMember);
 
 		return ResultData.from("S-1", "수정 성공");
 	}

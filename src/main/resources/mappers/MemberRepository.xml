@@ -130,6 +130,13 @@
 		WHERE id = #{memberId}
 	</select>
 
+	<select id="getMemberByMemberId" parameterType="map"
+		resultType="com.example.demo.vo.Member">
+		SELECT *
+		FROM member
+		WHERE id = #{memberId}
+	</select>
+
 
 
 </mapper>

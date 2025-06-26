@@ -346,16 +346,16 @@
 	        data: { name: name, email: email, loginPw: loginPw},     // 서버에서 `@RequestParam("id")`로 받음
 	        success: function() {
 	        	showToast('변경사항이 저장되었습니다.');
+
 	        },
 	        error: function(xhr, status, error) {
 	            alert('수정 중 오류가 발생했습니다.');
 	            console.error(error);
 	        }
-	});	
-		
-		
+		});	
 		
 	}
+	
 </script>
 
 <style>
