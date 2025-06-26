@@ -26,4 +26,6 @@ public interface ArticleRepository {
 
 	public List<Article> getArticleByMemberId(int memberId);
 
+	public void updateArticle(int articleId, String title, String body);
+
 }

@@ -28,8 +28,10 @@
 			<div
 				class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
 				<p
-					class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">여행
-					리스트</p>
+					class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+					<a href="../article/list">여행 리스트</a>
+
+				</p>
 
 
 

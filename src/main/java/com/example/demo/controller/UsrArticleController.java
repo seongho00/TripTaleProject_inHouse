@@ -176,6 +176,7 @@ public class UsrArticleController {
 
 		model.addAttribute("article", article);
 		model.addAttribute("articleImages", articleImages);
+		System.out.println(article);
 
 		return "usr/article/modify";
 	}
@@ -221,12 +222,11 @@ public class UsrArticleController {
 	}
 
 	@PostMapping("/usr/article/doModify")
-	public String doModify(String title, String body) {
+	public String doModify(int articleId, String title, String body) {
 
-		System.out.println(title);
-		System.out.println(body);
+		articleService.updateArticle(articleId, title, body);
 
-		return "";
+		return "redirect:detail?articleId=" + articleId;
 	}
 
 }

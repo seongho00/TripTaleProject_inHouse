@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="ARTICLE MODIFY" />
@@ -501,7 +502,8 @@ function getUriParams(uri) {
 </script>
 <div class="flex flex-col m-10 h-[90vh]">
 	<form id="articleForm" method="POST" action="/usr/article/doModify">
-		<input type="hidden" name="articleId" value="${param.articleId }" />
+		<input type="hidden" name="articleId" value="${param.articleId }"
+			onsubmit="return confirm('저장하시겠습니까?');" />
 
 		<!-- 제목 입력 -->
 		<div class="mb-4">
@@ -512,24 +514,28 @@ function getUriParams(uri) {
 		</div>
 		<div class="flex justify-start items-center ">
 
-			<div id="fileList" class="border rounded bg-gray-100 w-[500px] h-[100px] overflow-auto">
+			<div id="fileList"
+				class="border rounded bg-gray-100 w-[500px] h-[100px] overflow-auto">
 				<c:forEach var="articleImage" items="${articleImages }">
 					<div class="imageItem flex justify-start items-center pl-2 w-full">
 						<i class="fa-solid fa-xmark pr-1 cursor-pointer"></i>
-						<div class="text-base text-gray-700 flex justify-start items-center">${articleImage.fileName}</div>
+						<div
+							class="text-base text-gray-700 flex justify-start items-center">${articleImage.fileName}</div>
 
 					</div>
 				</c:forEach>
 			</div>
 			<label class="btn btn-sm btn-info ">
 				파일 선택
-				<input type="file" id="imageInput" name="image" accept="image/*" class="hidden" />
+				<input type="file" id="imageInput" name="image" accept="image/*"
+					class="hidden" />
 			</label>
 
 		</div>
 
 		<textarea name="body" id="articleContent" class="hidden"></textarea>
-		<button class="btn btn-primary fixed bottom-6 right-6 z-50 px-6 py-3 rounded-full shadow-lg">저장하기</button>
+		<button
+			class="btn btn-primary fixed bottom-6 right-6 z-50 px-6 py-3 rounded-full shadow-lg">저장하기</button>
 	</form>
 	<div class="toast-ui-editor flex-grow ">
 		<script type="text/x-template">

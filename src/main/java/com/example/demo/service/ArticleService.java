@@ -50,8 +50,13 @@ public class ArticleService {
 	}
 
 	public List<Article> getArticleByMemberId(int memberId) {
-		return articleRepository. getArticleByMemberId(memberId);
-		
+		return articleRepository.getArticleByMemberId(memberId);
+
+	}
+
+	public void updateArticle(int articleId, String title, String body) {
+
+		articleRepository.updateArticle(articleId, title, body);
 	}
 
 }

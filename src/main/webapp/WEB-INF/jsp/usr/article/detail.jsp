@@ -1,10 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="ARTICLE DETAIL" />
 <%@ include file="../common/head.jspf"%>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -33,11 +35,84 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('resize', calculateHeight);
   });
   
-function showProfileMenu() {
-	$('#ProfileMenu').toggle();
-}
+	function showProfileMenu() {
+		$('#ProfileMenu').toggle();
+	}
+
+	$(document).ready(function () {
+		  const content = $('#articleContent').val();
+
+		  toastui.Editor.factory({
+		    el: $('#viewer')[0],
+		    viewer: true,
+		    initialValue: content
+		  });
+
+		  setTimeout(() => {
+		    const $contents = $('#viewer .toastui-editor-contents');
+		    const $toc = $('<ul class="toc-list"></ul>');
+		    let currentLevel1 = null;
+		    let currentLevel2 = null;
+
+		    const MAX_TITLE_LENGTH = 10; // ✅ 제목 최대 길이 설정
+
+		    $contents.find('h1, h2, h3').each(function () {
+		      const $el = $(this);
+		      const tag = this.tagName.toLowerCase();
+		      let text = $el.text().trim();
+
+		      // ✅ 길면 자르기
+		      const displayText = text.length > MAX_TITLE_LENGTH
+		        ? text.slice(0, MAX_TITLE_LENGTH) + '...'
+		        : text;
+
+		      const id = text.replace(/\s+/g, '-').toLowerCase();
+		      $el.attr('id', id);
+
+		      const $link = $(`<a href="#\${id}" class="hover:underline">\${displayText}</a>`);
+		      const $li = $('<li></li>').append($link);
+
+		      if (tag === 'h1') {
+		        currentLevel1 = $('<ul></ul>').append($li);
+		        $toc.append(currentLevel1);
+		      } else if (tag === 'h2') {
+		        if (!currentLevel1) currentLevel1 = $('<ul></ul>').appendTo($toc);
+		        currentLevel2 = $('<ul class="ml-4"></ul>').append($li);
+		        currentLevel1.append(currentLevel2);
+		      } else if (tag === 'h3') {
+		        if (!currentLevel2) currentLevel2 = $('<ul class="ml-4"></ul>').appendTo(currentLevel1);
+		        const $subList = $('<ul class="ml-4"></ul>').append($li);
+		        currentLevel2.append($subList);
+		      }
+		    });
+
+		    $('#toc').empty().append($toc);
+		  }, 100);
+		});
+
 </script>
 <style>
+.toc-list {
+	list-style: none;
+	padding-left: 0;
+}
+
+.toc-list ul {
+	list-style: none;
+	margin-left: 1rem;
+}
+
+.toc-list a {
+	text-decoration: none;
+	color: #374151; /* Tailwind gray-700 */
+	display: block;
+	padding: 4px 0;
+}
+
+.toc-list a:hover {
+	text-decoration: underline;
+}
+
 /* swiper 코드 */
 .swiper {
 	width: 80%;
@@ -105,10 +180,56 @@ function showProfileMenu() {
 	font-size: 1.5rem;
 	color: white;
 }
+
+/* 본문 텍스트 크기 및 줄간격 조정 */
+.toastui-editor-contents {
+	font-size: 20px !important; /* 본문 글씨 크기 */
+	line-height: 1.8 !important; /* 줄 간격 추가로 가독성 향상 */
+	word-break: break-word !important; /* 긴 단어 줄바꿈 */
+}
+
+/* 헤딩(h1~h6) 크기 설정 */
+.toastui-editor-contents h1 {
+	font-size: 2.25rem !important; /* 36px */
+	line-height: 1.3 !important;
+	margin: 1.2em 0 0.6em;
+}
+
+.toastui-editor-contents h2 {
+	font-size: 1.875rem !important; /* 30px */
+	line-height: 1.3 !important;
+	margin: 1.1em 0 0.5em;
+}
+
+.toastui-editor-contents h3 {
+	font-size: 1.5rem !important; /* 24px */
+	line-height: 1.4 !important;
+}
+
+.toastui-editor-contents h4 {
+	font-size: 1.25rem !important; /* 20px */
+	line-height: 1.3 !important;
+}
+
+.toastui-editor-contents h5 {
+	font-size: 1.125rem !important; /* 18px */
+	line-height: 1.3 !important;
+}
+
+.toastui-editor-contents h6 {
+	font-size: 1rem !important; /* 16px */
+	line-height: 1.3 !important;
+}
+
+/* 마크다운 프리뷰 강조 배경 제거 */
+.toastui-editor-md-preview-highlight {
+	background-color: transparent !important;
+}
 </style>
 
 
-<div class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
+<div
+	class="flex flex-col justify-start items-center w-screen h-screen overflow-auto gap-2.5 bg-white ">
 
 
 	<div class="h-[100px]"></div>
@@ -119,13 +240,18 @@ function showProfileMenu() {
 		<div
 			class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-full h-full relative gap-2.5 border-0 border-[#f00]">
 			<a href="../home/main">
-				<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
+				<img src="/images/로고_blue.png"
+					class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
 			</a>
 
 
 			<c:if test="${!rq.isLogined() }">
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
-					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">여행 리스트</p>
+				<div
+					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
+					<p
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+						<a href="../article/list">여행 리스트</a>
+					</p>
 
 
 
@@ -139,24 +265,32 @@ function showProfileMenu() {
 			</c:if>
 			<c:if test="${rq.isLogined() }">
 
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
-					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+				<div
+					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
+					<p
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 						<a href="../article/list">여행 리스트</a>
 					</p>
-					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+					<p
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 						<a href="../planner/region">여행 작성</a>
 					</p>
-					<div onClick="showProfileMenu();" class="relative justify-center items-center flex-grow h-14 ">
-						<button class="h-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
-							<div id="profileThumbnail" class="w-18 h-18 rounded-full bg-white flex items-center justify-center">
+					<div onClick="showProfileMenu();"
+						class="relative justify-center items-center flex-grow h-14 ">
+						<button
+							class="h-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
+							<div id="profileThumbnail"
+								class="w-18 h-18 rounded-full bg-white flex items-center justify-center">
 								<c:if test="${base64Image == null and developerImage == null}">
 									<i class="fa-solid fa-user fa-3x text-gray-700"></i>
 								</c:if>
 								<c:if test="${base64Image == null and developerImage != null}">
-									<img src="${developerImage}" class="w-full h-full object-cover rounded-full" />
+									<img src="${developerImage}"
+										class="w-full h-full object-cover rounded-full" />
 								</c:if>
 								<c:if test="${base64Image != null}">
-									<img src="data:image/jpeg;base64,${base64Image}" class="w-full h-full object-cover rounded-full" />
+									<img src="data:image/jpeg;base64,${base64Image}"
+										class="w-full h-full object-cover rounded-full" />
 								</c:if>
 							</div>
 
@@ -165,7 +299,8 @@ function showProfileMenu() {
 						<ul id="ProfileMenu"
 							class="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg hidden z-51">
 							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-								<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내 정보</a>
+								<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내
+									정보</a>
 							</li>
 							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">설정</li>
 							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
@@ -179,16 +314,14 @@ function showProfileMenu() {
 		</div>
 
 	</div>
-	<div class="flex justify-center items-center self-stretch flex-grow overflow-hidden gap-2.5 p-2.5">
+	<div
+		class="flex justify-center items-center self-stretch flex-grow overflow-auto gap-2.5 p-2.5">
 		<div
-			class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 p-2.5">
+			class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative  gap-2.5 p-2.5">
 			<div
-				class="flex justify-start items-end self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-10">
-				<p class="flex-grow-0 flex-shrink-0  h-[52px] text-3xl text-center text-black">여행 이름</p>
-				<p class="flex-grow-0 flex-shrink-0 h-[38px] text-xl text-center text-black">${article.extra__tripRegion }</p>
-				<p class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">${startDate }~
-					${endDate }</p>
-				<div class="flex-grow flex justify-end items-center">
+				class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative px-30 gap-2.5 pr-10">
+				<div class="text-5xl">${article.title }</div>
+				<div class="flex justify-end items-center">
 					<a href="modify?articleId=${param.articleId }">
 						<i class="fa-solid fa-pen-to-square text-3xl cursor-pointer"></i>
 					</a>
@@ -196,9 +329,10 @@ function showProfileMenu() {
 				</div>
 
 			</div>
+			<div class="flex w-[950px] justify-start items-center text-xl">${article.extra__name }</div>
 
 			<!-- Swiper -->
-			<div class="flex swiper relative overflow-hidden w-full  mx-auto">
+			<div class="flex swiper relative  w-full  mx-auto">
 				<div class="swiper-wrapper ">
 					<div class="swiper-slide">
 						<img
@@ -248,13 +382,17 @@ function showProfileMenu() {
 			</div>
 
 			<div
-				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[306px] w-[1000px] relative overflow-hidden gap-2.5">
-				<p class="flex-grow-0 flex-shrink-0 w-[1000px] h-[161px] text-xl font-medium text-start text-black">
-					${article.body}</p>
+				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[306px] w-[1000px] relative  gap-2.5">
+				<p id="viewer"
+					class="flex-grow-0 flex-shrink-0 w-[1000px]  text-xl font-medium text-start text-black">
 			</div>
 
 		</div>
 	</div>
 </div>
+<input type="hidden" id="articleContent" value="${article.body}" />
+
+<div id="toc"
+	class="fixed right-[300px] top-1/2"></div>
 
 <%@ include file="../common/foot.jspf"%>
