@@ -210,7 +210,7 @@ public class UsrArticleController {
 			file.transferTo(savedFile);
 
 			// 클라이언트에 제공할 이미지 경로
-			String fileUrl = "http://localhost:8080/article/fileUpload/" + savedFilename;
+			String fileUrl = "/upload/" + savedFilename;
 
 			result.put("url", fileUrl);
 			return result;

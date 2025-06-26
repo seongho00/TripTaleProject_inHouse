@@ -90,6 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		  }, 100);
 		});
 
+	function toggleHeartButton() {
+		$('#heartButton').toggleClass('fa-regular').toggleClass('fa-solid');
+	}
 </script>
 <style>
 .toc-list {
@@ -253,13 +256,8 @@ document.addEventListener("DOMContentLoaded", function () {
 						<a href="../article/list">여행 리스트</a>
 					</p>
 
-
-
-
 					<a href="../member/login"
 						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">로그인</a>
-
-
 
 				</div>
 			</c:if>
@@ -329,7 +327,11 @@ document.addEventListener("DOMContentLoaded", function () {
 				</div>
 
 			</div>
-			<div class="flex w-[950px] justify-start items-center text-xl">${article.extra__name }</div>
+			<div class="flex w-[950px] justify-start items-center text-xl">${article.extra__name }
+				&nbsp;
+				<span class="flex justify-start items-end h-full text-sm">${article.updateDate }</span>
+			</div>
+			<div></div>
 
 			<!-- Swiper -->
 			<div class="flex swiper relative  w-full  mx-auto">
@@ -373,11 +375,11 @@ document.addEventListener("DOMContentLoaded", function () {
 				</div>
 				<div
 					class="flex justify-center items-center swiper-button swiper-button-next absolute bg-blue-500 hover:bg-blue-600 top-[45%]">
-					<i class="fas fa-chevron-right text-2xl"></i>
+
 				</div>
 				<div
 					class="flex justify-center items-center swiper-button swiper-button-prev absolute bg-blue-500 hover:bg-blue-600 top-[45%]">
-					<i class="fas fa-chevron-left text-2xl"></i>
+
 				</div>
 			</div>
 
@@ -392,7 +394,13 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <input type="hidden" id="articleContent" value="${article.body}" />
 
-<div id="toc"
-	class="fixed right-[300px] top-1/2"></div>
+<div id="toc" class="fixed right-[300px] top-1/2"></div>
+<div id="heart"
+	class="fixed left-[370px] w-[50px] h-[100px] rounded-full border border-black top-1/2">
+	<i onClick="toggleHeartButton();" id="heartButton"
+		class="fa-regular fa-heart text-red-500 absolute rounded-full top-[10px] left-1/2 -translate-x-1/2 text-3xl cursor-pointer"></i>
+	<div
+		class="text-black absolute top-[60px] left-1/2 -translate-x-1/2 text-2xl">1</div>
+</div>
 
 <%@ include file="../common/foot.jspf"%>
