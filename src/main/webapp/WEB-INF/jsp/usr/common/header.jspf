@@ -55,6 +55,9 @@
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 							<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내 정보</a>
 						</li>
+						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+							<a href="../planner/showFullCalendar?memberId=${rq.getLoginedMemberId() }">일정보기</a>
+						</li>
 
 						<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 							<a href="../member/doLogout">로그아웃</a>

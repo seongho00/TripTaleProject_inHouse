@@ -81,7 +81,7 @@ public class UsrMemberController {
 
 		// 프로필 이미지 가져오기
 		MemberImage memberImage = memberService.getMemberImageByMemberId(memberId);
-		System.out.println(loginedMember.getProfileImage());
+
 		if (loginedMember.getProfileImage() != null) {
 
 			model.addAttribute("developerImage", loginedMember.getProfileImage());

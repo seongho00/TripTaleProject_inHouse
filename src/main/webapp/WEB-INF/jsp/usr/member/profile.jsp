@@ -682,7 +682,7 @@
 								<ul
 									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
 									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-										<a href="../planner/modify?articleId=${article.id}">수정하기</a>
+										<a href="../article/modify?articleId=${article.id}">수정하기</a>
 									</li>
 									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a onClick="deleteArticle(${article.id}, this);" href="#">삭제하기</a>

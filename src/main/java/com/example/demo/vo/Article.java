@@ -18,6 +18,7 @@ public class Article {
 	private String updateDate;
 	private String title;
 	private String body;
+	private int hitCount;
 	private int tripId;
 
 	private String extra__name;

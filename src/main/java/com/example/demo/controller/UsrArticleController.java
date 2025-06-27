@@ -176,7 +176,7 @@ public class UsrArticleController {
 
 		model.addAttribute("article", article);
 		model.addAttribute("articleImages", articleImages);
-		System.out.println(article);
+
 
 		return "usr/article/modify";
 	}
@@ -231,11 +231,10 @@ public class UsrArticleController {
 
 	@PostMapping("/usr/article/delete")
 	@ResponseBody
-	public String delete(int articleId) {
+	public void delete(int articleId) {
 		int memberId = rq.getLoginedMemberId();
 		articleService.deleteArticle(articleId);
 
-		return "";
 	}
 
 }

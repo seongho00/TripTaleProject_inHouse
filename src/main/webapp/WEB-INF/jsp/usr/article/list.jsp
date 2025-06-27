@@ -106,60 +106,21 @@
 				<img src="${articleImages.get(status.index) }"
 					class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
 				<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-					<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울 나들이</p>
+					<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">${article.title }</p>
 					<p class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">${article.extra__tripRegion}</p>
 				</div>
-				<p class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행 본문 글 첫번째 줄 내용</p>
+				<p class="flex-grow-0 flex-shrink-0 w-[200px] h-[46px] text-[10px] text-center text-black overflow-hidden">${article.body }</p>
 				<div
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수: 2000</p>
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수: 2000</p>
-					<i class="fa-solid fa-heart text-red-500"></i>
+					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수: ${article.hitCount }</p>
+					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">좋아요: ${article.hitCount }</p>
+					<i class="flex-grow-0 fa-solid fa-heart text-red-500"></i>
 					<img src="image-28.png" class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
 					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">작성자: ${article.extra__name }</p>
 				</div>
 			</div>
 		</c:forEach>
-		<c:forEach var="article" items="${articles }" varStatus="status">
 
-			<div onClick="showDetail(${article.id});"
-				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
-				<img src="${articleImages.get(status.index) }"
-					class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-				<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-					<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울 나들이</p>
-					<p class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-				</div>
-				<p class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행 본문 글 첫번째 줄 내용</p>
-				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수: 2000</p>
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수: 2000</p>
-					<i class="fa-solid fa-heart text-red-500"></i>
-					<img src="image-28.png" class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-				</div>
-			</div>
-		</c:forEach>
-		<c:forEach var="article" items="${articles }" varStatus="status">
-
-			<div onClick="showDetail(${article.id});"
-				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[243px] relative overflow-hidden gap-2.5 px-5 py-[11px] border border-black cursor-pointer">
-				<img src="${articleImages.get(status.index) }"
-					class="self-stretch flex-grow-0 flex-shrink-0 h-[135.09px] object-cover" />
-				<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-					<p class="flex-grow-0 flex-shrink-0 text-xl text-center text-black">서울 나들이</p>
-					<p class="flex-grow-0 flex-shrink-0 text-[15px] text-center text-black">서울</p>
-				</div>
-				<p class="flex-grow-0 flex-shrink-0 w-[151px] h-[46px] text-[10px] text-center text-black">여행 본문 글 첫번째 줄 내용</p>
-				<div
-					class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수: 2000</p>
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">추천수: 2000</p>
-					<i class="fa-solid fa-heart text-red-500"></i>
-					<img src="image-28.png" class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
-				</div>
-			</div>
-		</c:forEach>
 
 	</div>
 </div>
