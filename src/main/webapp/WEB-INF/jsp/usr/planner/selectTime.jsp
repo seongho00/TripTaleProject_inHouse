@@ -366,7 +366,7 @@ $(document).ready(function() {
 		   
 		   const id = $(this).data('id');
 		   const name = $(this).data('name');
-		   const type = $(this).data('type');
+		   const locationType = $(this).data('locationtype');
 		   const address = $(this).data('address');
 		   const img = $(this).data('img');
 		   const schedule = $(this).data('schedule');
@@ -386,7 +386,7 @@ $(document).ready(function() {
 		   // 넘겨받은 데이터 넣기
 		   $('#info-id').text(id);
 		   $('#info-locationName').text(name);
-	       $('#info-locationType').text(type);
+	       $('#info-locationType').text(locationType);
 	       $('#info-address').text(address);
 	       $('#info-schedule').text(schedule);
 	       $('#info-profile').text(profile);
@@ -482,6 +482,7 @@ $(document).ready(function() {
 		const locationTypeId = $(btn).parent().data('locationtypeid');
 		const name = $(btn).parent().data('name');
 		const img = $(btn).parent().data('img')
+		const locationType = $(btn).parent().data('locationtype')
 		let address = $(btn).parent().data('address');
 		let newAddress = "";
 		if (address.length > 16){
@@ -548,7 +549,7 @@ $(document).ready(function() {
 						class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 w-[200px] relative overflow-hidden gap-2.5 py-1.5">
 						<div
 							class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 relative overflow-hidden gap-1 py-[3px]">
-							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">명소</p>
+							<p class="flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-[#7fbc77]">\${locationType}</p>
 							<p class="name flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${name}</p>
 							<p class="address flex justify-start items-center flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${address}</p>
 						</div>
@@ -656,6 +657,11 @@ $(document).ready(function() {
 
  		$input[0].focus(); // 입력 포커스
 	});
+	
+	function showSelectTimeDiv() {
+		$('.selectTimeDiv').removeClass('hidden');
+		$('.selectLocationDiv').addClass('hidden');
+	}
 	
 	
 </script>
@@ -765,7 +771,7 @@ body {
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
-				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
+				<p class="h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">${param.tripName}</p>
 			</div>
 
 			<div class="selectTimeDiv self-stretch flex-grow-0 flex-shrink-0 h-[759px] relative overflow-auto">
@@ -857,7 +863,8 @@ body {
 							data-address="${tripLocation.address}" data-number="${tripLocation.number }"
 							data-profile="${tripLocation.profile }" data-schedule="${tripLocation.schedule }"
 							data-img="${tripLocation.extra__pictureUrl}" data-reviewCount="${tripLocation.reviewCount }"
-							data-mapX="${tripLocation.mapX }" data-mapY="${tripLocation.mapY }">
+							data-mapX="${tripLocation.mapX }" data-mapY="${tripLocation.mapY }"
+							data-locationType="${tripLocation.extra__locationType }">
 
 							<img src="${tripLocation.extra__pictureUrl }"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
@@ -914,11 +921,11 @@ body {
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-2 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차일정장바구니</option>
+							<option value="${i}">${i}일차 일정 장바구니</option>
 						</c:forEach>
 					</select>
 					<c:forEach var="i" begin="1" end="${diffDays}">
-						<div class="day-time flex items-center gap-2 text-xl text-black absolute left-6 top-[84px]" data-index="${i}">
+						<div onClick="if(confirm('시간 설정페이지로 이동하시겠습니까?')) showSelectTimeDiv();" class="day-time flex items-center gap-2 text-xl text-black absolute left-6 top-[84px] cursor-pointer" data-index="${i}">
 							<span>시간 :</span>
 							<span class="selectLocationStratTime">10:00</span>
 							<span>~</span>
@@ -962,14 +969,13 @@ body {
 				<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden">
 					<p id='info-locationName'
 						class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
-					<p id='info-locationTypeId'
-						class="flex-grow-0 flex-shrink-0 w-[42px] h-[18px] text-[15px] font-medium text-center text-black">명소</p>
+					<p id='info-locationType'
+						class="flex-grow-0 flex-shrink-0  h-[18px] text-[15px] font-medium text-center text-black">명소</p>
 				</div>
 				<div
 					class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">
 					<p id="info-reviewCount"
 						class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black"></p>
-					<p class="flex-grow-0 flex-shrink-0 w-[184px] h-7 text-[15px] font-medium text-left text-black">조회수 : 2000</p>
 				</div>
 			</div>
 			<div onClick="addDailyPlan();"
