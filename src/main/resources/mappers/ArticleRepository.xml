@@ -122,6 +122,11 @@
 		`body` = #{body}
 		WHERE id = #{articleId}
 	</select>
+	
+	<select id="deleteArticle" parameterType="map">
+		DELETE FROM article
+		WHERE id = #{articleId}
+	</select>
 
 
 </mapper>

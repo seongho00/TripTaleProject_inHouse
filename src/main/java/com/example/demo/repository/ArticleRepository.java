@@ -28,4 +28,6 @@ public interface ArticleRepository {
 
 	public void updateArticle(int articleId, String title, String body);
 
+	public void deleteArticle(int articleId);
+
 }

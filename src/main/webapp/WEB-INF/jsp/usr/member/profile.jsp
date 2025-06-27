@@ -123,6 +123,11 @@
 		window.location.href = '../planner/detail?tripId=' + tripId;
 	}
 	
+	function showArticleDetail(articleId) {
+		window.location.href = '../article/detail?articleId=' + articleId;
+	}
+	
+	
 	function getUIBySearchKeyword(memberId, keywordType) {
 		
 		let keyword;
@@ -355,6 +360,28 @@
 	        }
 		});	
 		
+	}
+	
+	function deleteArticle(articleId, el) {
+		
+		  // 가장 가까운 .articleDiv 삭제
+		  const $target = $(el).closest('.articleDiv');
+		  $target.remove();
+		  
+		  $.ajax({
+				url: '../article/delete',  // 컨트롤러 매핑 경로
+		        type: 'POST',               // GET도 가능하지만 POST가 더 안전
+		        data: { articleId: articleId},     // 서버에서 `@RequestParam("id")`로 받음
+		        success: function() {
+
+
+		        },
+		        error: function(xhr, status, error) {
+		            alert('수정 중 오류가 발생했습니다.');
+		            console.error(error);
+		        }
+			});	
+		  
 	}
 	
 </script>
@@ -633,21 +660,20 @@
 				<div
 					class="articleContainer flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
 					<c:forEach var="article" items="${articles }" varStatus="status">
-						<div onClick="showDetail(${tripInfo.id});"
-							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
+						<div onClick="showArticleDetail(${article.id});"
+							class="articleDiv flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
 							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
 							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
-								<img src="${urls[status.index] }" class="w-full h-full object-cover" />
+								<img src="" class="w-full h-full object-cover" />
 
 							</div>
 							<div
 								class="flex flex-col justify-center items-start self-stretch flex-grow relative  gap-2.5 pl-2.5 pr-[27px] py-[15px]">
 								<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${article.tripName}</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.tripRegion}</p>
+									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${article.title}</p>
+									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.extra__tripRegion}</p>
 								</div>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.formattedStartDate }
-									~ ${article.formattedEndDate }</p>
+								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black"></p>
 
 							</div>
 							<div class="relative">
@@ -659,7 +685,7 @@
 										<a href="../planner/modify?articleId=${article.id}">수정하기</a>
 									</li>
 									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-										<a href="../planner/delete?articleId=${article.id }">삭제하기</a>
+										<a onClick="deleteArticle(${article.id}, this);" href="#">삭제하기</a>
 									</li>
 								</ul>
 							</div>

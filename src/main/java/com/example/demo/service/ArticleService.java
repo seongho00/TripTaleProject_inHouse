@@ -59,4 +59,9 @@ public class ArticleService {
 		articleRepository.updateArticle(articleId, title, body);
 	}
 
+	public void deleteArticle(int articleId) {
+		articleRepository.deleteArticle(articleId);
+		
+	}
+
 }

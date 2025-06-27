@@ -77,7 +77,7 @@ public class UsrMemberController {
 		}
 
 		// 게시글 가져오기
-		List<Article> articels = articleService.getArticleByMemberId(memberId);
+		List<Article> articles = articleService.getArticleByMemberId(memberId);
 
 		// 프로필 이미지 가져오기
 		MemberImage memberImage = memberService.getMemberImageByMemberId(memberId);
@@ -99,7 +99,7 @@ public class UsrMemberController {
 		model.addAttribute("loginedMember", loginedMember);
 		model.addAttribute("tripInfos", tripInfos);
 		model.addAttribute("urls", urls);
-		model.addAttribute("articels", articels);
+		model.addAttribute("articles", articles);
 
 		return "usr/member/profile";
 	}

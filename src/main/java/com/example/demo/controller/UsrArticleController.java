@@ -229,4 +229,13 @@ public class UsrArticleController {
 		return "redirect:detail?articleId=" + articleId;
 	}
 
+	@PostMapping("/usr/article/delete")
+	@ResponseBody
+	public String delete(int articleId) {
+		int memberId = rq.getLoginedMemberId();
+		articleService.deleteArticle(articleId);
+
+		return "";
+	}
+
 }
