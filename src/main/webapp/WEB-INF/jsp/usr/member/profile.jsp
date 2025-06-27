@@ -24,7 +24,7 @@
 	function loadPosts(sortType, memberId) {
 	    $.ajax({
 	        type: 'GET',
-	        url: '../planner/getTripInfos',
+	        url: 'getTripInfos',
 	        data: { sortType: sortType, memberId : memberId },
 	        success: function (tripInfos) {
 	        	const container = $('.tripInfoContainer');
@@ -215,6 +215,7 @@
 			    success: function (response) {
 					console.log("업로드 성공:", response);
 					// 알림 또는 UI 업데이트
+					window.location.reload();
 			    },
 			    error: function (xhr, status, error) {
 					console.error("업로드 실패:", error);

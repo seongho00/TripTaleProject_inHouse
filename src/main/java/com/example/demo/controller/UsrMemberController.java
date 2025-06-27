@@ -340,10 +340,41 @@ public class UsrMemberController {
 
 		Member updatedMember = memberService.getMemberByMemberId(memberId);
 		session.setAttribute("loginedMember", updatedMember);
-
+		
 		return ResultData.from("S-1", "수정 성공");
 	}
 
+	@RequestMapping("usr/member/getTripInfos")
+	@ResponseBody
+	public List<TripInfo> getTripInfos(Model model, String sortType, @RequestParam(defaultValue = "0") int memberId) {
 
+		if (sortType.equals("recent")) {
+			List<TripInfo> tripInfos = plannerService.getTripInfoByMemberId(memberId);
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			// 변환 후 새로운 속성에 저장
+			for (TripInfo info : tripInfos) {
+				info.setFormattedStartDate(info.getTripStartDate().format(formatter));
+				info.setFormattedEndDate(info.getTripEndDate().format(formatter));
+			}
+
+			return tripInfos;
+		} else {
+
+			List<TripInfo> tripInfos = plannerService.getTripInfoReverseByMemberId(memberId);
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			// 변환 후 새로운 속성에 저장
+			for (TripInfo info : tripInfos) {
+				info.setFormattedStartDate(info.getTripStartDate().format(formatter));
+				info.setFormattedEndDate(info.getTripEndDate().format(formatter));
+			}
+
+			return tripInfos;
+		}
+
+	}
 
 }

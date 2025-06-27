@@ -178,7 +178,6 @@ public class NaverOAuthService {
 				System.out.println(item.get("roadAddress"));
 				System.out.println(item.get("mapx"));
 				System.out.println(item.get("mapy"));
-				System.out.println();
 
 				if (!title.contains("대전")) {
 					title = "대전 " + title;
@@ -187,6 +186,7 @@ public class NaverOAuthService {
 				double mapx = Double.parseDouble(item.get("mapx").toString()) / 10000000.0;
 				double mapy = Double.parseDouble(item.get("mapy").toString()) / 10000000.0;
 
+				// 크롤링 하기
 				tripLocationService.process(title, 3, mapx, mapy);
 				try {
 					Thread.sleep(5000); // 5초 대기

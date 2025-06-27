@@ -14,7 +14,7 @@ public interface TripLocationRepository {
 
 	public int getLastInsertId();
 
-	public List<TripLocation> getLocationInfo(String locationType, int areaCode);
+	public List<TripLocation> getLocationInfo(String locationTypeCode, int areaCode);
 
 	public List<TripLocationPicture> getTripLocationPictures(int tripLocationId);
 }

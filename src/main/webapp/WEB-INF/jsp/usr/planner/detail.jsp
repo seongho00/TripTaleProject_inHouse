@@ -527,7 +527,7 @@
 						<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[77px] h-[53px] object-cover" />
 					</a>
 					<p
-						class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[141px] h-[52px] text-3xl font-medium text-black">${tripInfo.tripName }</p>
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0  h-[52px] text-3xl font-medium text-black">${tripInfo.tripName }</p>
 					<a href="modify?tripId=${tripId}"
 						class="mr-2 flex justify-center items-center flex-grow-0 flex-shrink-0 w-[84px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[5px] bg-black/[0.81]">
 						<button class="btn btn-neutral flex justify-center items-center flex-grow text-[15px] font-medium text-white">수정하기</button>

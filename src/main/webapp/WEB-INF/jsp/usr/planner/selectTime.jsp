@@ -84,6 +84,67 @@ $(document).ready(function() {
 		$('#categoryButtons .btn').addClass('btn-outline');
 		// 클릭한 버튼만 btn-outline 제거
 		$(this).removeClass('btn-outline');
+		
+		 // 클릭한 버튼의 value 값 가져오기
+		  const category = $(this).val(); // 또는 $(this).attr('value')
+
+		  console.log("선택된 카테고리:", category);
+
+		  // AJAX 요청 보내기
+		  $.ajax({
+		    type: 'GET',
+		    url: '../planner/searchByCategory', // ← 서버 URL에 맞게 변경
+		    data: { category: category },
+		    success: function (tripLocations) {
+		      console.log("카테고리 검색 결과:", tripLocations);
+		      
+		      const container = $('.recommendContent');
+		      container.empty();
+		      
+		      tripLocations.forEach(function(tripLocation) {
+					 
+					 const html = `
+					 <div
+						class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
+						data-id="\${tripLocation.id}" data-name="\${tripLocation.locationName}" data-type="\${tripLocation.locationTypeId}"
+						data-address="\${tripLocation.address}" data-number="\${tripLocation.number }"
+						data-profile="\${tripLocation.profile }" data-schedule="\${tripLocation.schedule }"
+						data-img="\${tripLocation.extra__pictureUrl}" data-reviewCount="\${tripLocation.reviewCount }"
+						data-mapX="\${tripLocation.mapX }" data-mapY="\${tripLocation.mapY }"
+						data-locationType="\${tripLocation.extra__locationType }">
+
+						<img src="\${tripLocation.extra__pictureUrl }"
+							class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+
+						<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
+							<p
+								class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
+								\${tripLocation.extra__locationType }</p>
+							<p
+								class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
+								\${tripLocation.locationName }</p>
+							<p
+								class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
+								\${tripLocation.address }</p>
+						</div>
+						<button onClick="event.stopPropagation(); addDailyPlanForPlus(this);"
+							class="addDailyPlanButton cursor-pointer pointer-events-auto">
+							<i class="fa-solid fa-square-plus text-3xl"></i>
+						</button>
+					</div>
+					`;
+				
+					  container.append(html);
+					  
+					  
+		      });
+		    },
+		    error: function (xhr, status, error) {
+		      console.error("요청 실패:", error);
+		      alert("카테고리 검색 중 오류 발생");
+		    }
+		  });
+		
 	});
 		
 	kakao.maps.load(function () {
@@ -360,7 +421,7 @@ $(document).ready(function() {
 
 
 	// infoDiv 열고 닫기 & 정보 추가하기
-   $(function() {
+$(document).on('click', '.trip-item', function () {
 	   $('.trip-item').on('click', function() {
 		   // 선택한 데이터 넘겨받기
 		   
@@ -382,6 +443,7 @@ $(document).ready(function() {
 	 	  	   lastInfoId = null;
 	 	       return;
 	 	   }
+	 	   
 		   
 		   // 넘겨받은 데이터 넣기
 		   $('#info-id').text(id);
@@ -393,6 +455,7 @@ $(document).ready(function() {
 	       $('#info-number').text(number);
 	       $('#info-reviewCount').text("리뷰 : " + reviewCount);
 	       $('#info-img').attr('src', img);
+	       console.log("실행됨1");
 
 	      
  	       const $infoDiv = $('.infoDiv');
@@ -421,7 +484,8 @@ $(document).ready(function() {
  		      position: newPosition,
  		      map: map
  		    });
-
+ 		    
+  		   
  		    // 이름 오버레이 생성
  		    const content = `<div style="padding:4px 10px; background:white; border:1px solid #333; border-radius:4px; font-size:13px;">
  		                       \${name}
@@ -663,6 +727,67 @@ $(document).ready(function() {
 		$('.selectLocationDiv').addClass('hidden');
 	}
 	
+	function getLocationBySearch() {
+		const keyword  = $('.searchInput').val().trim();
+
+		if (!keyword) {
+		    alert('장소를 입력해주세요!');
+		    return;
+		}
+		  
+		  
+		$.ajax({
+			url: '../test/naverAPI', 
+			method: 'GET',
+			data: { keyword : keyword },
+			success: function (tripLocations) {
+				const container = $('.searchResultContent');
+				
+				 tripLocations.forEach(function(tripLocation) {
+					 
+					 const html = `
+					 <div
+						class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
+						data-id="\${tripLocation.id}" data-name="\${tripLocation.locationName}" data-type="\${tripLocation.locationTypeId}"
+						data-address="\${tripLocation.address}" data-number="\${tripLocation.number }"
+						data-profile="\${tripLocation.profile }" data-schedule="\${tripLocation.schedule }"
+						data-img="\${tripLocation.extra__pictureUrl}" data-reviewCount="\${tripLocation.reviewCount }"
+						data-mapX="\${tripLocation.mapX }" data-mapY="\${tripLocation.mapY }"
+						data-locationType="\${tripLocation.extra__locationType }">
+
+						<img src="\${tripLocation.extra__pictureUrl }"
+							class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
+
+						<div class="flex flex-col justify-center items-start flex-grow relative overflow-hidden gap-[11px]">
+							<p
+								class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px]  text-[15px] font-medium text-left text-black">
+								\${tripLocation.extra__locationType }</p>
+							<p
+								class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
+								\${tripLocation.locationName }</p>
+							<p
+								class="self-stretch flex-grow-0 flex-shrink-0 w-[233px] h-[15px] text-[15px] font-medium text-left text-black">
+								\${tripLocation.address }</p>
+						</div>
+						<button onClick="event.stopPropagation(); addDailyPlanForPlus(this);"
+							class="addDailyPlanButton cursor-pointer pointer-events-auto">
+							<i class="fa-solid fa-square-plus text-3xl"></i>
+						</button>
+					</div>
+					`;
+				
+				container.append(html);
+				 
+				 
+				 });				
+
+		    },
+		    error: function(xhr, status, error) {
+		        console.error("에러 발생:", error);
+		        alert("검색 중 오류가 발생했습니다.");
+			}
+		});	
+	}
 	
 </script>
 
@@ -841,7 +966,7 @@ body {
 
 				</div>
 				<div
-					class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
+					class="recommendUI recommendSearchInput flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
 					<input
 						class="flex-grow-0 flex-shrink-0 w-[260px]  text-xl font-medium  outline-none border-none focus:outline-none focus:border-none"
 						placeholder="장소를 입력해주세요"></input>
@@ -850,12 +975,13 @@ body {
 
 
 				<div id="categoryButtons" class="recommendUI flex !justify-between !items-center w-[315px] px-4 py-2">
-					<button class="btn btn-info text-black !text-lg w-[90px]">관광지</button>
-					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]">명소</button>
-					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]">맛집</button>
+					<button class="btn btn-info text-black !text-lg w-[90px] " value="tour">관광지</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]" value="cafe">카페</button>
+					<button class="btn btn-outline btn-info text-black !text-lg w-[90px]" value="food">맛집</button>
 				</div>
 
-				<div class="recommendUI flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
+				<div
+					class="recommendUI recommendContent flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
 					<c:forEach var="tripLocation" items="${tripLocations}">
 						<div
 							class="trip-item cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[19px] px-[9px] py-[13px]"
@@ -886,6 +1012,21 @@ body {
 							</button>
 						</div>
 					</c:forEach>
+
+
+				</div>
+
+				<div
+					class="searchUI flex justify-between items-center flex-grow-0 flex-shrink-0 w-[309px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
+					<input
+						class="searchInput flex-grow-0 flex-shrink-0 w-[260px]  text-xl font-medium  outline-none border-none focus:outline-none focus:border-none"
+						placeholder="장소를 입력해주세요"></input>
+					<i onClick="getLocationBySearch();" class="fa-solid fa-magnifying-glass text-lg cursor-pointer"></i>
+				</div>
+
+				<div
+					class="searchUI searchResultContent flex flex-col justify-start items-start flex-grow w-[407px] relative overflow-auto gap-3">
+
 
 
 				</div>
@@ -921,11 +1062,13 @@ body {
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-2 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차 일정 장바구니</option>
+							<option value="${i}">${i}일차일정장바구니</option>
 						</c:forEach>
 					</select>
 					<c:forEach var="i" begin="1" end="${diffDays}">
-						<div onClick="if(confirm('시간 설정페이지로 이동하시겠습니까?')) showSelectTimeDiv();" class="day-time flex items-center gap-2 text-xl text-black absolute left-6 top-[84px] cursor-pointer" data-index="${i}">
+						<div onClick="if(confirm('시간 설정페이지로 이동하시겠습니까?')) showSelectTimeDiv();"
+							class="day-time flex items-center gap-2 text-xl text-black absolute left-6 top-[84px] cursor-pointer"
+							data-index="${i}">
 							<span>시간 :</span>
 							<span class="selectLocationStratTime">10:00</span>
 							<span>~</span>
@@ -970,7 +1113,7 @@ body {
 					<p id='info-locationName'
 						class="flex-grow-0 flex-shrink-0 max-w-[300px] h-[42px] text-[25px] font-medium text-center text-black"></p>
 					<p id='info-locationType'
-						class="flex-grow-0 flex-shrink-0  h-[18px] text-[15px] font-medium text-center text-black">명소</p>
+						class="flex-grow-0 flex-shrink-0  h-[18px] text-[15px] font-medium text-center text-black"></p>
 				</div>
 				<div
 					class="flex flex-col justify-center items-start flex-grow-0 flex-shrink-0 h-[72px] relative overflow-hidden pl-2">

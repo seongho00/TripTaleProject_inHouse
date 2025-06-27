@@ -90,7 +90,7 @@ public class UsrPlannerController {
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
-		String locationType = "관광지";
+		String locationType = "tour";
 		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationType, areaCode);
 
 		// 날짜 jason으로 넘기기
@@ -128,7 +128,7 @@ public class UsrPlannerController {
 
 		int tripId = plannerService.createPlan(planDataJson, tripName, tripRegion, tripStartDate, tripEndDate);
 
-		return "usr/planner/detail?tripId=" + tripId;
+		return "redirect:detail?tripId=" + tripId;
 	}
 
 	@RequestMapping("usr/planner/detail")
@@ -245,9 +245,12 @@ public class UsrPlannerController {
 	}
 
 	@RequestMapping("usr/planner/updateTripPlaces")
-	public void updateTripPlaces(Model model, @RequestBody Map<String, Object> requestBody) {
+	@ResponseBody
+	public String updateTripPlaces(Model model, @RequestBody Map<String, Object> requestBody) {
 
-		plannerService.updateTripPlaces(requestBody);
+		int tripId = plannerService.updateTripPlaces(requestBody);
+
+		return "redirect:usr/planner/detail?tripId=" + tripId;
 	}
 
 	@RequestMapping("usr/planner/search")
@@ -285,40 +288,7 @@ public class UsrPlannerController {
 		// tripInfo 삭제
 		plannerService.deleteTripInfo(tripId);
 
-		return "usr/member/profile?memberId=" + loginedMember.getId();
-	}
-
-	@RequestMapping("usr/planner/getTripInfos")
-	@ResponseBody
-	public List<TripInfo> getTripInfos(Model model, String sortType, @RequestParam(defaultValue = "0") int memberId) {
-
-		if (sortType.equals("recent")) {
-			List<TripInfo> tripInfos = plannerService.getTripInfoByMemberId(memberId);
-
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-			// 변환 후 새로운 속성에 저장
-			for (TripInfo info : tripInfos) {
-				info.setFormattedStartDate(info.getTripStartDate().format(formatter));
-				info.setFormattedEndDate(info.getTripEndDate().format(formatter));
-			}
-
-			return tripInfos;
-		} else {
-
-			List<TripInfo> tripInfos = plannerService.getTripInfoReverseByMemberId(memberId);
-
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-			// 변환 후 새로운 속성에 저장
-			for (TripInfo info : tripInfos) {
-				info.setFormattedStartDate(info.getTripStartDate().format(formatter));
-				info.setFormattedEndDate(info.getTripEndDate().format(formatter));
-			}
-
-			return tripInfos;
-		}
-
+		return "redirect:../member/profile?memberId=" + loginedMember.getId();
 	}
 
 	@RequestMapping("usr/planner/searchByKeywordType")
@@ -335,6 +305,15 @@ public class UsrPlannerController {
 		}
 
 		return tripInfos;
+	}
+
+	@RequestMapping("usr/planner/searchByCategory")
+	@ResponseBody
+	public List<TripLocation> searchByCategory(Model model, String category) {
+		
+		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(category, 3);
+
+		return tripLocations;
 	}
 
 }

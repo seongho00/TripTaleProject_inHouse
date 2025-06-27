@@ -196,14 +196,14 @@ public class PlannerService {
 		return 1;
 	}
 
-	public ResponseEntity<String> updateTripPlaces(Map<String, Object> requestBody) {
+	public int updateTripPlaces(Map<String, Object> requestBody) {
 		Gson gson = new Gson();
 
 		try {
 			// tripId 파싱
 			Object tripIdObj = requestBody.get("tripId");
 			if (tripIdObj == null) {
-				return ResponseEntity.badRequest().body("tripId가 누락되었습니다.");
+				return 0;
 			}
 			int tripId = Integer.parseInt(tripIdObj.toString());
 
@@ -298,10 +298,10 @@ public class PlannerService {
 
 			}
 
-			return ResponseEntity.ok("수정 완료");
+			return tripId;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.internalServerError().body("서버 오류 발생: " + e.getMessage());
+			return -1;
 		}
 
 	}

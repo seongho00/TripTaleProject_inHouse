@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +13,10 @@ import com.example.demo.service.ArticleService;
 import com.example.demo.service.ChatGptService;
 import com.example.demo.service.KakaoOAuthService;
 import com.example.demo.service.NaverOAuthService;
+import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
 import com.example.demo.vo.Rq;
+import com.example.demo.vo.TripLocation;
 
 @Controller
 public class UsrHomeController {
@@ -27,6 +31,8 @@ public class UsrHomeController {
 	Rq rq;
 	@Autowired
 	private TripLocationService tripLocationService;
+	@Autowired
+	private PlannerService plannerService;
 	@Autowired
 	private ChatGptService chatGptService;
 
@@ -72,10 +78,14 @@ public class UsrHomeController {
 	}
 
 	@RequestMapping("usr/test/naverAPI")
-	public String naverAPI(Model model) {
+	@ResponseBody
+	public List<TripLocation> naverAPI(Model model, String keyword) {
 		// 각 도시의 "시"마다 5개씩 데이터를 받고 DB에 넣기 + 별점 데이터 종합
-		naverOAuthService.searchLocal("대전 대덕구 관광지");
-		return "usr/test/naverAPI";
+		naverOAuthService.searchLocal(keyword);
+		
+		List<TripLocation> tripLocations =  tripLocationService.getLocationInfo("검색결과", 3);
+		
+		return tripLocations;
 	}
 
 }

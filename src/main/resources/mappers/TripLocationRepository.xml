@@ -12,7 +12,7 @@
 		updateDate = NOW(),
 		areaCode = #{areaCode},
 		locationName = #{title},
-		locationTypeId = 1,
+		locationTypeId = 10,
 		address = #{address},
 		`schedule` = #{schedule},
 		`number` = #{number},
@@ -42,8 +42,8 @@
 		ON TL.locationTypeId = TLT.id
 		WHERE TL.areaCode
 		= #{areaCode}
-		<if test="locationType != ''">
-			AND TLT.typeName = #{locationType}
+		<if test="locationTypeCode != ''">
+			AND TLT.typeCode = #{locationTypeCode}
 		</if>
 		GROUP BY TL.id
 		ORDER BY reviewCount DESC
