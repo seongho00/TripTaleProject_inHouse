@@ -188,11 +188,7 @@ public class NaverOAuthService {
 
 				// 크롤링 하기
 				tripLocationService.process(title, 3, mapx, mapy);
-				try {
-					Thread.sleep(5000); // 5초 대기
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt(); // ← 권장 방식
-				}
+
 			}
 		}
 

@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="PLANNER DETAIL"></c:set>
@@ -26,6 +27,8 @@
 		});
 	});
 	
+
+	
 	// 카카오톡 맵 설정
 	function initMap() {
 	    // ✨ 1. li에서 좌표 추출
@@ -47,7 +50,7 @@
 	    drawPolyline(map, lineCoords);
 	    drawMarkers(map, lineCoords);  
 	    // ✨ li 클릭 시 지도 center 이동
-	    bindTimelineClickEvents(map);
+
 	    showAllPlaceOverlays(map);
 	}
 
@@ -335,6 +338,8 @@
 						const formatTime = (timeStr) => timeStr?.substring(0, 5);
 						const durationMinutes = getMinutesFromDuration(tripPlace.duration);
 						
+
+						
 						let html = '';
 						
 						// =========================
@@ -342,8 +347,8 @@
 						// =========================
 						if(i == 0){
 							html += `
-								<div draggable="true"
-									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<div draggable="true" data-mapx="\${tripPlace.mapX }" data-mapy="\${tripPlace.mapY }"
+									class="placeList cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 								<img src="\${tripPlace.extra__pictureUrl}"
 									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
@@ -360,8 +365,8 @@
 								<i class="fa-solid fa-bus-simple"></i>
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${durationMinutes}분</p>
 								</div>
-								<div draggable="true"
-									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<div draggable="true" data-mapx="\${tripPlace.mapX }" data-mapy="\${tripPlace.mapY }"
+									class="placeList cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 								<img src="\${tripPlace.extra__pictureUrl}"
 									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
@@ -400,6 +405,9 @@
 						});
 					markTimelineByTime(); 
 					
+					// ✅ 지도 렌더링
+					renderMap(tripPlaces); // ← 여기 추가
+					
 				},
 				error: function (xhr, status, error) {
 					console.error('에러 발생:', error);
@@ -408,6 +416,34 @@
 			});
 		});
 	});
+	
+	function renderMap(tripPlaces) {
+		if (!tripPlaces || tripPlaces.length === 0) return;
+
+		// 🔥 기존 지도 제거 (진짜 중요)
+		const container = document.getElementById('map');
+		container.innerHTML = ''; // DOM 초기화
+		window.map = null;
+
+		// ✨ 새 지도 생성
+		const lineCoords = tripPlaces.map(p => new kakao.maps.LatLng(p.mapY, p.mapX));
+		const centerCoord = getCenterFromCoords(lineCoords);
+
+		const options = {
+			center: centerCoord,
+			level: 7
+		};
+
+		map = new kakao.maps.Map(container, options); // 새 지도 생성
+		marker = new kakao.maps.Marker({ map: map });
+
+		drawPolyline(map, lineCoords);
+		drawMarkers(map, lineCoords);
+
+	    drawOverlays(map, tripPlaces); // ← 이렇게 교체
+	}
+
+
 	
 	// 카카오맵을 위한 좌표 추출
 	function getPathCoordsFromTimeline() {
@@ -473,17 +509,15 @@
 	}
 	
 	// li 클릭 시 지도 이동
-	function bindTimelineClickEvents(map) {
-	    $('#timelineList .placeList').on('click', function () {
-	        const mapx = $(this).data('mapx');
-	        const mapy = $(this).data('mapy');
-
-	        if (mapx && mapy) {
-	            const center = new kakao.maps.LatLng(mapy, mapx);
-	            map.setCenter(center);
-			}
-		});
-	}
+	$(document).on('click', '#timelineList .placeList', function () {
+		const mapx = $(this).data('mapx');
+		const mapy = $(this).data('mapy');
+	
+		if (mapx && mapy) {
+			const center = new kakao.maps.LatLng(mapy, mapx);
+			map.setCenter(center);
+		}
+	});
 	
 	// 오버레이 표시
 	function showAllPlaceOverlays(map) {
@@ -510,12 +544,38 @@
 	        }
 	    });
 	}
+	
+	function drawOverlays(map, tripPlaces) {
+	    tripPlaces.forEach(place => {
+	        const mapx = parseFloat(place.mapX);
+	        const mapy = parseFloat(place.mapY);
+	        const name = place.locationName;
+
+	        if (!isNaN(mapx) && !isNaN(mapy) && name) {
+	            const position = new kakao.maps.LatLng(mapy, mapx);
+
+	            const content = `
+	                <div style="padding:4px 10px; background:white; border:1px solid #333; border-radius:4px; font-size:13px;">
+	                    \${name}
+	                </div>`;
+
+	            const overlay = new kakao.maps.CustomOverlay({
+	                content: content,
+	                position: position,
+	                yAnchor: 2.5,
+	                map: map
+	            });
+	        }
+	    });
+	}
 </script>
 
 
 
-<div class="flex flex-col justify-start items-center h-[919px] overflow-hidden  bg-white">
-	<div class="flex justify-end items-center self-stretch flex-grow relative overflow-hidden ">
+<div
+	class="flex flex-col justify-start items-center h-[919px] overflow-hidden  bg-white">
+	<div
+		class="flex justify-end items-center self-stretch flex-grow relative overflow-hidden ">
 		<div class="fixed left-[300px] h-screen w-screen" id="map"></div>
 		<div
 			class="sidebar transition-all duration-500 flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] absolute left-0 top-0 overflow-hidden gap-2.5 bg-white border border-black">
@@ -524,29 +584,38 @@
 				<div
 					class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 h-[53px] relative overflow-hidden">
 					<a href="../home/main">
-						<img src="/images/로고.png" class="flex-grow-0 flex-shrink-0 w-[77px] h-[53px] object-cover" />
+						<img src="/images/로고.png"
+							class="flex-grow-0 flex-shrink-0 w-[77px] h-[53px] object-cover" />
 					</a>
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0  h-[52px] text-3xl font-medium text-black">${tripInfo.tripName }</p>
 					<a href="modify?tripId=${tripId}"
 						class="mr-2 flex justify-center items-center flex-grow-0 flex-shrink-0 w-[84px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[5px] bg-black/[0.81]">
-						<button class="btn btn-neutral flex justify-center items-center flex-grow text-[15px] font-medium text-white">수정하기</button>
+						<button
+							class="btn btn-neutral flex justify-center items-center flex-grow text-[15px] font-medium text-white">수정하기</button>
 					</a>
 				</div>
-				<div class="flex justify-center items-end flex-grow-0 flex-shrink-0 relative overflow-hidden px-11 py-[13px]">
-					<p class="flex-grow-0 flex-shrink-0  text-xl font-medium text-center text-black">${tripInfo.tripRegion }</p>
-					<p class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">${formattedStartDate}
+				<div
+					class="flex justify-center items-end flex-grow-0 flex-shrink-0 relative overflow-hidden px-11 py-[13px]">
+					<p
+						class="flex-grow-0 flex-shrink-0  text-xl font-medium text-center text-black">${tripInfo.tripRegion }</p>
+					<p
+						class="flex-grow-0 flex-shrink-0  h-6 text-[15px] font-medium text-center text-black">${formattedStartDate}
 						~ ${formattedEndDate }</p>
 				</div>
 				<div onClick="viewAllSchedule(this);"
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 w-[90px] h-[30px] relative overflow-hidden gap-2.5 px-[11px] rounded-[5px] cursor-pointer">
-					<button class="btn btn-neutral flex justify-center items-center text-[15px] font-medium text-white">전체 보기</button>
+					<button
+						class="btn btn-neutral flex justify-center items-center text-[15px] font-medium text-white">전체
+						보기</button>
 				</div>
 				<!-- 가로 데이지 UI 시작 -->
 				<ul class="h-5 colTimeLine timeline transition-all duration-500">
-					<li data-index="1" class="day-tab transition-all duration-500 w-[80px]">
+					<li data-index="1"
+						class="day-tab transition-all duration-500 w-[80px]">
 						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+								fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
 									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 									clip-rule="evenodd" />
@@ -560,10 +629,12 @@
 					<!-- ✅ 반복 출력: 2일차 ~ diffDays-1일차 -->
 					<c:if test="${diffDays > 1}">
 						<c:forEach var="i" begin="2" end="${diffDays - 1}">
-							<li data-index="${i}" class="day-tab transition-all duration-500 w-[80px]">
+							<li data-index="${i}"
+								class="day-tab transition-all duration-500 w-[80px]">
 								<hr />
 								<div class="timeline-middle">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+										fill="currentColor" class="text-primary h-5 w-5">
             <path fill-rule="evenodd"
 											d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 											clip-rule="evenodd" />
@@ -575,10 +646,12 @@
 						</c:forEach>
 
 						<!-- ✅ 마지막 li: diffDays일차 (오른쪽 hr 없는 경우) -->
-						<li data-index="${diffDays}" class="day-tab transition-all duration-500 w-[80px]">
+						<li data-index="${diffDays}"
+							class="day-tab transition-all duration-500 w-[80px]">
 							<hr />
 							<div class="timeline-middle">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+									fill="currentColor" class="h-5 w-5">
           <path fill-rule="evenodd"
 										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 										clip-rule="evenodd" />
@@ -594,13 +667,16 @@
 				class="tripPlaceList flex justify-start items-start self-stretch flex-grow relative overflow-auto gap-2.5 px-[5px] py-[23px]">
 
 				<!-- 세로 데이지UI 시작 -->
-				<ul class="rowTimeLine timeline timeline-vertical w-[50px]" data-date="${todayTripPlaces[0].extra__date}">
-					<li data-startTime="${todayTripPlaces[0].startTime }" data-endTime="${todayTripPlaces[0].endTime }"
+				<ul class="rowTimeLine timeline timeline-vertical w-[50px]"
+					data-date="${todayTripPlaces[0].extra__date}">
+					<li data-startTime="${todayTripPlaces[0].startTime }"
+						data-endTime="${todayTripPlaces[0].endTime }"
 						class="relative min-h-[120px]">
 
 
 						<div class="timeline-middle">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+								fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
 									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 									clip-rule="evenodd" />
@@ -610,11 +686,13 @@
 					</li>
 					<c:if test="${todayTripPlaces.size() >= 2}">
 
-						<li data-startTime="${todayTripPlaces[1].startTime }" data-endTime="${todayTripPlaces[1].endTime }"
+						<li data-startTime="${todayTripPlaces[1].startTime }"
+							data-endTime="${todayTripPlaces[1].endTime }"
 							class="relative min-h-[180px]">
 							<hr />
 							<div class="timeline-middle">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+									fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
 										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 										clip-rule="evenodd" />
@@ -626,11 +704,13 @@
 					<!-- ✅ 반복 	 -->
 					<c:if test="${todayTripPlaces.size() > 2}">
 						<c:forEach var="i" begin="2" end="${todayTripPlaces.size() - 2}">
-							<li data-startTime="${todayTripPlaces[i].startTime }" data-endTime="${todayTripPlaces[i].endTime }"
+							<li data-startTime="${todayTripPlaces[i].startTime }"
+								data-endTime="${todayTripPlaces[i].endTime }"
 								class="relative min-h-[150px]">
 								<hr />
 								<div class="timeline-middle">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="text-primary h-5 w-5">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+										fill="currentColor" class="text-primary h-5 w-5">
         <path fill-rule="evenodd"
 											d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 											clip-rule="evenodd" />
@@ -642,11 +722,13 @@
 						</c:forEach>
 
 						<!-- ✅ 마지막 li -->
-						<li data-startTime="${todayTripPlaces[size].startTime }" data-endTime="${todayTripPlaces[size].endTime }"
+						<li data-startTime="${todayTripPlaces[size].startTime }"
+							data-endTime="${todayTripPlaces[size].endTime }"
 							class="relative min-h-[150px]">
 							<hr />
 							<div class="timeline-middle">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+									fill="currentColor" class="h-5 w-5">
         <path fill-rule="evenodd"
 										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
 										clip-rule="evenodd" />
@@ -657,26 +739,34 @@
 				</ul>
 				<!-- 데이지UI 끝-->
 
-				<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0  gap-3">
-					<c:forEach var="tripPlace" items="${todayTripPlaces}" varStatus="status">
+				<div id="timelineList"
+					class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0  gap-3">
+					<c:forEach var="tripPlace" items="${todayTripPlaces}"
+						varStatus="status">
 						<c:if test="${status.index != 0}">
-							<div class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
+							<div
+								class="flex justify-start items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5">
 								<i class="fa-solid fa-bus-simple"></i>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.duration.minute }분</p>
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.duration.minute }분</p>
 							</div>
 						</c:if>
 
-						<div draggable="true" data-mapx="${tripPlace.mapX }" data-mapy="${tripPlace.mapY }"
+						<div draggable="true" data-mapx="${tripPlace.mapX }"
+							data-mapy="${tripPlace.mapY }"
 							data-name="${tripPlace.locationName }"
 							class="placeList cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 							<img src="${tripPlace.extra__pictureUrl}"
 								class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 							<div
 								class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.startTime}~
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.startTime}~
 									${tripPlace.endTime}</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.extra__locationType}</p>
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripPlace.locationName}</p>
 							</div>
 						</div>
 

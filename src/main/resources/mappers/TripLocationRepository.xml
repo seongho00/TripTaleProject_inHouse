@@ -12,7 +12,7 @@
 		updateDate = NOW(),
 		areaCode = #{areaCode},
 		locationName = #{title},
-		locationTypeId = 10,
+		locationTypeId = 2,
 		address = #{address},
 		`schedule` = #{schedule},
 		`number` = #{number},
