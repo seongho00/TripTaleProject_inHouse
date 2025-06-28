@@ -30,4 +30,13 @@ public interface ArticleRepository {
 
 	public void deleteArticle(int articleId);
 
+	public int getLikeCount(int articleId);
+
+	public int getLikeCountByArticleIdAndMemberId(int articleId, int memberId);
+
+	public void increseLikeCount(int articleId, int memberId);
+
+	public void decreseLikeCount(int articleId, int memberId);
+
+
 }

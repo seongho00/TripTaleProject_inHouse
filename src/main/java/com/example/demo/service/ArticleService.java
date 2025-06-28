@@ -61,6 +61,28 @@ public class ArticleService {
 
 	public void deleteArticle(int articleId) {
 		articleRepository.deleteArticle(articleId);
+
+	}
+
+	public int getLikeCount(int articleId) {
+
+		return articleRepository.getLikeCount(articleId);
+	}
+
+	public boolean getLikeCountByArticleIdAndMemberId(int articleId, int memberId) {
+
+		int likeCount = articleRepository.getLikeCountByArticleIdAndMemberId(articleId, memberId);
+
+		return likeCount == 0;
+	}
+
+	public void increseLikeCount(int articleId, int memberId) {
+		articleRepository.increseLikeCount(articleId, memberId);
+		
+	}
+
+	public void decreseLikeCount(int articleId, int memberId) {
+		articleRepository.decreseLikeCount(articleId, memberId);
 		
 	}
 

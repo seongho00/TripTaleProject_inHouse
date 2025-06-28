@@ -19,11 +19,13 @@ public class Article {
 	private String title;
 	private String body;
 	private int hitCount;
+
 	private int tripId;
 
 	private String extra__name;
 	private String extra__contentType;
 	private String extra__tripRegion;
+	private int extra__likeCount;
 
 	@Lob
 	private byte[] extra__thumbnailImg;

@@ -122,11 +122,43 @@
 		`body` = #{body}
 		WHERE id = #{articleId}
 	</select>
-	
+
 	<select id="deleteArticle" parameterType="map">
 		DELETE FROM article
 		WHERE id = #{articleId}
 	</select>
+
+	<select id="getLikeCount" resultType="int">
+		SELECT COUNT(*)
+		FROM `like`
+		WHERE articleId = #{articleId}
+	</select>
+
+
+
+	<select id="getLikeCountByArticleIdAndMemberId" resultType="int">
+		SELECT COUNT(*)
+		FROM `like`
+		WHERE articleId = #{articleId} AND memberId
+		= #{memberId}
+	</select>
+
+
+	<select id="increseLikeCount" resultType="int">
+		INSERT INTO `like`
+		SET
+		memberId = #{memberId},
+		articleId = #{articleId}
+	</select>
+
+
+	<select id="decreseLikeCount" resultType="int">
+		DELETE FROM `like`
+		WHERE
+		memberId = #{memberId} AND
+		articleId = #{articleId}
+	</select>
+
 
 
 </mapper>

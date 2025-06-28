@@ -192,7 +192,8 @@ window.onload = function() {
 								return;
 							}
 							const region = $('.select-btn').closest('.info-window').data('region'); // ← 필요 시 dataset에서 꺼내기
-							location.replace(`../planner/calendar?region=${region}&tripName=${tripName}`);
+							
+							location.replace(`../planner/calendar?region=${name}&tripName=${tripName}`);
 						});
 						
 					});

@@ -113,7 +113,7 @@
 				<div
 					class="flex justify-center items-center flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 px-[26px] py-[5px]">
 					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">조회수: ${article.hitCount }</p>
-					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">좋아요: ${article.hitCount }</p>
+					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">좋아요: ${article.extra__likeCount }</p>
 					<i class="flex-grow-0 fa-solid fa-heart text-red-500"></i>
 					<img src="image-28.png" class="flex-grow-0 flex-shrink-0 w-[13px] h-[13px] object-cover" />
 					<p class="flex-grow-0 flex-shrink-0 text-[8px] font-medium text-center text-black">작성자: ${article.extra__name }</p>

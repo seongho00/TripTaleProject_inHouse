@@ -61,6 +61,12 @@ public class UsrArticleController {
 			String base64 = Base64.getEncoder().encodeToString(article.getExtra__thumbnailImg());
 			String fullDataUrl = "data:" + article.getExtra__contentType() + ";base64," + base64;
 			articleImages.add(fullDataUrl);
+
+			// 좋아요 수 출력
+			int likeCount = articleService.getLikeCount(article.getId());
+
+			article.setExtra__likeCount(likeCount);
+
 		}
 
 		model.addAttribute("articles", articles);
@@ -120,6 +126,11 @@ public class UsrArticleController {
 		// 게시글 제목, 내용 등 가져오기
 		Article article = articleService.getArticleById(articleId);
 
+		// 좋아요 수 출력
+		int likeCount = articleService.getLikeCount(articleId);
+
+		article.setExtra__likeCount(likeCount);
+
 		// tripId 가져오기
 		int tripId = article.getTripId();
 
@@ -176,7 +187,6 @@ public class UsrArticleController {
 
 		model.addAttribute("article", article);
 		model.addAttribute("articleImages", articleImages);
-
 
 		return "usr/article/modify";
 	}
@@ -235,6 +245,28 @@ public class UsrArticleController {
 		int memberId = rq.getLoginedMemberId();
 		articleService.deleteArticle(articleId);
 
+	}
+
+	@PostMapping("/usr/article/toggleLike")
+	@ResponseBody
+	public int toggleLike(int articleId) {
+
+		int memberId = rq.getLoginedMemberId();
+
+		boolean isLiked = articleService.getLikeCountByArticleIdAndMemberId(articleId, memberId);
+
+		if (isLiked) {
+			// 좋아요 증가
+			articleService.increseLikeCount(articleId, memberId);
+		} else {
+			// 좋아요 감소
+			articleService.decreseLikeCount(articleId, memberId);
+		}
+
+		// 좋아요 수 출력
+		int likeCount = articleService.getLikeCount(articleId);
+		
+		return likeCount;
 	}
 
 }

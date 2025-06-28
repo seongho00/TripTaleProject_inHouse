@@ -1,10 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="ARTICLE DETAIL" />
 <%@ include file="../common/head.jspf"%>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -88,8 +90,27 @@ document.addEventListener("DOMContentLoaded", function () {
 		  }, 100);
 		});
 
-	function toggleHeartButton() {
+	function toggleHeartButton(articleId) {
 		$('#heartButton').toggleClass('fa-regular').toggleClass('fa-solid');
+		
+		$.ajax({
+            type: 'POST',
+            url: 'toggleLike', // 서버 엔드포인트
+            data: { articleId: articleId },
+            success: function (likeCount) {
+
+				$('#likeCount').text(likeCount);
+
+				$('#heartButton').toggleClass('fa-regular');
+				$('#heartButton').toggleClass('fa-solid');
+
+            },
+            error: function () {
+                alert("서버 오류가 발생했습니다.");
+            }
+        });
+		
+		
 	}
 </script>
 <style>
@@ -229,7 +250,8 @@ document.addEventListener("DOMContentLoaded", function () {
 </style>
 
 
-<div class="flex flex-col justify-start items-center w-screen h-screen overflow-auto gap-2.5 bg-white ">
+<div
+	class="flex flex-col justify-start items-center w-screen h-screen overflow-auto gap-2.5 bg-white ">
 
 
 	<div class="h-[100px]"></div>
@@ -240,13 +262,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		<div
 			class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-full h-full relative gap-2.5 border-0 border-[#f00]">
 			<a href="../home/main">
-				<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
+				<img src="/images/로고_blue.png"
+					class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
 			</a>
 
 
 			<c:if test="${!rq.isLogined() }">
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
-					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+				<div
+					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
+					<p
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 						<a href="../article/list">여행 리스트</a>
 					</p>
 
@@ -257,24 +282,32 @@ document.addEventListener("DOMContentLoaded", function () {
 			</c:if>
 			<c:if test="${rq.isLogined() }">
 
-				<div class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
-					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+				<div
+					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
+					<p
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 						<a href="../article/list">여행 리스트</a>
 					</p>
-					<p class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+					<p
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
 						<a href="../planner/region">여행 작성</a>
 					</p>
-					<div onClick="showProfileMenu();" class="relative justify-center items-center flex-grow h-14 ">
-						<button class="h-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
-							<div id="profileThumbnail" class="w-18 h-18 rounded-full bg-white flex items-center justify-center">
+					<div onClick="showProfileMenu();"
+						class="relative justify-center items-center flex-grow h-14 ">
+						<button
+							class="h-full flex justify-center items-center text-xl font-medium text-[#2f3a4b] cursor-pointer">
+							<div id="profileThumbnail"
+								class="w-18 h-18 rounded-full bg-white flex items-center justify-center">
 								<c:if test="${base64Image == null and developerImage == null}">
 									<i class="fa-solid fa-user fa-3x text-gray-700"></i>
 								</c:if>
 								<c:if test="${base64Image == null and developerImage != null}">
-									<img src="${developerImage}" class="w-full h-full object-cover rounded-full" />
+									<img src="${developerImage}"
+										class="w-full h-full object-cover rounded-full" />
 								</c:if>
 								<c:if test="${base64Image != null}">
-									<img src="data:image/jpeg;base64,${base64Image}" class="w-full h-full object-cover rounded-full" />
+									<img src="data:image/jpeg;base64,${base64Image}"
+										class="w-full h-full object-cover rounded-full" />
 								</c:if>
 							</div>
 
@@ -283,7 +316,8 @@ document.addEventListener("DOMContentLoaded", function () {
 						<ul id="ProfileMenu"
 							class="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg hidden z-51">
 							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-								<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내 정보</a>
+								<a href="../member/profile?memberId=${rq.getLoginedMemberId() }">내
+									정보</a>
 							</li>
 							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">설정</li>
 							<li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
@@ -297,9 +331,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		</div>
 
 	</div>
-	<div class="flex justify-center items-center self-stretch flex-grow overflow-auto gap-2.5 p-2.5">
-		<div class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative  gap-2.5 p-2.5">
-			<div class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative w-[1200px] px-30 gap-2.5 pr-10">
+	<div
+		class="flex justify-center items-center self-stretch flex-grow overflow-auto gap-2.5 p-2.5">
+		<div
+			class="flex flex-col justify-center items-center self-stretch flex-grow-0 flex-shrink-0 relative  gap-2.5 p-2.5">
+			<div
+				class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative w-[1200px] px-30 gap-2.5 pr-10">
 				<div class="text-5xl">${article.title }</div>
 				<div class="flex justify-end items-center">
 					<a href="modify?articleId=${param.articleId }">
@@ -318,7 +355,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			<!-- Swiper -->
 			<div class="flex swiper relative  w-full  mx-auto">
 				<div class="swiper-wrapper ">
-					<c:forEach var="articleImage" items="${articleImages }" varStatus="">
+					<c:forEach var="articleImage" items="${articleImages }"
+						varStatus="">
 						<div class="swiper-slide">
 							<img src="${articleImage }" />
 						</div>
@@ -337,7 +375,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			<div
 				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[306px] w-[1000px] relative  gap-2.5">
-				<p id="viewer" class="flex-grow-0 flex-shrink-0 w-[1000px]  text-xl font-medium text-start text-black">
+				<p id="viewer"
+					class="flex-grow-0 flex-shrink-0 w-[1000px]  text-xl font-medium text-start text-black">
 			</div>
 
 		</div>
@@ -346,10 +385,12 @@ document.addEventListener("DOMContentLoaded", function () {
 <input type="hidden" id="articleContent" value="${article.body}" />
 
 <div id="toc" class="fixed right-[300px] top-1/2"></div>
-<div id="heart" class="fixed left-[370px] w-[50px] h-[100px] rounded-full border border-black top-1/2">
-	<i onClick="toggleHeartButton();" id="heartButton"
+<div id="heart"
+	class="fixed left-[370px] w-[50px] h-[100px] rounded-full border border-black top-1/2">
+	<i onClick="toggleHeartButton(${article.id});" id="heartButton"
 		class="fa-regular fa-heart text-red-500 absolute rounded-full top-[10px] left-1/2 -translate-x-1/2 text-3xl cursor-pointer"></i>
-	<div class="text-black absolute top-[60px] left-1/2 -translate-x-1/2 text-2xl">1</div>
+	<div id="likeCount"
+		class="text-black absolute top-[60px] left-1/2 -translate-x-1/2 text-2xl">${article.extra__likeCount }</div>
 </div>
 
 <%@ include file="../common/foot.jspf"%>
