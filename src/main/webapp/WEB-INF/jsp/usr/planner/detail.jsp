@@ -10,7 +10,7 @@
 	let isExpanded = false;
 	let size = ${todayTripPlaces.size() - 1};
 	
-
+	const polylineColors = ['#FF0000', '#007BFF', '#28A745', '#FFC107', '#6F42C1']; // 일차별 색상
 	/* 카카오맵 관련 전역번수 */
 	let map;       // 전역 지도 객체
 	let marker;    // 전역 마커 객체
@@ -69,10 +69,22 @@
 				const $tripPlaceList = $('.tripPlaceList'); // 고정된 외부 컨테이너
 				$tripPlaceList.empty(); // ⛔ #timelineList 포함 전부 삭제됨
 				
+				let allTripPlaces = [];
 			    
 				
-				Object.entries(groupedTripPlaces).forEach(([dayIndex, tripPlaces]) => {
+				Object.entries(groupedTripPlaces).forEach(([dayIndex, tripPlaces], i) => {
+					const lineCoords = tripPlaces.map(p => new kakao.maps.LatLng(parseFloat(p.mapY), parseFloat(p.mapX)));
+					const color = polylineColors[i % polylineColors.length];
 
+					drawPolyline(map, lineCoords, color); // ✅ 색상별 선 그리기
+					console.log(`📌 drawPolyline called for dayIndex=\${dayIndex}, color=\${color}`);
+					// 마커/오버레이도 원하면 같이 호출
+					drawMarkers(map, lineCoords);
+					drawOverlays(map, tripPlaces);
+					
+					
+					allTripPlaces = allTripPlaces.concat(tripPlaces); // ✅ 전체 배열에 누적
+					
 					let $rowTimeLine = $(`
 							  <ul class="rowTimeLine timeline timeline-vertical w-[50px]" data-date="\${tripPlaces[0].extra__date}"></ul>
 							`);
@@ -101,8 +113,8 @@
 						// =========================
 						if(i == 0){
 							html += `
-								<div draggable="true"
-									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<div draggable="true" data-mapx="\${tripPlace.mapX }" data-mapy="\${tripPlace.mapY }"
+									class="placeList cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 								<img src="\${tripPlace.extra__pictureUrl}"
 									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
@@ -119,8 +131,8 @@
 								<i class="fa-solid fa-bus-simple"></i>
 								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${durationMinutes}분</p>
 								</div>
-								<div draggable="true"
-									class="flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
+								<div draggable="true" data-mapx="\${tripPlace.mapX }" data-mapy="\${tripPlace.mapY }"
+									class="placeList cursor-pointer flex justify-start items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden gap-[21px] px-2.5 py-3.5">
 								<img src="\${tripPlace.extra__pictureUrl}"
 									class="flex-grow-0 flex-shrink-0 w-[79px] h-[79px] rounded-[100px] object-cover" />
 						        <div class="flex flex-col justify-between items-start self-stretch flex-grow relative overflow-hidden px-0.5 py-[5px]">
@@ -200,13 +212,15 @@
 				}
 
 				isExpanded = !isExpanded;
+				
+		
 			},
 			error: function (xhr, status, error) {
 				console.error('에러 발생:', error);
 		        alert('데이터를 불러오지 못했습니다.');
 			}
+			
 		});
-		
 		
 		
 	}
@@ -405,8 +419,7 @@
 						});
 					markTimelineByTime(); 
 					
-					// ✅ 지도 렌더링
-					renderMap(tripPlaces); // ← 여기 추가
+
 					
 				},
 				error: function (xhr, status, error) {
@@ -462,11 +475,12 @@
 	}
 	
 	// 좌표 그리는 함수
-	function drawPolyline(map, coords) {
+	function drawPolyline(map, coords, color = '#FF0000') {
+		console.log('📌 renderMap() drawPolyline');
 	    const polyline = new kakao.maps.Polyline({
 	        path: coords,
 	        strokeWeight: 4,
-	        strokeColor: '#FF0000',
+	        strokeColor: color,
 	        strokeOpacity: 0.8,
 	        strokeStyle: 'solid'
 	    });
