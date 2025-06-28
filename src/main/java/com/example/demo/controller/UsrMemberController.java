@@ -194,6 +194,7 @@ public class UsrMemberController {
 		}
 
 		Member member = memberService.getMemberById("local", loginId);
+		System.out.println(member);
 		if (member != null) {
 			return rq.historyBackOnView("이미 존재하는 아이디입니다.");
 		}
@@ -319,9 +320,9 @@ public class UsrMemberController {
 	@ResponseBody
 	public ResultData doFindLoginPw(String providerId, String email) {
 
-		Member member = memberService.getMemberByProviderId(providerId);
+		Member member = memberService.getMemberByProviderIdAndEmail(providerId, email);
 		if (member == null) {
-			return ResultData.from("F-1", "비밀번호 찾기 실패");
+			return ResultData.from("F-1", "존재하지 않는 아이디 혹은 이메일입니다.");
 		}
 
 		ResultData notifyTempLoginPwByEmailRd = memberService.notifyTempLoginPwByEmail(member);

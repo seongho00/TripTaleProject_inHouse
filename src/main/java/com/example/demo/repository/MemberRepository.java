@@ -30,7 +30,7 @@ public interface MemberRepository {
 
 	public Member getMemberByNameAndEmail(String name, String email);
 
-	public Member getMemberByProviderId(String providerId);
+	public Member getMemberByProviderIdAndEmail(String providerId, String email);
 
 	public void updateMember(int memberId, String loginPw, String name, String email);
 

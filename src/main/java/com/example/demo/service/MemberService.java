@@ -88,9 +88,9 @@ public class MemberService {
 		memberRepository.updateMember(member.getId(), tempPassword, "", "");
 	}
 
-	public Member getMemberByProviderId(String providerId) {
+	public Member getMemberByProviderIdAndEmail(String providerId, String email) {
 
-		return memberRepository.getMemberByProviderId(providerId);
+		return memberRepository.getMemberByProviderIdAndEmail(providerId, email);
 		
 	}
 

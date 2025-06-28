@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.TripTaleProjectApplication;
+import com.example.demo.service.ArticleService;
 import com.example.demo.service.ChatGptService;
 import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.service.TripLocationService;
+import com.example.demo.vo.Article;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripDay;
@@ -47,6 +49,8 @@ public class UsrPlannerController {
 	private ChatGptService chatGptService;
 	@Autowired
 	private NaverOAuthService naverOAuthService;
+	@Autowired
+	private ArticleService articleService;
 
 	@Autowired
 	private TripLocationService tripLocationService;
@@ -307,10 +311,20 @@ public class UsrPlannerController {
 		return tripInfos;
 	}
 
+	@RequestMapping("usr/planner/searchArticleByKeywordType")
+	@ResponseBody
+	public List<Article> searchArticleByKeywordType(Model model, String keyword, int memberId,
+			String searchKeywordType) {
+
+		List<Article> tripInfos = articleService.getArticleByFilterAndKeyword(searchKeywordType, keyword);
+
+		return tripInfos;
+	}
+
 	@RequestMapping("usr/planner/searchByCategory")
 	@ResponseBody
 	public List<TripLocation> searchByCategory(Model model, String category) {
-		
+
 		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(category, 3);
 
 		return tripLocations;

@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 
@@ -141,52 +142,125 @@
 			searchKeywordType = $('#articleSearchKeywordType').val();
 		}
 		
-		$.ajax({
-			type: 'GET',
-			url: '/usr/planner/searchByKeywordType', // ✅ 너의 실제 검색 API 경로로 바꿔줘
-			data: { keyword: keyword , memberId : memberId, searchKeywordType : searchKeywordType},
-			success: function (tripInfos) {
-	        	const container = $('.tripInfoContainer');
-				container.empty();
-				tripInfos.forEach((tripInfo, index) => {
-					const reverseIndex = tripInfos.length - index;
-					const html = `
-						<div onclick="showDetail(\${tripInfo.id});"
-							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
-							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">\${reverseIndex}</p>
-							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
-								<img src="\${tripInfo.url}" class="w-full h-full object-cover" />
-							</div>
-							<div class="flex flex-col justify-center items-start self-stretch flex-grow relative gap-2.5 pl-2.5 pr-[27px] py-[15px]">
-								<div class="flex justify-start items-end gap-2.5 pr-[7px]">
-									<p class="text-xl font-medium text-center text-black">\${tripInfo.tripName}</p>
-									<p class="text-[15px] font-medium text-center text-black">\${tripInfo.tripRegion}</p>
+		if (keywordType === 'tripInfo') {
+			
+			$.ajax({
+				type: 'GET',
+				url: '/usr/planner/searchByKeywordType', // ✅ 너의 실제 검색 API 경로로 바꿔줘
+				data: { keyword: keyword , memberId : memberId, searchKeywordType : searchKeywordType},
+				success: function (tripInfos) {
+		        	const container = $('.tripInfoContainer');
+					container.empty();
+					tripInfos.forEach((tripInfo, index) => {
+						const reverseIndex = tripInfos.length - index;
+						const html = `
+							<div onclick="showDetail(\${tripInfo.id});"
+								class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
+								<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">\${reverseIndex}</p>
+								<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+									<img src="\${tripInfo.url}" class="w-full h-full object-cover" />
 								</div>
-								<p class="text-[15px] font-medium text-center text-black">\${tripInfo.formattedStartDate} ~ \${tripInfo.formattedEndDate}</p>
+								<div class="flex flex-col justify-center items-start self-stretch flex-grow relative gap-2.5 pl-2.5 pr-[27px] py-[15px]">
+									<div class="flex justify-start items-end gap-2.5 pr-[7px]">
+										<p class="text-xl font-medium text-center text-black">\${tripInfo.tripName}</p>
+										<p class="text-[15px] font-medium text-center text-black">\${tripInfo.tripRegion}</p>
+									</div>
+									<p class="text-[15px] font-medium text-center text-black">\${tripInfo.formattedStartDate} ~ \${tripInfo.formattedEndDate}</p>
+								</div>
+								<div class="relative">
+									<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+									<ul class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
+										<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+											<a href="../article/writeByAI?tripId=\${tripInfo.id}">글쓰기</a>
+										</li>
+										<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+											<a href="../planner/modify?tripId=\${tripInfo.id}">수정하기</a>
+										</li>
+										<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+											<a href="../planner/delete?tripId=\${tripInfo.id}">삭제하기</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						`;
+						container.append(html);
+					});
+				},
+				error: function (xhr) {
+					console.error('검색 실패:', xhr.responseText);
+				}
+				
+				
+			});
+		
+		} else if (keywordType === 'article') {
+			
+			$.ajax({
+				type: 'GET',
+				url: '/usr/planner/searchArticleByKeywordType', // ✅ 너의 실제 검색 API 경로로 바꿔줘
+				data: { keyword: keyword , memberId : memberId, searchKeywordType : searchKeywordType},
+				success: function (articles) {
+
+		        	const container = $('.articleContainer');
+					container.empty();
+					articles.forEach((article, index) => {
+						
+						const reverseIndex = articles.length - index;
+						const html = `
+							<div onClick="showArticleDetail(\${article.id});"
+							class="articleDiv flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
+							<p
+								class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">\${tripInfos.size() - status.index}</p>
+							<div
+								class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+								<img src="" class="w-full h-full object-cover" />
+
+							</div>
+							<div
+								class="flex flex-col justify-center items-start self-stretch flex-grow relative  gap-2.5 pl-2.5 pr-[27px] py-[15px]">
+								<div
+									class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+									<p
+										class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">\${article.title}</p>
+									<p
+										class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">\${article.extra__tripRegion}</p>
+								</div>
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black"></p>
+
 							</div>
 							<div class="relative">
-								<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
-								<ul class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-										<a href="../article/writeByAI?tripId=\${tripInfo.id}">글쓰기</a>
+								<i onclick="event.stopPropagation()"
+									class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+								<!-- 숨겨진 메뉴 -->
+								<ul
+									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a href="../article/modify?articleId=\${article.id}">수정하기</a>
 									</li>
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-										<a href="../planner/modify?tripId=\${tripInfo.id}">수정하기</a>
-									</li>
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-										<a href="../planner/delete?tripId=\${tripInfo.id}">삭제하기</a>
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+										<a onClick="deleteArticle(\${article.id}, this);" href="#">삭제하기</a>
 									</li>
 								</ul>
 							</div>
 						</div>
-					`;
-					container.append(html);
-				});
-			},
-			error: function (xhr) {
-				console.error('검색 실패:', xhr.responseText);
-			}
-		});
+						`;
+						container.append(html);
+					});
+				},
+				error: function (xhr) {
+					console.error('검색 실패:', xhr.responseText);
+				}
+				
+				
+			});
+			
+		}
+		
+		
+		
 	}
 	
 	function showProfileInput() {
@@ -429,14 +503,18 @@
 
 
 
-<div class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
+<div
+	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white ">
 	<%@ include file="../common/header_blue.jspf"%>
-	<div class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
+	<div
+		class="flex justify-between items-center flex-grow w-[1028px]  p-2.5">
 		<div
 			class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 h-[577px] w-[231px] bg-slate-200 rounded-[5px] relative overflow-hidden gap-[26px] px-[93px] border border-black">
-			<p class="flex-grow-0 flex-shrink-0  h-[30px] text-xl font-medium text-center text-[#aedff7] z-1">PROFILE</p>
+			<p
+				class="flex-grow-0 flex-shrink-0  h-[30px] text-xl font-medium text-center text-[#aedff7] z-1">PROFILE</p>
 
-			<svg class="absolute top-0" width="100%" height="230" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg"
+			<svg class="absolute top-0" width="100%" height="230"
+				viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg"
 				preserveAspectRatio="none">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -444,39 +522,47 @@
       <stop offset="100%" stop-color="#93c5fd" />
     </linearGradient>
   </defs>
-  <path d="
+  <path
+					d="
     M0,60
     C200,50 400,70 600,60
     S1000,70 1200,60
     L1200,0
     L0,0
-    Z" fill="url(#grad)" />
+    Z"
+					fill="url(#grad)" />
 </svg>
 
 
-			<div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[157px]  relative  gap-10">
+			<div
+				class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 w-[157px]  relative  gap-10">
 
 
 
 				<div onClick="showProfileInput();" class="indicator cursor-pointer">
 					<!-- ✅ 그라데이션 border 처리용 wrapper -->
-					<div class="w-20 h-20 rounded-full p-[3px] bg-gradient-to-tr from-purple-500 via-pink-500 to-red-500 ">
+					<div
+						class="w-20 h-20 rounded-full p-[3px] bg-gradient-to-tr from-purple-500 via-pink-500 to-red-500 ">
 						<!-- ✅ 실제 프로필 썸네일 -->
-						<div id="profileThumbnail" class="w-full h-full rounded-full bg-white flex items-center justify-center">
+						<div id="profileThumbnail"
+							class="w-full h-full rounded-full bg-white flex items-center justify-center">
 							<c:if test="${base64Image == null and developerImage == null}">
 								<i class="fa-solid fa-user fa-3x text-gray-700"></i>
 							</c:if>
 							<c:if test="${base64Image == null and developerImage != null}">
-								<img src="${developerImage}" class="w-full h-full object-cover rounded-full" />
+								<img src="${developerImage}"
+									class="w-full h-full object-cover rounded-full" />
 							</c:if>
 							<c:if test="${base64Image != null}">
-								<img src="data:image/jpeg;base64,${base64Image}" class="w-full h-full object-cover rounded-full" />
+								<img src="data:image/jpeg;base64,${base64Image}"
+									class="w-full h-full object-cover rounded-full" />
 							</c:if>
 						</div>
 					</div>
 
 					<!-- 배지 (카메라 아이콘) -->
-					<span class="indicator-item badge !bg-neutral-400 w-6 h-6 p-0 flex items-center justify-center">
+					<span
+						class="indicator-item badge !bg-neutral-400 w-6 h-6 p-0 flex items-center justify-center">
 						<i class="fa-solid fa-camera text-xs"></i>
 					</span>
 
@@ -534,8 +620,9 @@
 				</div>
 
 			</div>
-			<a href="#" onClick="if(confirm('정말 삭제하시겠습니까?')) deleteMember(${loginedMember.id}});"
-				class="absolute bottom-2 right-[15px] flex-grow-0 flex-shrink-0 text-sm font-medium text-center !text-red-500 underline decoration-2 decoration-red-500">삭제하기</a>
+			<a href="#"
+				onClick="if(confirm('정말 삭제하시겠습니까?')) deleteMember(${loginedMember.id}});"
+				class="absolute bottom-2 right-[15px] flex-grow-0 flex-shrink-0 text-sm font-medium text-center !text-red-500 underline decoration-2 decoration-red-500">회원탈퇴</a>
 			<button onClick="showCheckPasswordUI();" id="blockProfile"
 				class="flex justify-center items-center absolute top-[200px] bottom-0 w-full bg-black/20 flex-grow-0 flex-shrink-0 z-5 cursor-pointer">
 				<i class="fa-solid fa-lock text-5xl "></i>
@@ -545,13 +632,14 @@
 		</div>
 		<div
 			class="flex flex-col justify-between items-center self-stretch flex-grow-0 flex-shrink-0 w-[745px] px-[171px] py-[29px]">
-			<div class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[323px] relative overflow-hidden py-[11px]">
+			<div
+				class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[323px] relative overflow-hidden py-[11px]">
 				<p onClick="lookupPlanButton();" id="lookupPlanButton"
 					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50  text-black/80 cursor-pointer">여행
 					계획 조회</p>
 				<p onClick="lookupRecordButton();" id="lookupRecordButton"
-					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">여행 기록
-					조회</p>
+					class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center opacity-50 text-black/80 cursor-pointer">여행
+					기록 조회</p>
 			</div>
 
 
@@ -559,7 +647,8 @@
 				class="tripPlanUI flex flex-col justify-start items-center flex-grow w-[565px] relative  gap-2.5 pt-[18px] pb-[62px]">
 
 
-				<div class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
+				<div
+					class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
 					<div
 						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative  gap-2.5 px-2 py-[9px] border border-black">
 						<select id="tripSearchKeywordType"
@@ -571,50 +660,58 @@
 					</div>
 					<div
 						class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[290px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
-						<input id="tripSearchKeyword" type="text" placeholder="검색어를 입력하세요" autocomplete="off"
+						<input id="tripSearchKeyword" type="text" placeholder="검색어를 입력하세요"
+							autocomplete="off"
 							class="outline-none border-none focus:outline-none focus:border-none flex-grow " />
-						<i onClick="getUIBySearchKeyword(${loginedMember.id}, 'tripInfo');"
+						<i
+							onClick="getUIBySearchKeyword(${loginedMember.id}, 'tripInfo');"
 							class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>
 					</div>
-					<div onClick="toggleCaret(${loginedMember.id})"
-						class="sortOrder flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-[3px] cursor-pointer">
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">최근순</p>
-						<i class="fa-solid fa-caret-down"></i>
-						<i class="fa-solid fa-caret-up !hidden"></i>
-					</div>
+
 				</div>
 				<div
 					class="tripInfoContainer flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
 					<c:forEach var="tripInfo" items="${tripInfos }" varStatus="status">
 						<div onClick="showDetail(${tripInfo.id});"
 							class="flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
-							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
-							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
-								<img src="${urls[status.index] }" class="w-full h-full object-cover" />
+							<p
+								class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
+							<div
+								class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+								<img src="${urls[status.index] }"
+									class="w-full h-full object-cover" />
 
 							</div>
 							<div
 								class="flex flex-col justify-center items-start self-stretch flex-grow relative  gap-2.5 pl-2.5 pr-[27px] py-[15px]">
-								<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${tripInfo.tripName}</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.tripRegion}</p>
+								<div
+									class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+									<p
+										class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${tripInfo.tripName}</p>
+									<p
+										class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.tripRegion}</p>
 								</div>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.formattedStartDate }
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${tripInfo.formattedStartDate }
 									~ ${tripInfo.formattedEndDate }</p>
 
 							</div>
 							<div class="relative">
-								<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+								<i onclick="event.stopPropagation()"
+									class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
 								<!-- 숨겨진 메뉴 -->
 								<ul
 									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a href="../article/writeByAI?tripId=${tripInfo.id}">글쓰기</a>
 									</li>
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a href="../planner/modify?tripId=${tripInfo.id}">수정하기</a>
 									</li>
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a href="../planner/delete?tripId=${tripInfo.id }">삭제하기</a>
 									</li>
 
@@ -631,7 +728,8 @@
 				class="tripArticleUI hidden flex flex-col justify-start items-center flex-grow w-[565px] relative  gap-2.5 pt-[18px] pb-[62px]">
 
 
-				<div class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
+				<div
+					class="flex justify-center items-end self-stretch flex-grow-0 flex-shrink-0  gap-2.5 px-[55px] py-1.5">
 					<div
 						class="flex justify-start items-center flex-grow-0 flex-shrink-0 w-[123px] relative  gap-2.5 px-2 py-[9px] border border-black">
 						<select id="articleSearchKeywordType"
@@ -639,52 +737,56 @@
 							<option value="ALL">전체</option>
 							<option value="title">제목</option>
 							<option value="body">내용</option>
-							<option value="tripLocation">여행 이름</option>
-							<option value="tripLocation">여행 지역</option>
+							<option value="region">여행 지역</option>
 						</select>
 					</div>
 					<div
 						class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-[290px] h-[41px] relative gap-2.5 px-2.5 py-[7px] rounded-[15px] bg-white border border-black">
-						<input id="articleSearchKeyword" type="text" placeholder="검색어를 입력하세요" autocomplete="off"
+						<input id="articleSearchKeyword" type="text"
+							placeholder="검색어를 입력하세요" autocomplete="off"
 							class="outline-none border-none focus:outline-none focus:border-none flex-grow " />
 						<i onClick="getUIBySearchKeyword(${loginedMember.id}, 'article');"
 							class="cursor-pointer fa-solid fa-magnifying-glass text-lg"></i>
 					</div>
-					<div onClick="toggleCaret()"
-						class="sortOrder flex justify-start items-center flex-grow-0 flex-shrink-0 relative gap-[3px] cursor-pointer">
-						<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">최근순</p>
-						<i class="fa-solid fa-caret-down"></i>
-						<i class="fa-solid fa-caret-up !hidden"></i>
-					</div>
+
 				</div>
 				<div
 					class="articleContainer flex flex-col justify-start items-start self-stretch flex-grow-0 flex-shrink-0  gap-2.5 p-2.5">
 					<c:forEach var="article" items="${articles }" varStatus="status">
 						<div onClick="showArticleDetail(${article.id});"
 							class="articleDiv flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
-							<p class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
-							<div class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
+							<p
+								class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
+							<div
+								class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
 								<img src="" class="w-full h-full object-cover" />
 
 							</div>
 							<div
 								class="flex flex-col justify-center items-start self-stretch flex-grow relative  gap-2.5 pl-2.5 pr-[27px] py-[15px]">
-								<div class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
-									<p class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${article.title}</p>
-									<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.extra__tripRegion}</p>
+								<div
+									class="flex justify-start items-end flex-grow-0 flex-shrink-0 relative overflow-hidden gap-2.5 pr-[7px]">
+									<p
+										class="flex-grow-0 flex-shrink-0 text-xl font-medium text-center text-black">${article.title}</p>
+									<p
+										class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black">${article.extra__tripRegion}</p>
 								</div>
-								<p class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black"></p>
+								<p
+									class="flex-grow-0 flex-shrink-0 text-[15px] font-medium text-center text-black"></p>
 
 							</div>
 							<div class="relative">
-								<i onclick="event.stopPropagation()" class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
+								<i onclick="event.stopPropagation()"
+									class="articleMenuToggle fa-solid fa-bars fa-lg cursor-pointer"></i>
 								<!-- 숨겨진 메뉴 -->
 								<ul
 									class="articleSlideMenu hidden absolute top-[15px] left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg z-50">
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a href="../article/modify?articleId=${article.id}">수정하기</a>
 									</li>
-									<li onclick="event.stopPropagation()" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+									<li onclick="event.stopPropagation()"
+										class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
 										<a onClick="deleteArticle(${article.id}, this);" href="#">삭제하기</a>
 									</li>
 								</ul>
@@ -706,9 +808,11 @@
 <div id="passwordCheckInputModal"
 	class="flex justify-center items-center hidden fixed inset-0 z-50  items-center justify-center bg-black/50">
 
-	<div class="flex flex-col bg-white rounded-xl shadow-xl p-6 max-w-md relative">
+	<div
+		class="flex flex-col bg-white rounded-xl shadow-xl p-6 max-w-md relative">
 		<!-- 닫기 버튼 -->
-		<button onClick="hideCheckPasswordUI();" class="cursor-pointer absolute top-3 right-3 text-gray-500 hover:text-black">
+		<button onClick="hideCheckPasswordUI();"
+			class="cursor-pointer absolute top-3 right-3 text-gray-500 hover:text-black">
 			<i class="fa-solid fa-xmark text-lg"></i>
 		</button>
 

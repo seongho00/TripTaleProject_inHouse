@@ -103,12 +103,12 @@
 	</select>
 
 
-	<select id="getMemberByProviderId" parameterType="map"
+	<select id="getMemberByProviderIdAndEmail" parameterType="map"
 		resultType="com.example.demo.vo.Member">
 		SELECT *
 		FROM member
 		WHERE provider = 'local' AND providerId
-		= #{providerId}
+		= #{providerId} AND email = #{email}
 	</select>
 
 
