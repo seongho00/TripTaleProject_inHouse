@@ -77,8 +77,7 @@
 					const color = polylineColors[i % polylineColors.length];
 
 					drawPolyline(map, lineCoords, color); // ✅ 색상별 선 그리기
-					console.log(`📌 drawPolyline called for dayIndex=\${dayIndex}, color=\${color}`);
-					// 마커/오버레이도 원하면 같이 호출
+
 					drawMarkers(map, lineCoords);
 					drawOverlays(map, tripPlaces);
 					
@@ -88,9 +87,11 @@
 					let $rowTimeLine = $(`
 							  <ul class="rowTimeLine timeline timeline-vertical w-[50px]" data-date="\${tripPlaces[0].extra__date}"></ul>
 							`);
+					console.log(tripPlaces);
 				    $tripPlaceList.append($rowTimeLine);
 				    let $timelineList = $('<div id="timelineList" class="flex flex-col justify-start items-start flex-grow-0 w-[300px] flex-shrink-0 gap-3"></div>');
 				    $tripPlaceList.append($timelineList);
+
 				    
 				    const getMinutesFromDuration = (durationStr) => {
 					    if (!durationStr) return 0;
@@ -270,7 +271,8 @@
 		
 		$('.rowTimeLine > li').each(function () {
 			
-			const date = $('.rowTimeLine').data('date');
+			const date = $(this).closest('.rowTimeLine').data('date');
+			console.log(date);
 			const dateStr = date.split(' ')[0];
  			const startTimeStr = $(this).data('starttime'); // "HH:mm"
  			const endTimeStr = $(this).data('endtime'); // "HH:mm"
@@ -476,7 +478,6 @@
 	
 	// 좌표 그리는 함수
 	function drawPolyline(map, coords, color = '#FF0000') {
-		console.log('📌 renderMap() drawPolyline');
 	    const polyline = new kakao.maps.Polyline({
 	        path: coords,
 	        strokeWeight: 4,
