@@ -40,6 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	$(document).ready(function () {
+		
+		const isLiked = ${isLiked};
+
+		
+		if (isLiked){
+			console.log('실행됨');
+			$('#heartButton').removeClass('fa-regular');
+			$('#heartButton').addClass('fa-solid');
+		}
+		
+		
 		  const content = $('#articleContent').val();
 
 		  toastui.Editor.factory({
@@ -91,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 
 	function toggleHeartButton(articleId) {
-		$('#heartButton').toggleClass('fa-regular').toggleClass('fa-solid');
+
 		
 		$.ajax({
             type: 'POST',

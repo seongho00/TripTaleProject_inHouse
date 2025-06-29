@@ -16,15 +16,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.TripTaleProjectApplication;
 import com.example.demo.service.ArticleService;
 import com.example.demo.service.ChatGptService;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.ArticleImage;
+import com.example.demo.vo.Member;
 import com.example.demo.vo.Rq;
 import com.example.demo.vo.TripInfo;
 
@@ -44,6 +45,8 @@ public class UsrArticleController {
 	private ArticleService articleService;
 	@Autowired
 	private PlannerService plannerService;
+	@Autowired
+	private MemberService memberService;
 
 	UsrArticleController(TripTaleProjectApplication tripTaleProjectApplication) {
 		this.tripTaleProjectApplication = tripTaleProjectApplication;
@@ -123,6 +126,8 @@ public class UsrArticleController {
 	@RequestMapping("usr/article/detail")
 	public String detail(Model model, int articleId) {
 
+		int memberId = rq.getLoginedMemberId();
+
 		// 게시글 제목, 내용 등 가져오기
 		Article article = articleService.getArticleById(articleId);
 
@@ -130,6 +135,8 @@ public class UsrArticleController {
 		int likeCount = articleService.getLikeCount(articleId);
 
 		article.setExtra__likeCount(likeCount);
+
+		boolean isLiked = articleService.getLikeCountByArticleIdAndMemberId(articleId, memberId);
 
 		// tripId 가져오기
 		int tripId = article.getTripId();
@@ -155,6 +162,7 @@ public class UsrArticleController {
 		model.addAttribute("articleImages", base64Images);
 		model.addAttribute("startDate", dateFormattedStartDate);
 		model.addAttribute("endDate", dateFormattedEndDate);
+		model.addAttribute("isLiked", isLiked);
 
 		return "usr/article/detail";
 	}
@@ -232,9 +240,31 @@ public class UsrArticleController {
 	}
 
 	@PostMapping("/usr/article/doModify")
-	public String doModify(int articleId, String title, String body) {
+	public String doModify(int articleId, String title, String body,
+			@RequestParam("images") List<MultipartFile> images) {
 
 		articleService.updateArticle(articleId, title, body);
+
+		System.out.println(images);
+		System.out.println(images.size());
+		if (images != null && !images.isEmpty()) {
+			articleService.deleteArticleImage(articleId);
+			for (MultipartFile img : images) {
+				if (!img.isEmpty()) {
+					try {
+						System.out.println("실행됨: " + img.getOriginalFilename());
+						
+						String fileName = img.getOriginalFilename();
+						String contentType = img.getContentType();
+						byte[] data = img.getBytes();
+
+						articleService.addArticleImage(articleId, fileName, contentType, data);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 
 		return "redirect:detail?articleId=" + articleId;
 	}
@@ -256,16 +286,17 @@ public class UsrArticleController {
 		boolean isLiked = articleService.getLikeCountByArticleIdAndMemberId(articleId, memberId);
 
 		if (isLiked) {
-			// 좋아요 증가
-			articleService.increseLikeCount(articleId, memberId);
-		} else {
 			// 좋아요 감소
 			articleService.decreseLikeCount(articleId, memberId);
+		} else {
+			// 좋아요 증가
+			articleService.increseLikeCount(articleId, memberId);
+
 		}
 
 		// 좋아요 수 출력
 		int likeCount = articleService.getLikeCount(articleId);
-		
+
 		return likeCount;
 	}
 

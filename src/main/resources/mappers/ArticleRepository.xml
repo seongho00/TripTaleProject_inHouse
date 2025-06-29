@@ -160,5 +160,12 @@
 	</select>
 
 
+	<select id="deleteArticleImage" parameterType="map">
+		DELETE FROM articleImage
+		WHERE
+		articleId = #{articleId}
+	</select>
+
+
 
 </mapper>

@@ -73,7 +73,7 @@ public class ArticleService {
 
 		int likeCount = articleRepository.getLikeCountByArticleIdAndMemberId(articleId, memberId);
 
-		return likeCount == 0;
+		return likeCount != 0;
 	}
 
 	public void increseLikeCount(int articleId, int memberId) {
@@ -83,6 +83,11 @@ public class ArticleService {
 
 	public void decreseLikeCount(int articleId, int memberId) {
 		articleRepository.decreseLikeCount(articleId, memberId);
+		
+	}
+
+	public void deleteArticleImage(int articleId) {
+		articleRepository.deleteArticleImage(articleId);
 		
 	}
 

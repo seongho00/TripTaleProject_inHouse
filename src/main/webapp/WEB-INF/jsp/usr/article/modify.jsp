@@ -64,30 +64,48 @@
 	font-size: 20px; /* 원하는 크기로 조절 */
 }
 /* 헤딩(h1~h6) 크기 비율 조정 */
+
+/* 본문 텍스트 크기 및 줄간격 조정 */
+.toastui-editor-contents {
+	font-size: 20px !important; /* 본문 글씨 크기 */
+	line-height: 1.8 !important; /* 줄 간격 추가로 가독성 향상 */
+	word-break: break-word !important; /* 긴 단어 줄바꿈 */
+}
+
+/* 헤딩(h1~h6) 크기 설정 */
 .toastui-editor-contents h1 {
-	font-size: 2.25rem !important; /* 약 36px */
+	font-size: 2.25rem !important; /* 36px */
+	line-height: 1.3 !important;
+	margin: 1.2em 0 0.6em;
 }
 
 .toastui-editor-contents h2 {
-	font-size: 1.875rem !important; /* 약 30px */
+	font-size: 1.875rem !important; /* 30px */
+	line-height: 1.3 !important;
+	margin: 1.1em 0 0.5em;
 }
 
 .toastui-editor-contents h3 {
-	font-size: 1.5rem !important; /* 약 24px */
+	font-size: 1.5rem !important; /* 24px */
+	line-height: 1.4 !important;
 }
 
 .toastui-editor-contents h4 {
-	font-size: 1.25rem !important; /* 약 20px */
+	font-size: 1.25rem !important; /* 20px */
+	line-height: 1.3 !important;
 }
 
 .toastui-editor-contents h5 {
-	font-size: 1.125rem !important; /* 약 18px */
+	font-size: 1.125rem !important; /* 18px */
+	line-height: 1.3 !important;
 }
 
 .toastui-editor-contents h6 {
-	font-size: 1rem !important; /* 약 16px */
+	font-size: 1rem !important; /* 16px */
+	line-height: 1.3 !important;
 }
 
+/* 마크다운 프리뷰 강조 배경 제거 */
 .toastui-editor-md-preview-highlight {
 	background-color: transparent !important;
 }
@@ -476,32 +494,53 @@ function getUriParams(uri) {
 	});
 
 
-	$(document).ready(function () {
-		$('#imageInput').on('change', function (e) {
-			const fileList = $('#fileList');
+	// 이미지 넣기
+ $(document).ready(function () {
+  const $fileList = $('#fileList');
+  const $inputLabel = $('.btn-info');
 
-			const file = this.files[0];
-			if (file) {
-			const fileItem = $(`
-	          <div class="imageItem flex justify-start items-center pl-2 w-full">
-	            <i class="fa-solid fa-xmark pr-1 cursor-pointer"></i>
-	            <div class="text-base text-gray-700 flex justify-start items-center">\${file.name}</div>
-	          </div>
-	        `);
+  $('#imageInput').on('change', function (e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-	        // 닫기 아이콘 클릭 시 해당 항목 제거 + input 초기화
-	        fileItem.find('.fa-xmark').on('click', function () {
-	          $('#imageInput').val(''); // 파일 입력 초기화
-	          fileItem.remove();
-	        });
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!file.type.startsWith('image/')) continue;
 
-			fileList.append(fileItem);
-			}
-	    });
-	});
+      const $fileItem = $(`
+        <div class="imageItem flex justify-start items-center pl-2 w-full">
+          <i class="fa-solid fa-xmark pr-1 cursor-pointer"></i>
+          <div class="text-base text-gray-700 flex justify-start items-center">\${file.name}</div>
+        </div>
+      `);
+
+      const $newInput = $('<input type="file" name="images" accept="image/*" class="hidden" />');
+      $newInput[0].files = createFileList(file); // Set single file as input
+
+      $fileItem.find('.fa-xmark').on('click', function () {
+        $fileItem.remove();
+        $newInput.remove();
+      });
+
+      $fileList.append($fileItem);
+      $inputLabel.after($newInput); // append to form
+    }
+
+    // input 초기화
+    $(this).val('');
+  });
+
+  // input.files는 읽기 전용이라 FileList를 만들기 위한 헬퍼
+  function createFileList(file) {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    return dataTransfer.files;
+  }
+});
 </script>
 <div class="flex flex-col m-10 h-[90vh]">
-	<form id="articleForm" method="POST" action="/usr/article/doModify">
+	<form id="articleForm" method="POST" action="/usr/article/doModify"
+		enctype="multipart/form-data">
 		<input type="hidden" name="articleId" value="${param.articleId }"
 			onsubmit="return confirm('저장하시겠습니까?');" />
 
@@ -527,8 +566,8 @@ function getUriParams(uri) {
 			</div>
 			<label class="btn btn-sm btn-info ">
 				파일 선택
-				<input type="file" id="imageInput" name="image" accept="image/*"
-					class="hidden" />
+				<input type="file" id="imageInput" name="images" multiple
+					accept="image/*" class="hidden" />
 			</label>
 
 		</div>

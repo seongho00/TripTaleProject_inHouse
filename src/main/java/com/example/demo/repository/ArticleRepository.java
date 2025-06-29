@@ -38,5 +38,7 @@ public interface ArticleRepository {
 
 	public void decreseLikeCount(int articleId, int memberId);
 
+	public void deleteArticleImage(int articleId);
+
 
 }

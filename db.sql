@@ -19,6 +19,8 @@ CREATE TABLE `member` (
 	
 );
 
+ALTER TABLE article
+ADD COLUMN likeCount INT(10) NOT NULL DEFAULT 0;
 
 INSERT INTO `member`
 SET regDate = NOW(),
@@ -129,7 +131,9 @@ ALTER TABLE article
 MODIFY hitCount INT(10) NOT NULL DEFAULT 0;
 
 ALTER TABLE article
-ADD COLUMN tripRegion VARCHAR(50) AFTER `body`;
+ADD COLUMN tripId INT(10) AFTER memberId;
+
+
 
 INSERT INTO article
 SET regDate = NOW(),
@@ -247,24 +251,80 @@ tripDayId = 2,
 startTime = '18:30',
 endTime = '19:30';
 
+# 여행 장소 저장 DB
+CREATE TABLE memberImage (
+	id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	memberId INT(10) NOT NULL,
+	fileName VARCHAR(100) NOT NULL,
+	`data` LONGBLOB
+);
 
 
-SELECT A.*, AI.data AS extra__thumbnailImg
-FROM article AS A
-INNER JOIN articleImage AS AI
-ON A.id = AI.articleId
-GROUP BY A.id
+# 좋아요 DB
+CREATE TABLE `like` (
+	id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	memberId INT(10) NOT NULL,
+	articleId INT(10) NOT NULL
+);
+
+
+
+SELECT *
+FROM article
+
+SELECT *
+FROM `like`
+
+SELECT COUNT(*)
+FROM `like`
+WHERE articleId = 1
+
+INSERT INTO `like`
+SET memberId = 1,
+articleId = 1
+
+		DELETE FROM `like`
+		WHERE
+		memberId =1 AND
+		articleId = 1
+
+
 
 SELECT *
 FROM `member`
 
 SELECT *
-FROM articleImage
+FROM memberImage
 
+
+UPDATE article
+SET title = 
+`body` = 
+WHERE id = 7
+
+
+		SELECT A.*, M.name AS extra__name, T.tripRegion AS extra__tripRegion
+		FROM article AS A
+		INNER JOIN `member` AS M
+		ON A.memberId = M.id
+		INNER JOIN tripInfo AS T
+		ON A.tripId = T.id
+		WHERE A.id = 2
+		GROUP BY A.id
+
+		
+SELECT *
+FROM memberImage
 
 
 SELECT *
+FROM articleImage
+
+SELECT *
 FROM tripInfo
+WHERE memberId = 1
+AND tripName LIKE '%2%'
+
 
 SELECT *
 FROM tripDay
@@ -272,11 +332,23 @@ FROM tripDay
 SELECT *
 FROM tripPlace
 
+ALTER TABLE tripPlace
+ADD COLUMN duration TIME DEFAULT 0;
+
 SELECT *
 FROM tripLocation
 
+
+UPDATE tripLocation
+SET locationTypeId = 3
+WHERE id IN (18,19,20)
+
+
+
 SELECT *
 FROM tripLocationType
+
+
 
 SELECT *
 FROM tripLocationPicture;
