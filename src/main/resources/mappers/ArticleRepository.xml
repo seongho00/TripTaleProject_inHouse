@@ -161,10 +161,24 @@
 
 
 	<select id="deleteArticleImage" parameterType="map">
-		DELETE FROM articleImage
+		DELETE FROM
+		articleImage
 		WHERE
 		articleId = #{articleId}
 	</select>
+
+	<!-- 저장된 파일명 목록 조회 -->
+	<select id="getImageFileNamesByArticleId" resultType="string">
+		SELECT fileName
+		FROM articleImage
+		WHERE articleId = #{articleId}
+	</select>
+
+	<!-- 특정 파일명 삭제 -->
+	<delete id="deleteArticleImageByFileName">
+		DELETE FROM articleImage
+		WHERE articleId = #{articleId} AND fileName = #{fileName}
+	</delete>
 
 
 

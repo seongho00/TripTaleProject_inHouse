@@ -555,12 +555,16 @@ function getUriParams(uri) {
 
 			<div id="fileList"
 				class="border rounded bg-gray-100 w-[500px] h-[100px] overflow-auto">
-				<c:forEach var="articleImage" items="${articleImages }">
+				<c:forEach var="articleImage" items="${articleImages}">
 					<div class="imageItem flex justify-start items-center pl-2 w-full">
-						<i class="fa-solid fa-xmark pr-1 cursor-pointer"></i>
+						<i class="fa-solid fa-xmark pr-1 cursor-pointer delete-existing"
+							data-file-name="${articleImage.fileName}"></i>
 						<div
 							class="text-base text-gray-700 flex justify-start items-center">${articleImage.fileName}</div>
 
+						<!-- 유지할 이미지 파일명을 hidden으로 보냄 -->
+						<input type="hidden" name="existingImageFileNames"
+							value="${articleImage.fileName}" class="existing-image-input" />
 					</div>
 				</c:forEach>
 			</div>

@@ -240,20 +240,21 @@ public class UsrArticleController {
 	}
 
 	@PostMapping("/usr/article/doModify")
-	public String doModify(int articleId, String title, String body,
-			@RequestParam("images") List<MultipartFile> images) {
+	public String doModify(int articleId, String title, String body, @RequestParam("images") List<MultipartFile> images,
+			@RequestParam(name = "existingImageFileNames", required = false) List<String> existingFileNames) {
 
 		articleService.updateArticle(articleId, title, body);
 
 		System.out.println(images);
 		System.out.println(images.size());
+		articleService.updateArticleImages(articleId, existingFileNames);
 		if (images != null && !images.isEmpty()) {
-			articleService.deleteArticleImage(articleId);
+
 			for (MultipartFile img : images) {
 				if (!img.isEmpty()) {
 					try {
 						System.out.println("실행됨: " + img.getOriginalFilename());
-						
+
 						String fileName = img.getOriginalFilename();
 						String contentType = img.getContentType();
 						byte[] data = img.getBytes();

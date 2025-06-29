@@ -78,17 +78,30 @@ public class ArticleService {
 
 	public void increseLikeCount(int articleId, int memberId) {
 		articleRepository.increseLikeCount(articleId, memberId);
-		
+
 	}
 
 	public void decreseLikeCount(int articleId, int memberId) {
 		articleRepository.decreseLikeCount(articleId, memberId);
-		
+
 	}
 
 	public void deleteArticleImage(int articleId) {
 		articleRepository.deleteArticleImage(articleId);
-		
+
+	}
+
+	public void updateArticleImages(int articleId, List<String> existingFileNames) {
+		// DB에 저장된 기존 이미지 목록
+		List<String> savedFileNames = articleRepository.getImageFileNamesByArticleId(articleId);
+
+		// 삭제 대상 이미지 = 기존에 있던 것 중, 클라이언트가 보내지 않은 것
+		for (String savedFileName : savedFileNames) {
+			if (existingFileNames == null || !existingFileNames.contains(savedFileName)) {
+				articleRepository.deleteArticleImageByFileName(articleId, savedFileName);
+			}
+		}
+
 	}
 
 }

@@ -40,5 +40,9 @@ public interface ArticleRepository {
 
 	public void deleteArticleImage(int articleId);
 
+	public List<String> getImageFileNamesByArticleId(int articleId);
+
+	public void deleteArticleImageByFileName(int articleId, String savedFileName);
+
 
 }
