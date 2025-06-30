@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import com.example.demo.service.NaverOAuthService;
 import com.example.demo.service.PlannerService;
 import com.example.demo.util.Ut;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.ArticleImage;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.MemberImage;
 import com.example.demo.vo.ResultData;
@@ -79,6 +81,17 @@ public class UsrMemberController {
 		// 게시글 가져오기
 		List<Article> articles = articleService.getArticleByMemberId(memberId);
 
+		// 게시글 이미지 가여조기
+
+		List<String> articleImages = new ArrayList<>();
+
+		for (Article article : articles) {
+			ArticleImage articleImage = articleService.getArticleImage(article.getId());
+
+			articleImages.add(Base64.getEncoder().encodeToString(articleImage.getData()));
+
+		}
+
 		// 프로필 이미지 가져오기
 		MemberImage memberImage = memberService.getMemberImageByMemberId(memberId);
 
@@ -100,6 +113,7 @@ public class UsrMemberController {
 		model.addAttribute("tripInfos", tripInfos);
 		model.addAttribute("urls", urls);
 		model.addAttribute("articles", articles);
+		model.addAttribute("articleImages", articleImages);
 
 		return "usr/member/profile";
 	}
@@ -341,7 +355,7 @@ public class UsrMemberController {
 
 		Member updatedMember = memberService.getMemberByMemberId(memberId);
 		session.setAttribute("loginedMember", updatedMember);
-		
+
 		return ResultData.from("S-1", "수정 성공");
 	}
 

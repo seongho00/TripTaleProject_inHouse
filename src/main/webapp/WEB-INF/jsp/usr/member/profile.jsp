@@ -756,10 +756,10 @@
 						<div onClick="showArticleDetail(${article.id});"
 							class="articleDiv flex justify-start items-center self-stretch flex-grow relative gap-3 pr-[13px] py-2.5 cursor-pointer">
 							<p
-								class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index}</p>
+								class="flex-grow-0 flex-shrink-0 w-[23px] h-[23px] text-xl font-medium text-center text-black">${tripInfos.size() - status.index  + 1}</p>
 							<div
 								class="flex-grow-0 flex-shrink-0 w-[174px] h-[114px] relative border border-black">
-								<img src="" class="w-full h-full object-cover" />
+								<img src="data:image/jpeg;base64,${articleImages[status.index] }" class="w-full h-full object-cover" />
 
 							</div>
 							<div

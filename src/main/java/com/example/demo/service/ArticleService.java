@@ -104,4 +104,14 @@ public class ArticleService {
 
 	}
 
+	public ArticleImage getArticleImage(int articleId) {
+
+		return articleRepository.getArticleImage(articleId);
+	}
+
+	public void addArticleHitCount(int articleId) {
+		articleRepository.addArticleHitCount(articleId);
+		
+	}
+
 }

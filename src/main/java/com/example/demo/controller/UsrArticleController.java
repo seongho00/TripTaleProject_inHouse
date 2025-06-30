@@ -131,6 +131,9 @@ public class UsrArticleController {
 		// 게시글 제목, 내용 등 가져오기
 		Article article = articleService.getArticleById(articleId);
 
+		// 조회수 증가
+		articleService.addArticleHitCount(articleId);
+
 		// 좋아요 수 출력
 		int likeCount = articleService.getLikeCount(articleId);
 
@@ -178,6 +181,11 @@ public class UsrArticleController {
 			String base64 = Base64.getEncoder().encodeToString(article.getExtra__thumbnailImg());
 			String fullDataUrl = "data:" + article.getExtra__contentType() + ";base64," + base64;
 			articleImages.add(fullDataUrl);
+
+			// 좋아요 수 출력
+			int likeCount = articleService.getLikeCount(article.getId());
+
+			article.setExtra__likeCount(likeCount);
 		}
 
 		Map<String, Object> response = new HashMap<>();

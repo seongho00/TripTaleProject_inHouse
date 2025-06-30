@@ -892,7 +892,7 @@ body {
 				</a>
 				<div class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
 					<p
-						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[85px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
+						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[110px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>

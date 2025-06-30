@@ -44,5 +44,9 @@ public interface ArticleRepository {
 
 	public void deleteArticleImageByFileName(int articleId, String savedFileName);
 
+	public ArticleImage getArticleImage(int articleId);
+
+	public void addArticleHitCount(int articleId);
+
 
 }
