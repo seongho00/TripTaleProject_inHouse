@@ -27,7 +27,7 @@
 							.addClass('opacity-100 translate-y-0');
 
 				}
-				
+
 				if (scrollTop >= 900) {
 					$('#scrollText2').removeClass('opacity-0 translate-y-6')
 							.addClass('opacity-100 translate-y-0');
@@ -149,55 +149,64 @@ to {
 					<div class="swiper-slide flex justify-center">
 						<img src="/images/서울.jpg" class="w-full w-screen mx-auto h-full object-cover" />
 						<div
-							class="w-[300px] h-[100px] absolute bottom-0 right-[1310px] bg-black/30 text-white text-2xl font-semibold px-3 py-1 shadow-md">
+							class="w-[300px] h-[80px] absolute bottom-0 right-[1310px] bg-black/50 text-white text-2xl font-semibold px-3 py-1 shadow-md">
 							<div class="flex justify-center items-center pb-3">📍 서울 도시 야경</div>
 							<div class="flex justify-center items-center text-sm">밤이 되면 더 빛나는 도시, 서울</div>
 						</div>
+
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[65px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">어디로 여행을 가고 싶으신가요?</div>
+							class="absolute bottom-[65px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">어디로
+							여행을 가고 싶으신가요?</div>
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[20px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">TripTale로 여행을
-							간편하게</div>
+							class="absolute bottom-[20px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">TripTale로
+							여행을 간편하게</div>
+
 					</div>
 					<div class="swiper-slide flex justify-center">
 						<img src="/images/대전.jpg" class="w-full w-screen mx-auto h-full object-cover" />
 						<div
-							class="w-[300px] h-[100px] absolute bottom-0 right-[1310px] bg-black/30 text-white text-2xl font-semibold px-3 py-1 shadow-md">
+							class="w-[300px] h-[80px] absolute bottom-0 right-[1310px] bg-black/50 text-white text-2xl font-semibold px-3 py-1 shadow-md">
 							<div class=" flex justify-center items-center pb-3">📍 대전 엑스포다리</div>
 							<div class="flex justify-center items-center text-sm">과학과 도시를 잇는 길, 엑스포다리</div>
 
 						</div>
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[65px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">어디로 여행을 가고 싶으신가요?</div>
+							class="absolute bottom-[65px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">어디로
+							여행을 가고 싶으신가요?</div>
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[20px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">TripTale로 여행을
-							간편하게</div>
+							class="absolute bottom-[20px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">TripTale로
+							여행을 간편하게</div>
 					</div>
 					<div class="swiper-slide">
 						<img src="/images/부산.jpg" class="w-full w-screen mx-auto h-full object-cover" />
 						<div
-							class="w-[300px] h-[100px] absolute bottom-0 right-[1310px] bg-black/30 text-white text-2xl font-semibold px-3 py-1 shadow-md">
+							class="w-[300px] h-[80px] absolute bottom-0 right-[1310px] bg-black/50 text-white text-2xl font-semibold px-3 py-1 shadow-md">
 							<div class=" flex justify-center items-center pb-3">📍 부산 해운대</div>
 							<div class="flex justify-center items-center text-sm">도심과 바다가 만나는 곳, 해운대</div>
 						</div>
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[65px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">어디로 여행을 가고 싶으신가요?</div>
+							class="absolute bottom-[65px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">어디로
+							여행을 가고 싶으신가요?</div>
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[20px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">TripTale로 여행을
-							간편하게</div>
+							class="absolute bottom-[20px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">TripTale로
+							여행을 간편하게</div>
 					</div>
 					<div class="swiper-slide">
 						<img src="/images/제주도.jpg" class="w-full w-screen mx-auto h-full object-cover" />
 						<div
-							class="w-[300px] h-[100px] absolute bottom-0 right-[1310px] bg-black/30 text-white text-2xl font-semibold px-3 py-1 shadow-md">
+							class="w-[300px] h-[80px] absolute bottom-0 right-[1310px] bg-black/50 text-white text-2xl font-semibold px-3 py-1 shadow-md">
 							<div class=" flex justify-center items-center pb-3">📍 제주도 성산일출봉</div>
 							<div class="flex justify-center items-center text-sm">제주의 하루가 가장 먼저 시작되는 곳</div>
 						</div>
+
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[65px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">어디로 여행을 가고 싶으신가요?</div>
+							class="absolute bottom-[65px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">어디로
+							여행을 가고 싶으신가요?</div>
 						<div style="text-shadow: -0.5px -0.5px black, 0.5px 0.5px black;"
-							class="absolute bottom-[20px] left-[1000px] text-white text-4xl font-semibold px-3 py-1 ">TripTale로 여행을
-							간편하게</div>
+							class="absolute bottom-[20px] left-[1000px] w-[550px] text-white text-4xl bg-black/50 font-semibold px-3 py-1 ">TripTale로
+							여행을 간편하게</div>
+
+
 					</div>
 
 				</div>

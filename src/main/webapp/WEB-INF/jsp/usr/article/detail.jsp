@@ -267,13 +267,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	<div class="h-[100px]"></div>
 	<div
-		class="flex fixed justify-center items-center self-stretch w-full z-3 flex-grow-0 flex-shrink-0 h-[100px] gap-2.5 px-[293px] py-[41px] bg-[#aedff7] border-b border-black">
+		class="flex fixed justify-center items-center self-stretch w-full z-3 flex-grow-0 flex-shrink-0 h-[100px] gap-2.5 px-[293px] py-[41px] bg-[#005f99] border-b border-black">
 
 
 		<div
 			class="flex justify-between items-center flex-grow-0 flex-shrink-0 w-full h-full relative gap-2.5 border-0 border-[#f00]">
 			<a href="../home/main">
-				<img src="/images/로고_blue.png"
+				<img src="/images/로고_white.png"
 					class="flex-grow-0 flex-shrink-0 w-[109px] h-[76px] object-cover" />
 			</a>
 
@@ -282,12 +282,12 @@ document.addEventListener("DOMContentLoaded", function () {
 				<div
 					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[300px] relative">
 					<p
-						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#ffffff]">
 						<a href="../article/list">여행 리스트</a>
 					</p>
 
 					<a href="../member/login"
-						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">로그인</a>
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#ffffff]">로그인</a>
 
 				</div>
 			</c:if>
@@ -296,11 +296,11 @@ document.addEventListener("DOMContentLoaded", function () {
 				<div
 					class="flex justify-center items-center self-stretch flex-grow-0 flex-shrink-0 w-[400px] relative">
 					<p
-						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#ffffff]">
 						<a href="../article/list">여행 리스트</a>
 					</p>
 					<p
-						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#2f3a4b]">
+						class="flex justify-center items-center flex-grow w-[107px] h-14 text-xl font-medium text-[#ffffff]">
 						<a href="../planner/region">여행 작성</a>
 					</p>
 					<div onClick="showProfileMenu();"

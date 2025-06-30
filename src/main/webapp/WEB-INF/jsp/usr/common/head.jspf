@@ -35,9 +35,7 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.min.js"></script>
 
-<!-- 벽돌식 레이아웃 -->
-<script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
 
 <!-- lodash -->
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>

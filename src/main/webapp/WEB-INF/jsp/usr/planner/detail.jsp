@@ -595,7 +595,7 @@
 		<div
 			class="sidebar transition-all duration-500 flex flex-col justify-start items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] absolute left-0 top-0 overflow-hidden gap-2.5 bg-white border border-black">
 			<div
-				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#aedff7] border-b border-black">
+				class="flex flex-col justify-start items-center flex-grow-0 flex-shrink-0 h-[217px] w-full relative overflow-auto bg-[#005f99] border-b border-black">
 				<div
 					class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 h-[53px] relative overflow-hidden">
 					<a href="../home/main">

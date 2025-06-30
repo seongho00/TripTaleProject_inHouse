@@ -20,7 +20,7 @@
 <div
 	class="flex flex-col justify-start items-center w-screen h-screen overflow-hidden gap-2.5 bg-white border border-[#0f0000]">
 	<div
-		class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden px-2.5 bg-[#aedff7] border border-black">
+		class="flex justify-between items-center self-stretch flex-grow-0 flex-shrink-0 relative overflow-hidden px-2.5 bg-[#005f99] border border-black">
 		<a class="flex justify-start items-center flex-grow relative overflow-hidden gap-2.5" href="../home/main">
 			<img src="/images/로고_blue.png" class="flex-grow-0 flex-shrink-0 w-[121px] h-[121px] object-cover" />
 		</a>

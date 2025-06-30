@@ -878,20 +878,20 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	<div class=" flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-2.5">
 		<div class="fixed left-[500px] h-screen w-screen" id="map"></div>
 		<div
-			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
+			class="flex flex-col items-start  h-[919px] w-[497px] left-0 top-0 overflow-hidden pb-2.5 border-r border-black">
 			<div
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[121px] relative overflow-hidden bg-[#aedff7] border-b border-black">
+				class="self-stretch flex-grow-0 flex-shrink-0 h-[121px] relative overflow-hidden bg-[#005f99] border-b border-black">
 				<a href="../home/main">
 					<img src="/images/로고.png" class="w-[77px] h-[53px] absolute left-[-1px] top-[-1px] object-cover" />
 				</a>
-				<div class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
+				<div class="flex justify-center items-end absolute left-[78px] top-[47px] px-11 py-[13px]">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[85px] h-[38px] text-xl font-medium text-center text-black">${tripInfo.tripRegion}</p>
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}
 						~ ${endDate}</p>
 				</div>
 				<button id="helpBtn"
-					class="btn btn-outline btn-secondary flex justify-center items-center absolute left-[390px] top-[5px] h-[30px] text-sm mr-2 ">❓
+					class="btn btn-secondary flex justify-center items-center absolute left-[390px] top-[5px] h-[30px] text-sm mr-2 ">❓
 					사용법</button>
 				<p class="w-[141px] h-[52px] absolute left-[177.5px] top-2.5 text-3xl font-medium text-center text-black">여행 이름</p>
 			</div>

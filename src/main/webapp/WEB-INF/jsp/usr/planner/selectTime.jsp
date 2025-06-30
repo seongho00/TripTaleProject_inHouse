@@ -71,7 +71,7 @@ $(document).ready(function() {
 		      marker.setMap(map);
 		      overlay.setMap(map);
 		    });
-		  }
+		}
 
 		$('.dailyPlan').addClass('hidden');	
 		$(`.dailyPlan[data-day="\${selectedDay}"]`).removeClass('hidden');	
@@ -1062,7 +1062,7 @@ body {
 					<select id="daySelect"
 						class="w-60 h-[59px] absolute left-2 top-0 text-2xl font-medium text-center text-black mt-2 border-none focus:outline-none bg-white border border-gray-300 rounded">
 						<c:forEach var="i" begin="1" end="${diffDays}">
-							<option value="${i}">${i}일차일정장바구니</option>
+							<option value="${i}">${i}일차&nbsp;일정&nbsp;장바구니</option>
 						</c:forEach>
 					</select>
 					<c:forEach var="i" begin="1" end="${diffDays}">

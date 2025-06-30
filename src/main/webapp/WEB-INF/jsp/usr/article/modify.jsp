@@ -568,7 +568,8 @@ function getUriParams(uri) {
 					</div>
 				</c:forEach>
 			</div>
-			<label class="btn btn-sm btn-info ">
+
+			<label class="btn btn-sm btn-info ml-6">
 				파일 선택
 				<input type="file" id="imageInput" name="images" multiple
 					accept="image/*" class="hidden" />
