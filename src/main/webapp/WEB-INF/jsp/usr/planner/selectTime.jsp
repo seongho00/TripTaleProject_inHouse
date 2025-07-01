@@ -360,6 +360,7 @@ $(document).ready(function() {
 		$('#searchButton').toggleClass('btn-active');
 		$('.recommendUI').toggleClass('ui-active');
 		$('.searchUI').toggleClass('ui-active');
+
 	}
 	
 	// 정보, 사진 버튼 눌렀을 때
@@ -422,7 +423,7 @@ $(document).ready(function() {
 
 	// infoDiv 열고 닫기 & 정보 추가하기
 $(document).on('click', '.trip-item', function () {
-	   $('.trip-item').on('click', function() {
+
 		   // 선택한 데이터 넘겨받기
 		   
 		   const id = $(this).data('id');
@@ -502,7 +503,7 @@ $(document).on('click', '.trip-item', function () {
  		   }
  		  // 현재 id를 저장
  		  lastInfoId = id;
- 	       });
+
   });
 	
    
@@ -789,6 +790,7 @@ $(document).on('click', '.trip-item', function () {
 		});	
 	}
 	
+
 </script>
 
 
@@ -884,13 +886,13 @@ body {
 	<div class="left-[500px] z-0 h-screen w-screen " id="map"></div>
 	<div class="flex absolute justify-start items-center self-stretch flex-grow overflow-hidden pr-2.5">
 		<div
-			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden pl-px pt-px pb-2.5 bg-white border-r border-black">
+			class="flex flex-col justify-between items-start flex-grow-0 flex-shrink-0 h-[919px] w-[497px] left-px top-0 overflow-hidden  pb-2.5 bg-white border-r border-black">
 			<div
-				class="self-stretch flex-grow-0 flex-shrink-0 h-[121px] relative overflow-hidden bg-[#aedff7] border-b border-black">
+				class="self-stretch flex-grow-0 flex-shrink-0 h-[121px] relative overflow-hidden bg-[#005f99] border-b border-black">
 				<a href="../home/main">
 					<img src="/images/로고.png" class="w-[77px] h-[53px] absolute left-[-1px] top-[-1px] object-cover" />
 				</a>
-				<div class="flex justify-center items-end absolute left-[78px] top-[47px] overflow-hidden px-11 py-[13px]">
+				<div class="flex justify-center items-end absolute left-[78px] top-[47px] px-11 py-[13px]">
 					<p
 						class="flex justify-center items-center flex-grow-0 flex-shrink-0 max-w-[110px] h-[38px] text-xl font-medium text-center text-black">${param.region}</p>
 					<p class="flex-grow-0 flex-shrink-0 w-[210px] h-6 text-[15px] font-medium text-center text-black">${startDate}

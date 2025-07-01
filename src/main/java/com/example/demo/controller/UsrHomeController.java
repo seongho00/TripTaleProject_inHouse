@@ -83,7 +83,7 @@ public class UsrHomeController {
 		// 각 도시의 "시"마다 5개씩 데이터를 받고 DB에 넣기 + 별점 데이터 종합
 		naverOAuthService.searchLocal(keyword);
 		
-		List<TripLocation> tripLocations =  tripLocationService.getLocationInfo("검색결과", 3);
+		List<TripLocation> tripLocations =  tripLocationService.getLocationInfo("", 3);
 		
 		return tripLocations;
 	}

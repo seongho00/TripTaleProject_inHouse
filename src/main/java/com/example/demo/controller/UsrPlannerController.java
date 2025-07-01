@@ -94,8 +94,9 @@ public class UsrPlannerController {
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
-		String locationType = "tour";
-		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationType, areaCode);
+		String locationTypeCode = "tour";
+		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationTypeCode, areaCode);
+
 
 		// 날짜 jason으로 넘기기
 		ObjectMapper mapper = new ObjectMapper();
@@ -233,7 +234,7 @@ public class UsrPlannerController {
 
 		// areaCode를 통해 장소 데이터& 사진 데이터 가져오기
 		int areaCode = 3;
-		String locationType = "관광지";
+		String locationType = "tour";
 		List<TripLocation> tripLocations = tripLocationService.getLocationInfo(locationType, areaCode);
 
 		model.addAttribute("tripInfo", tripInfo);

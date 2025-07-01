@@ -134,7 +134,6 @@ public class NaverOAuthService {
 				int lastId = memberRepository.getLastInsertId();
 				memberRepository.insertMemberImage(lastId, "", null);
 			}
-			
 
 			rq.login(loginedMember.getId(), loginedMember);
 
@@ -187,7 +186,13 @@ public class NaverOAuthService {
 				double mapy = Double.parseDouble(item.get("mapy").toString()) / 10000000.0;
 
 				// 크롤링 하기
-				tripLocationService.process(title, 3, mapx, mapy);
+				try {
+					tripLocationService.process(title, 3, mapx, mapy);
+				} catch (Exception e) {
+					// 실패하더라도 아무 동작 없이 넘어감 (로그를 찍을 수도 있음)
+					System.err.println("tripLocationService.process 실패: " + e.getMessage());
+					// e.printStackTrace(); // 필요하면 주석 해제
+				}
 
 			}
 		}

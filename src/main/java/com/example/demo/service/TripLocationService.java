@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -39,13 +40,10 @@ public class TripLocationService {
 //		keyword = "보라매공원";
 		String url = "https://map.naver.com/v5/search/" + keyword;
 		// 크롬 드라이버 세팅 (드라이버 설치 경로 입력)
-		System.setProperty("webdriver.chrome.driver", "C:\\Spring\\chromedriver-win64\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "C:\\LSH_spring_work\\chromedriver-win64\\chromedriver.exe");
 
 		ChromeOptions options = new ChromeOptions();
-//		options.addArguments("--headless"); // ✅ 브라우저 창 안 뜨게
-//		options.addArguments("--disable-gpu"); // ✅ 가속화 오류 방지
-//		options.addArguments("--window-size=1920,1080"); // ✅ 필요한 경우
-		
+
 		options.addArguments("--remote-allow-origins=*");
 
 		// 브라우저 선택
@@ -62,7 +60,7 @@ public class TripLocationService {
 
 	// 데이터 가져오기
 	private void getDataList(String url, int areaCode, double mapX, double mapY) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		// (1) 브라우저에서 url로 이동한다.
 		driver.get(url);
 		// 브라우저 로딩될 때까지 잠시 기다린다.
@@ -106,9 +104,14 @@ public class TripLocationService {
 		driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
 		// (4) 상세정보가 나오는 프레임으로 이동한다.
 
-		WebElement iframe = wait
-				.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("iframe#entryIframe")));
-		driver.switchTo().frame(iframe);
+		try {
+			WebElement iframe = wait
+					.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("iframe#entryIframe")));
+			driver.switchTo().frame(iframe);
+
+		} catch (Exception e) {
+			return;
+		}
 
 		String schedule = "";
 

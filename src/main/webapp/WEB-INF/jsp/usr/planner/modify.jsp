@@ -878,7 +878,7 @@ let lastInfoId = null; // 전역 변수로 마지막으로 연 info-id 저장
 	<div class=" flex justify-start items-center self-stretch flex-grow relative overflow-hidden gap-3 pr-2.5">
 		<div class="fixed left-[500px] h-screen w-screen" id="map"></div>
 		<div
-			class="flex flex-col items-start  h-[919px] w-[497px] left-0 top-0 overflow-hidden pb-2.5 border-r border-black">
+			class="flex flex-col items-start h-[919px] w-[497px] left-0 top-0 overflow-hidden pb-2.5 border-r border-black">
 			<div
 				class="self-stretch flex-grow-0 flex-shrink-0 h-[121px] relative overflow-hidden bg-[#005f99] border-b border-black">
 				<a href="../home/main">

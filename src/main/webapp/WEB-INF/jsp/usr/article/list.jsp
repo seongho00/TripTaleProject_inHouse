@@ -214,7 +214,7 @@ body {
 
 		<c:forEach var="article" items="${articles }" varStatus="status">
 
-			<article class="card card--1 !w-[243px]" onClick="showDetail(${article.id});">
+			<article class="card card--1 !w-[243px] cursor-pointer" onClick="showDetail(${article.id});">
 				<div class="card__info-hover">
 					<i class="flex-grow-0 fa-solid fa-heart text-red-500"></i>
 					${article.extra__likeCount }
